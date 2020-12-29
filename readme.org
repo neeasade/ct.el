@@ -1,10 +1,25 @@
 Utilities for tweaking colors with properties from various color spaces. Visualized here: https://notes.neeasade.net/color-spaces.html
 
+Install with [[https://github.com/raxod502/straight.el][straight.el]]:
+
+#+begin_src
+(straight-use-package
+  '(color-tools :host github :repo "neeasade/color-tools.el"
+     :branch "master"))
+#+end_src
+
 Function Prefix: ~ct/~
 
 Depends on: fn.el, dash.el, hsluv.el
 
-** TODO
+** todo
+
 - docs
-- melpa? or just a straight.el for now
 - tests
+
+** Related
+
+- https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el
+- https://github.com/emacsfodder/kurecolor
+- https://github.com/yurikhan/yk-color
+- https://github.com/hsluv/hsluv-emacs
