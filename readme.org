@@ -1,0 +1,10 @@
+Utilities for tweaking colors with properties from various color spaces. Visualized here: https://notes.neeasade.net/color-spaces.html
+
+Function Prefix: ~ct/~
+
+Depends on: fn.el, dash.el, hsluv.el
+
+** TODO
+- docs
+- melpa? or just a straight.el for now
+- tests
