@@ -20,7 +20,7 @@ Install with [[https://github.com/raxod502/straight.el][straight.el]]:
 
 ** Examples:
 
-Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsluv~. Generally, scalar values fall within range 0 to 100 (consistent interface across spaces for the convienence of using this libary). Execptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
+Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsluv~. Generally, scalar values fall within range 0 to 100 (consistent interface across spaces for the convenience of using this library). Exceptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
 
 *** Color creation
 
@@ -110,7 +110,7 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsluv~. Generally, scalar values fall
 #+end_src
 
 
-** Related (emacs)
+** Related (Emacs)
 
 - https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el
 - https://github.com/emacsfodder/kurecolor
