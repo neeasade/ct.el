@@ -95,8 +95,8 @@
 (defun ct/tint-ratio (c against ratio)
   (ct/iterate c
     (if (ct/is-light-p against)
-      (fn (ct/lab-darken <> 0.1))
-      (fn (ct/lab-lighten <> 0.1)))
+      (fn (ct/lab-darken <> 0.5))
+      (fn (ct/lab-lighten <> 0.5)))
     (fn (> (ct/contrast-ratio <> against) ratio))))
 
 (defun ct/luminance-srgb (color)
