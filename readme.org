@@ -65,7 +65,7 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsluv~. Generally, scalar values fall
 ;; => "#fea06f"
 
 
-;; max chroma:
+;; max chroma (notice you may pass a function or value):
 (ct/transform-lch-c "#b36033" 100)
 
 ;; => "#dc3a00"
