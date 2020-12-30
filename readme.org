@@ -20,37 +20,93 @@ Install with [[https://github.com/raxod502/straight.el][straight.el]]:
 
 ** Examples:
 
-The examples here use lab, but there is support for {lab,lch,hsl,hsluv}. Generally, scalar values fall within range 0 to 100 (consistent interface across spaces for the convienence of using this libary). Execptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
+Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsluv~. Generally, scalar values fall within range 0 to 100 (consistent interface across spaces for the convienence of using this libary). Execptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
 
 *** Color creation
 
 #+begin_src emacs-lisp
+(ct/make-lab 50 30 40)
 
-#+end_src
+;; => "#b36033"
 
-*** Color property tweaking
 
-You can pass a value or a function that will be called with the current value:
+(ct/make-hsl 60 60 70)
 
-#+begin_src emacs-lisp
+;; => "#e0e084"
 #+end_src
 
 *** Color inspection
 
 #+begin_src emacs-lisp
+(ct/get-lab "#b36033")
 
+;; => (49.72678146037228 29.94907362859206 39.78635241058663)
+
+
+(ct/get-lab-b "#b36033")
+
+;; => 39.78635241058663
 #+end_src
 
-*** Tint to contrast level
+*** Color property tweaking
 
 #+begin_src emacs-lisp
+;; complement color by flipping hue:
+(ct/transform-lch "#b36033"
+  (lambda (L C H)
+    (list L C (+ 180 H))))
 
+;; => "#0086b9"
+
+
+;; 1.5x lightness:
+(ct/transform-lch-l "#b36033" (lambda (L) (* 1.5 L)))
+
+;; => "#fea06f"
+
+
+;; max chroma:
+(ct/transform-lch-c "#b36033" 100)
+
+;; => "#dc3a00"
 #+end_src
 
-*** Misc
+*** Contrast levels
 
 #+begin_src emacs-lisp
+(ct/contrast-ratio "#dddddd" "#222222")
 
+;; => 11.713614348620013
+
+
+;; tint to a contrast ratio:
+(ct/iterate
+  ;; start color
+  "#eeeeee"
+  ;; action
+  'ct/lab-darken
+  ;; predicate (check contrast against background)
+  (fn (> (ct/contrast-ratio <> "#eeeeee")
+        4.5)))
+
+;; => "#6c6c6c"
+
+
+;; sugar for the above:
+(ct/tint-ratio "#eeeeee" "#eeeeee" 4.5)
+
+;; => "#6c6c6c"
+#+end_src
+
+*** Hue rotation
+
+#+begin_src emacs-lisp
+(ct/rotation-hsluv
+  (ct/make-hsluv 0 50 50)
+  ;; degrees
+  60)
+
+;; => ("#bb556d" "#887351" "#5d7f51" "#547e78" "#597a97" "#a05dac")
 #+end_src
 
 

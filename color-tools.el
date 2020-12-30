@@ -39,7 +39,7 @@
 (defun ct/maybe-shorten (color)
   "Internal function -- see ct/always-shorten"
   (if ct/always-shorten
-    (ct-shorten color)
+    (ct/shorten color)
     color))
 
 (defun ct/name-to-lab (name &optional white-point)
@@ -176,14 +176,15 @@
 
 (defun ct/transform-hsluv (c transform)
   "Tweak a color in the HSLuv space. S,L range is {0-100}"
-  (apply 'color-rgb-to-hex
-    (-map 'color-clamp
-      (hsluv-hsluv-to-rgb
-        (let ((result (apply transform (-> c ct/shorten hsluv-hex-to-hsluv))))
-          (list
-            (mod (first result) 360.0)
-            (second result)
-            (third result)))))))
+  (ct/maybe-shorten
+    (apply 'color-rgb-to-hex
+      (-map 'color-clamp
+        (hsluv-hsluv-to-rgb
+          (let ((result (apply transform (-> c ct/shorten hsluv-hex-to-hsluv))))
+            (list
+              (mod (first result) 360.0)
+              (second result)
+              (third result))))))))
 
 ;; individual property tweaks:
 (defmacro ct/transform-prop (transform index)
