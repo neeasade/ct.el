@@ -1,4 +1,4 @@
-Utilities for tweaking colors with properties from various color spaces. Visualized here: https://notes.neeasade.net/color-spaces.html
+Utilities for tweaking colors with properties from various color spaces. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]].
 
 ** Installation
 
