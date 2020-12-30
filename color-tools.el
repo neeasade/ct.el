@@ -1,28 +1,31 @@
-;; -*- lexical-binding: t; -*-
-;; color tools
-;; prefix for here: ct/, for [c]olor [t]ools
+;;; color-tools.el --- color tools for emacs -*- coding: utf-8; lexical-binding: t -*-
 
-;; depends: fn.el, dash.el, emacs builting color.el, hsluv
+;; Copyright (c) 2020 neeasade
+;;
+;; Version: 0.1
+;; Author: neeasade
+;; Keywords: color, theming
+;; URL: https://github.com/neeasade/color-tools.el
+;; Package-Requires: (dash fn hsluv)
 
-;; sRGB vs linear RGB
-;; sRGB is kinda like declaring intent wrt a standard white point? (LAB makes this explicit)
-;; https://en.wikipedia.org/wiki/SRGB
+;;; Commentary:
+;; neeasade's color tools for emacs.
+;; primarily oriented towards a consistent interface into color spaces.
+
+
+
+;;; other:
 ;; note: the rgb conversion functions in HSLuv lib handle linear transformation of rgb colors
 
 (require 'color)
-(use-package hsluv)
+(require 'hsluv)
+(require 'dash)
+(require 'fn)
 
-;; a helper I'm exporting to here from my init.el
-(defun range (one &optional two step)
-  (let* ((start (if two one 0))
-          (end (if two two one))
-          (step (or step (if (> end start) 1 -1))))
-    (cond
-      ((= end start) (list start))
-      ((> end start)
-        (number-sequence start (- end 1) step))
-      ((< end start)
-        (number-sequence start (+ 1 end) step)))))
+(defcustom ct/always-shorten t
+  "Whether results of color functions should ensure format #HHHHHH rather than #HHHHHHHHHHHH."
+  :type 'boolean
+  :group 'color-tools)
 
 (defun ct/shorten (color)
   "Optionally transform COLOR #HHHHHHHHHHHH to #HHHHHH"
@@ -32,6 +35,12 @@
       (color-name-to-rgb C)
       `(color-rgb-to-hex ,@C 2)
       (eval C))))
+
+(defun ct/maybe-shorten (color)
+  "Internal function -- see ct/always-shorten"
+  (if ct/always-shorten
+    (ct-shorten color)
+    color))
 
 (defun ct/name-to-lab (name &optional white-point)
   "Transform NAME into LAB colorspace with some lighting assumption."
@@ -48,7 +57,8 @@
     (apply 'color-xyz-to-srgb)
     ;; when pulling it out we might die
     (-map 'color-clamp)
-    (apply 'color-rgb-to-hex)))
+    (apply 'color-rgb-to-hex)
+    (ct/maybe-shorten)))
 
 (defun ct/is-light-p (name &optional scale )
   (> (first (ct/name-to-lab name)) (or scale 65)))
@@ -161,7 +171,8 @@
          (/ (third hsl) 100.0))))
     (-map 'color-clamp)
     (apply 'color-hsl-to-rgb)
-    (apply 'color-rgb-to-hex)))
+    (apply 'color-rgb-to-hex)
+    (ct/maybe-shorten)))
 
 (defun ct/transform-hsluv (c transform)
   "Tweak a color in the HSLuv space. S,L range is {0-100}"
@@ -277,23 +288,19 @@
 (defun ct/make-lab (L A B) (ct/make-color-meta 'ct/transform-lab (list L A B)))
 (defun ct/make-lch (L C H) (ct/make-color-meta 'ct/transform-lch (list L C H)))
 
-(defun ct/360 (interval)
-  ;; return points along INTERVAL within 0-360.
-  (if (> interval 0)
-    (range 0 360 interval)
-    (range 360 0 interval)))
-
 (defun ct/rotation-hsluv (c interval)
   "perform a hue rotation in the HSLuv color space"
   (-map (lambda (offset) (ct/transform-hsluv-h c (-partial '+ offset)))
-    (ct/360 interval)))
+    (number-sequence 0 359 interval)))
 
 (defun ct/rotation-hsl (c interval)
   "perform a hue rotation in the HSLuv color space"
   (-map (lambda (offset) (ct/transform-hsl-h c (-partial '+ offset)))
-    (ct/360 interval)))
+    (number-sequence 0 359 interval)))
 
 (defun ct/rotation-lch (c interval)
   "perform a hue rotation in the HSLuv color space"
   (-map (lambda (offset) (ct/transform-lch-h c (-partial '+ offset)))
-	  (ct/360 interval)))
+	  (number-sequence 0 359 interval)))
+
+(provide 'color-tools)

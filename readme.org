@@ -1,25 +1,69 @@
 Utilities for tweaking colors with properties from various color spaces. Visualized here: https://notes.neeasade.net/color-spaces.html
 
+** Installation
+
 Install with [[https://github.com/raxod502/straight.el][straight.el]]:
 
-#+begin_src
+#+begin_src emacs-lisp
 (straight-use-package
-  '(color-tools :host github :repo "neeasade/color-tools.el"
-     :branch "master"))
+ '(color-tools
+   :host github
+   :repo "neeasade/color-tools.el"
+   :branch "master"))
 #+end_src
 
-Function Prefix: ~ct/~
+*** Dependencies
 
-Depends on: fn.el, dash.el, hsluv.el
+- [[https://github.com/troyp/fn.el][fn.el]]
+- [[https://github.com/magnars/dash.el][dash.el]]
+- [[https://github.com/hsluv/hsluv][hsluv.el]]
 
-** todo
+** Examples:
 
-- docs
-- tests
+The examples here use lab, but there is support for {lab,lch,hsl,hsluv}. Generally, scalar values fall within range 0 to 100 (consistent interface across spaces for the convienence of using this libary). Execptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
 
-** Related
+*** Color creation
+
+#+begin_src emacs-lisp
+
+#+end_src
+
+*** Color property tweaking
+
+You can pass a value or a function that will be called with the current value:
+
+#+begin_src emacs-lisp
+#+end_src
+
+*** Color inspection
+
+#+begin_src emacs-lisp
+
+#+end_src
+
+*** Tint to contrast level
+
+#+begin_src emacs-lisp
+
+#+end_src
+
+*** Misc
+
+#+begin_src emacs-lisp
+
+#+end_src
+
+
+** Related (emacs)
 
 - https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el
 - https://github.com/emacsfodder/kurecolor
 - https://github.com/yurikhan/yk-color
 - https://github.com/hsluv/hsluv-emacs
+
+** Related (colors)
+
+- http://colorizer.org/
+- https://peteroupc.github.io/colorgen.html
+- https://www.w3.org/TR/WCAG20/#relativeluminancedef
+- https://en.wikipedia.org/wiki/CIELAB_color_space
