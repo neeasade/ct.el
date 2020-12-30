@@ -196,21 +196,21 @@
            func)
          args))))
 
-(defun ct/transform-hsl-h (c func) (ns/transform-prop ct/transform-hsl 0))
-(defun ct/transform-hsl-s (c func) (ns/transform-prop ct/transform-hsl 1))
-(defun ct/transform-hsl-l (c func) (ns/transform-prop ct/transform-hsl 2))
+(defun ct/transform-hsl-h (c func) (ct/transform-prop ct/transform-hsl 0))
+(defun ct/transform-hsl-s (c func) (ct/transform-prop ct/transform-hsl 1))
+(defun ct/transform-hsl-l (c func) (ct/transform-prop ct/transform-hsl 2))
 
-(defun ct/transform-hsluv-h (c func) (ns/transform-prop ct/transform-hsluv 0))
-(defun ct/transform-hsluv-s (c func) (ns/transform-prop ct/transform-hsluv 1))
-(defun ct/transform-hsluv-l (c func) (ns/transform-prop ct/transform-hsluv 2))
+(defun ct/transform-hsluv-h (c func) (ct/transform-prop ct/transform-hsluv 0))
+(defun ct/transform-hsluv-s (c func) (ct/transform-prop ct/transform-hsluv 1))
+(defun ct/transform-hsluv-l (c func) (ct/transform-prop ct/transform-hsluv 2))
 
-(defun ct/transform-lch-l (c func) (ns/transform-prop ct/transform-lch 0))
-(defun ct/transform-lch-c (c func) (ns/transform-prop ct/transform-lch 1))
-(defun ct/transform-lch-h (c func) (ns/transform-prop ct/transform-lch 2))
+(defun ct/transform-lch-l (c func) (ct/transform-prop ct/transform-lch 0))
+(defun ct/transform-lch-c (c func) (ct/transform-prop ct/transform-lch 1))
+(defun ct/transform-lch-h (c func) (ct/transform-prop ct/transform-lch 2))
 
-(defun ct/transform-lab-l (c func) (ns/transform-prop ct/transform-lab 0))
-(defun ct/transform-lab-a (c func) (ns/transform-prop ct/transform-lab 1))
-(defun ct/transform-lab-b (c func) (ns/transform-prop ct/transform-lab 2))
+(defun ct/transform-lab-l (c func) (ct/transform-prop ct/transform-lab 0))
+(defun ct/transform-lab-a (c func) (ct/transform-prop ct/transform-lab 1))
+(defun ct/transform-lab-b (c func) (ct/transform-prop ct/transform-lab 2))
 
 (defun ct/getter (c transform getter)
   (let ((return))
@@ -243,10 +243,10 @@
 
 ;; other color functions:
 (defun ct/lab-lighten (c &optional value)
-  (ct/transform-lab-l c (-partial '+ (or value 0.1))))
+  (ct/transform-lab-l c (-partial '+ (or value 0.5))))
 
 (defun ct/lab-darken (c &optional value)
-  (ct/transform-lab-l c (-rpartial '- (or value 0.1))))
+  (ct/transform-lab-l c (-rpartial '- (or value 0.5))))
 
 (defun ct/pastel (c &optional Smod Vmod)
   "Make a color C more 'pastel' in the hsl space -- optionally change the rate of change with SMOD and VMOD."
