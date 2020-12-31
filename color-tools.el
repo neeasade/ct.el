@@ -2,7 +2,6 @@
 
 ;; Copyright (c) 2020 neeasade
 ;;
-;; Name: ct
 ;; Version: 0.1
 ;; Author: neeasade
 ;; Keywords: color, theming
@@ -32,16 +31,16 @@
 (defun ct/shorten (c)
   "Optionally transform C #HHHHHHHHHHHH to #HHHHHH."
   (if (= (length c) 7)
-    color
+    c
     (--> c
       (color-name-to-rgb it)
       `(color-rgb-to-hex ,@ it 2)
       (eval it))))
 
-(defun ct/maybe-shorten (color)
-  "Internal function for optionally shortening COLOR -- see variable ct/always-shorten."
+(defun ct/maybe-shorten (c)
+  "Internal function for optionally shortening color C -- see variable ct/always-shorten."
   (if ct/always-shorten
-    (ct/shorten color)
+    (ct/shorten c)
     color))
 
 (defun ct/name-to-lab (name &optional white-point)
@@ -297,20 +296,15 @@
 (defun ct/make-lab (L A B) (ct/make-color-meta 'ct/transform-lab (list L A B)))
 (defun ct/make-lch (L C H) (ct/make-color-meta 'ct/transform-lch (list L C H)))
 
-(defun ct/rotation-hsluv (c interval)
-  "Perform a hue rotation at INTERVAL degrees starting with C in the HSLuv color space."
-  (-map (lambda (offset) (ct/transform-hsluv-h c (-partial '+ offset)))
+
+(defun ct/rotation-meta (transform c interval)
+  (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
     (number-sequence 0 359 interval)))
 
-(defun ct/rotation-hsl (c interval)
-  "Perform a hue rotation at INTERVAL degrees starting with C in the HSL color space."
-  (-map (lambda (offset) (ct/transform-hsl-h c (-partial '+ offset)))
-	  (number-sequence 0 359 interval)))
+(defun ct/rotation-hsluv (c interval) (ct/rotation-meta 'ct/transform-hsluv-h c interval))
+(defun ct/rotation-hsl (c interval) (ct/rotation-meta 'ct/transform-hsl-h c interval))
+(defun ct/rotation-lch (c interval) (ct/rotation-meta 'ct/transform-lch-h c interval))
 
-(defun ct/rotation-lch (c interval)
-  "Perform a hue rotation at INTERVAL degrees starting with C in the LCH color space."
-  (-map (lambda (offset) (ct/transform-lch-h c (-partial '+ offset)))
-	  (number-sequence 0 359 interval)))
 
 (provide 'color-tools)
 ;;; color-tools.el ends here
