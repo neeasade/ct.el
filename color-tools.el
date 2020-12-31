@@ -183,8 +183,52 @@
     (apply 'color-rgb-to-hex)
     (ct/maybe-shorten)))
 
+(defun ct/hsv-to-rgb (H S V)
+  ;; Expected values:
+  ;; H in radians
+  ;; S,V are both 0 to 1
+  ;; cf http://peteroupc.github.io/colorgen.html#HSV
+  (let* ((pi2 (* pi 2))
+          (H (cond
+               ((< H 0) (- pi2 (mod (- H) pi2)))
+               ((>= H pi2) (mod H pi2))
+               (t H)))
+          (hue60 (/ (* H 3) pi))
+          (hi (floor hue60))
+          (f (- hue60 hi))
+          (c (* V (- 1 S)))
+          (a (* V (- 1 (* S f))))
+          (e (* V (- 1 (* S (- 1 f))))))
+    (cond
+      ((= hi 0) (list V e c))
+      ((= hi 1) (list a V c))
+      ((= hi 2) (list c V e))
+      ((= hi 3) (list c a V))
+      ((= hi 4) (list e c V))
+      (t (list V c a)))))
+
+(defun ct/transform-hsv (c transform)
+  "Tweak C in the HSL colorspace. TRANSFORM gets HSL in values {0 to 360,0 to 100,0 to 100}."
+  (->> (color-name-to-rgb c)
+    (apply 'color-rgb-to-hsv)
+    (funcall (lambda (hsv)
+               (apply transform
+                 (list
+                   (radians-to-degrees (first hsv))
+                   (* 100.0 (second hsv))
+                   (* 100.0 (third hsv))))))
+    ;; from transformed to what our function expects
+    (funcall (lambda (hsv)
+               (list
+                 (degrees-to-radians (first hsv))
+                 (color-clamp (/ (second hsv) 100.0))
+                 (color-clamp (/ (third hsv) 100.0)))))
+    (apply 'ct/hsv-to-rgb)
+    (apply 'color-rgb-to-hex)
+    (ct/maybe-shorten)))
+
 (defun ct/transform-hpluv (c transform)
-  "Tweak a color in the HPLuv space. S,L range is {0-100}"
+  "Tweak a color in the HPLuv space. P,L range is {0-100}"
   (ct/maybe-shorten
     (apply 'color-rgb-to-hex
       (-map 'color-clamp
@@ -225,6 +269,10 @@
 (defun ct/transform-hsl-s (c func) (ct/transform-prop ct/transform-hsl 1))
 (defun ct/transform-hsl-l (c func) (ct/transform-prop ct/transform-hsl 2))
 
+(defun ct/transform-hsv-h (c func) (ct/transform-prop ct/transform-hsv 0))
+(defun ct/transform-hsv-s (c func) (ct/transform-prop ct/transform-hsv 1))
+(defun ct/transform-hsv-v (c func) (ct/transform-prop ct/transform-hsv 2))
+
 (defun ct/transform-hsluv-h (c func) (ct/transform-prop ct/transform-hsluv 0))
 (defun ct/transform-hsluv-s (c func) (ct/transform-prop ct/transform-hsluv 1))
 (defun ct/transform-hsluv-l (c func) (ct/transform-prop ct/transform-hsluv 2))
@@ -260,6 +308,11 @@
 (defun ct/get-hsl-h (c) (ct/getter c 'ct/transform-hsl 'first))
 (defun ct/get-hsl-s (c) (ct/getter c 'ct/transform-hsl 'second))
 (defun ct/get-hsl-l (c) (ct/getter c 'ct/transform-hsl 'third))
+
+(defun ct/get-hsv (c) (ct/getter c 'ct/transform-hsv 'identity))
+(defun ct/get-hsv-h (c) (ct/getter c 'ct/transform-hsv 'first))
+(defun ct/get-hsv-s (c) (ct/getter c 'ct/transform-hsv 'second))
+(defun ct/get-hsv-v (c) (ct/getter c 'ct/transform-hsv 'third))
 
 (defun ct/get-hsluv (c) (ct/getter c 'ct/transform-hsluv 'identity))
 (defun ct/get-hsluv-h (c) (ct/getter c 'ct/transform-hsluv 'first))
@@ -321,6 +374,7 @@
       (lambda (&rest _) properties))))
 
 (defun ct/make-hsl (H S L) (ct/make-color-meta 'ct/transform-hsl (list H S L)))
+(defun ct/make-hsv (H S V) (ct/make-color-meta 'ct/transform-hsv (list H S V)))
 (defun ct/make-hsluv (H S L) (ct/make-color-meta 'ct/transform-hsluv (list H S L)))
 (defun ct/make-hpluv (H P L) (ct/make-color-meta 'ct/transform-hpluv (list H P L)))
 (defun ct/make-lab (L A B) (ct/make-color-meta 'ct/transform-lab (list L A B)))
@@ -333,6 +387,7 @@
 (defun ct/rotation-hsluv (c interval) (ct/rotation-meta 'ct/transform-hsluv-h c interval))
 (defun ct/rotation-hpluv (c interval) (ct/rotation-meta 'ct/transform-hpluv-h c interval))
 (defun ct/rotation-hsl (c interval) (ct/rotation-meta 'ct/transform-hsl-h c interval))
+(defun ct/rotation-hsv (c interval) (ct/rotation-meta 'ct/transform-hsv-h c interval))
 (defun ct/rotation-lch (c interval) (ct/rotation-meta 'ct/transform-lch-h c interval))
 
 (provide 'color-tools)
