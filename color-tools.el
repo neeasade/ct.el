@@ -6,13 +6,11 @@
 ;; Author: neeasade
 ;; Keywords: color, theming
 ;; URL: https://github.com/neeasade/color-tools.el
-;; Package-Requires: (dash fn hsluv)
+;; Package-Requires: (dash hsluv)
 
 ;;; Commentary:
 ;; neeasade's color tools for emacs.
 ;; primarily oriented towards a consistent interface into color spaces.
-
-
 
 ;;; other:
 ;; note: the rgb conversion functions in HSLuv lib handle linear transformation of rgb colors
@@ -20,7 +18,6 @@
 (require 'color)
 (require 'hsluv)
 (require 'dash)
-(require 'fn)
 
 (defalias 'first 'car)
 (defalias 'second 'cadr)
@@ -41,7 +38,7 @@
       (eval C))))
 
 (defun ct/maybe-shorten (color)
-  "Internal function -- see ct/always-shorten"
+  "Internal function -- see variable ct/always-shorten"
   (if ct/always-shorten
     (ct/shorten color)
     color))
@@ -99,9 +96,9 @@
 (defun ct/tint-ratio (c against ratio)
   (ct/iterate c
     (if (ct/is-light-p against)
-      (fn (ct/lab-darken <> 0.5))
-      (fn (ct/lab-lighten <> 0.5)))
-    (fn (> (ct/contrast-ratio <> against) ratio))))
+      'ct/lab-darken
+      'ct/lab-lighten)
+    (lambda (step) (> (ct/contrast-ratio step against) ratio))))
 
 (defun ct/luminance-srgb (color)
   ;; cf https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
@@ -269,14 +266,14 @@
   (if with-ends
     `(,start
        ,@(-map
-           (fn (eval `(color-rgb-to-hex ,@<> 2)))
+           (lambda (c) (eval `(color-rgb-to-hex ,@c 2)))
            (color-gradient
              (color-name-to-rgb start)
              (color-name-to-rgb end)
              (- step 2)))
        ,end)
     (-map
-      (fn (eval `(color-rgb-to-hex ,@<> 2)))
+      (lambda (c) (eval `(color-rgb-to-hex ,@c 2)))
       (color-gradient
         (color-name-to-rgb start)
         (color-name-to-rgb end)
