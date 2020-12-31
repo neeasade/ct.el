@@ -28,6 +28,10 @@
   :type 'boolean
   :group 'color-tools)
 
+(defun ct/clamp (value min max)
+  "Make sure VALUE is a number between MIN and MAX inclusive."
+  (min max (max min value)))
+
 (defun ct/shorten (c)
   "Optionally transform C #HHHHHHHHHHHH to #HHHHHH."
   (if (= (length c) 7)
@@ -41,7 +45,7 @@
   "Internal function for optionally shortening color C -- see variable ct/always-shorten."
   (if ct/always-shorten
     (ct/shorten c)
-    color))
+    c))
 
 (defun ct/name-to-lab (name &optional white-point)
   "Transform NAME into LAB colorspace with optional lighting assumption WHITE-POINT."
@@ -109,7 +113,7 @@
                  (if (<= part 0.03928)
                    (/ part 12.92)
                    (expt (/ (+ 0.055 part) 1.055) 2.4)))
-               (color-name-to-rgb color))))
+               (color-name-to-rgb c))))
     (+
       (* (nth 0 rgb) 0.2126)
       (* (nth 1 rgb) 0.7152)
@@ -179,6 +183,22 @@
     (apply 'color-rgb-to-hex)
     (ct/maybe-shorten)))
 
+(defun ct/transform-hpluv (c transform)
+  "Tweak a color in the HPLuv space. S,L range is {0-100}"
+  (ct/maybe-shorten
+    (apply 'color-rgb-to-hex
+      (-map 'color-clamp
+        (hsluv-hpluv-to-rgb
+          ;; TODO: consider clamping before we enter transform
+          ;; many rgb colors are outside hpluv space
+          ;; cf https://github.com/hsluv/hsluv-c/issues/6
+          ;; this problem probably affects hsluv transform as well
+          (let ((result (apply transform (-> c ct/shorten hsluv-hex-to-hpluv))))
+            (list
+              (mod (first result) 360.0)
+              (ct/clamp (second result) 0 100)
+              (ct/clamp (third result) 0 100))))))))
+
 (defun ct/transform-hsluv (c transform)
   "Tweak a color in the HSLuv space. S,L range is {0-100}"
   (ct/maybe-shorten
@@ -188,8 +208,8 @@
           (let ((result (apply transform (-> c ct/shorten hsluv-hex-to-hsluv))))
             (list
               (mod (first result) 360.0)
-              (second result)
-              (third result))))))))
+              (ct/clamp (second result) 0 100)
+              (ct/clamp (third result) 0 100))))))))
 
 ;; individual property tweaks:
 (defmacro ct/transform-prop (transform index)
@@ -217,6 +237,10 @@
 (defun ct/transform-lab-a (c func) (ct/transform-prop ct/transform-lab 1))
 (defun ct/transform-lab-b (c func) (ct/transform-prop ct/transform-lab 2))
 
+(defun ct/transform-hpluv-h (c func) (ct/transform-prop ct/transform-hpluv 0))
+(defun ct/transform-hpluv-p (c func) (ct/transform-prop ct/transform-hpluv 1))
+(defun ct/transform-hpluv-l (c func) (ct/transform-prop ct/transform-hpluv 2))
+
 (defun ct/getter (c transform getter)
   "Internal function for making a GETTER of C using a TRANSFORM function."
   (let ((return))
@@ -241,6 +265,11 @@
 (defun ct/get-hsluv-h (c) (ct/getter c 'ct/transform-hsluv 'first))
 (defun ct/get-hsluv-s (c) (ct/getter c 'ct/transform-hsluv 'second))
 (defun ct/get-hsluv-l (c) (ct/getter c 'ct/transform-hsluv 'third))
+
+(defun ct/get-hpluv (c) (ct/getter c 'ct/transform-hpluv 'identity))
+(defun ct/get-hpluv-h (c) (ct/getter c 'ct/transform-hpluv 'first))
+(defun ct/get-hpluv-s (c) (ct/getter c 'ct/transform-hpluv 'second))
+(defun ct/get-hpluv-l (c) (ct/getter c 'ct/transform-hpluv 'third))
 
 (defun ct/get-lch (c) (ct/getter c 'ct/transform-lch 'identity))
 (defun ct/get-lch-l (c) (ct/getter c 'ct/transform-lch 'first))
@@ -293,18 +322,18 @@
 
 (defun ct/make-hsl (H S L) (ct/make-color-meta 'ct/transform-hsl (list H S L)))
 (defun ct/make-hsluv (H S L) (ct/make-color-meta 'ct/transform-hsluv (list H S L)))
+(defun ct/make-hpluv (H P L) (ct/make-color-meta 'ct/transform-hpluv (list H P L)))
 (defun ct/make-lab (L A B) (ct/make-color-meta 'ct/transform-lab (list L A B)))
 (defun ct/make-lch (L C H) (ct/make-color-meta 'ct/transform-lch (list L C H)))
-
 
 (defun ct/rotation-meta (transform c interval)
   (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
     (number-sequence 0 359 interval)))
 
 (defun ct/rotation-hsluv (c interval) (ct/rotation-meta 'ct/transform-hsluv-h c interval))
+(defun ct/rotation-hpluv (c interval) (ct/rotation-meta 'ct/transform-hpluv-h c interval))
 (defun ct/rotation-hsl (c interval) (ct/rotation-meta 'ct/transform-hsl-h c interval))
 (defun ct/rotation-lch (c interval) (ct/rotation-meta 'ct/transform-lch-h c interval))
-
 
 (provide 'color-tools)
 ;;; color-tools.el ends here
