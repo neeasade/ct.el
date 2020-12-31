@@ -15,7 +15,7 @@ Install with [[https://github.com/raxod502/straight.el][straight.el]]:
 *** Dependencies
 
 - [[https://github.com/magnars/dash.el][dash.el]]
-- [[https://github.com/hsluv/hsluv][hsluv.el]]
+- [[https://github.com/hsluv/hsluv-emacs][hsluv.el]]
 
 ** Examples:
 
