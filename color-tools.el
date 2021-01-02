@@ -4,24 +4,31 @@
 ;;
 ;; Version: 0.1
 ;; Author: neeasade
-;; Keywords: color, theming
+;; Keywords: color, theming, rgb, hsv, hsl, cie-lab, background
 ;; URL: https://github.com/neeasade/color-tools.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (hsluv "1.0.0"))
 
 ;;; Commentary:
 ;; neeasade's color tools for Emacs.
 ;; primarily oriented towards a consistent interface into color spaces.
-
-;;; other:
-;; note: the rgb conversion functions in HSLuv lib handle linear transformation of rgb colors
+;;
+;; There are 3 sections to this file (IE, you may use these bullets as search text):
+;; - helpers to build color space functions
+;; - color space functions
+;; - other color functions
 
 (require 'color)
 (require 'hsluv)
 (require 'dash)
 
+;; some standardish aliases
 (defalias 'first 'car)
 (defalias 'second 'cadr)
 (defalias 'third 'caddr)
+
+;;;
+;;; helpers to build color space functions
+;;;
 
 (defcustom ct/always-shorten t
   "Whether results of color functions should ensure format #HHHHHH rather than #HHHHHHHHHHHH."
@@ -57,7 +64,8 @@
 
 (defun ct/lab-to-name (lab &optional white-point)
   "Convert LAB color to #HHHHHH with optional lighting assumption WHITE-POINT."
-  (->> (append lab (list (or white-point color-d65-xyz)))
+  (->>
+    (-snoc lab (or white-point color-d65-xyz))
     (apply 'color-lab-to-xyz)
     (apply 'color-xyz-to-srgb)
     ;; when pulling it out we might die (srgb is not big enough to hold all possible values)
@@ -65,85 +73,40 @@
     (apply 'color-rgb-to-hex)
     (ct/maybe-shorten)))
 
-(defun ct/is-light-p (c &optional scale )
-  "Determine if C is a light color with lightness in the LAB space -- optionally override SCALE comparison value."
-  (> (first (ct/name-to-lab c)) (or scale 65)))
+(defun ct/hsv-to-rgb (H S V)
+  ;; Expected values:
+  ;; H in radians
+  ;; S,V are both 0 to 1
+  ;; cf http://peteroupc.github.io/colorgen.html#HSV
+  (let* ((pi2 (* pi 2))
+          (H (cond
+               ((< H 0) (- pi2 (mod (- H) pi2)))
+               ((>= H pi2) (mod H pi2))
+               (t H)))
+          (hue60 (/ (* H 3) pi))
+          (hi (floor hue60))
+          (f (- hue60 hi))
+          (c (* V (- 1 S)))
+          (a (* V (- 1 (* S f))))
+          (e (* V (- 1 (* S (- 1 f))))))
+    (cond
+      ((= hi 0) (list V e c))
+      ((= hi 1) (list a V c))
+      ((= hi 2) (list c V e))
+      ((= hi 3) (list c a V))
+      ((= hi 4) (list e c V))
+      (t (list V c a)))))
 
-(defun ct/greaten (percent c)
-  "Make a light color lighter, a dark color darker."
-  (ct/shorten
-    (if (ct/is-light-p c)
-      (color-lighten-name c percent)
-      (color-darken-name c percent))))
+;;;
+;;; color space functions
+;;;
 
-(defun ct/lessen (percent c)
-  "Make a light color darker, a dark color lighter"
-  (ct/shorten
-    (if (ct/is-light-p c)
-      (color-darken-name c percent)
-      (color-lighten-name c percent))))
-
-(defun ct/iterations (start op condition)
-  "Do OP on START color until CONDITION is met or op has no effect - return all intermediate steps."
-  (let ((colors (list start))
-         (iterations 0))
-    (while (and (not (funcall condition (-last-item colors)))
-             (not (string= (funcall op (-last-item colors)) (-last-item colors)))
-             (< iterations 10000))
-      (setq iterations (+ iterations 1))
-      (setq colors (-snoc colors (funcall op (-last-item colors)))))
-    colors))
-
-(defun ct/iterate (start op condition)
-  "Do OP on START color until CONDITION is met or op has no effect."
-  (-last-item (ct/iterations start op condition)))
-
-(defun ct/tint-ratio (c against ratio)
-  (ct/iterate c
-    (if (ct/is-light-p against)
-      'ct/lab-darken
-      'ct/lab-lighten)
-    (lambda (step) (> (ct/contrast-ratio step against) ratio))))
-
-(defun ct/luminance-srgb (c)
-  "Get the srgb luminance value of C."
-  ;; cf https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-  (let ((rgb (-map
-               (lambda (part)
-                 (if (<= part 0.03928)
-                   (/ part 12.92)
-                   (expt (/ (+ 0.055 part) 1.055) 2.4)))
-               (color-name-to-rgb c))))
-    (+
-      (* (nth 0 rgb) 0.2126)
-      (* (nth 1 rgb) 0.7152)
-      (* (nth 2 rgb) 0.0722))))
-
-(defun ct/contrast-ratio (c1 c2)
-  "Get the contrast ratio between C1 and C2."
-  ;; cf https://peteroupc.github.io/colorgen.html#Contrast_Between_Two_Colors
-  (let ((rl1 (ct/luminance-srgb c1))
-         (rl2 (ct/luminance-srgb c2)))
-    (/ (+ 0.05 (max rl1 rl2))
-      (+ 0.05 (min rl1 rl2)))))
-
-(defun ct/lab-change-whitepoint (c w1 w2)
-  "Convert a color C wrt white points W1 and W2 through the lab colorspace."
-  (ct/lab-to-name (ct/name-to-lab c w1) w2))
-
-(defun ct/name-distance (c1 c2)
-  "Get cie-DE2000 distance between C1 and C2."
-  ;; note: there are 3 additional optional params to cie-de2000: compensation for
-  ;; {lightness,chroma,hue} (all 0.0-1.0)
-  ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-  (apply 'color-cie-de2000 (-map 'ct/name-to-lab (list c1 c2))))
-
-;; transformers
 (defun ct/transform-lab (c transform)
   "Work with a color C in the LAB space using function TRANSFORM. Ranges for LAB are 0-100, -100 -> 100, -100 -> 100."
   (->> c
     (ct/name-to-lab)
     (apply transform)
+    ;; todo here: clamp lab values into range before going back to name
     (ct/lab-to-name)))
 
 (defun ct/transform-lch (c transform)
@@ -183,32 +146,8 @@
     (apply 'color-rgb-to-hex)
     (ct/maybe-shorten)))
 
-(defun ct/hsv-to-rgb (H S V)
-  ;; Expected values:
-  ;; H in radians
-  ;; S,V are both 0 to 1
-  ;; cf http://peteroupc.github.io/colorgen.html#HSV
-  (let* ((pi2 (* pi 2))
-          (H (cond
-               ((< H 0) (- pi2 (mod (- H) pi2)))
-               ((>= H pi2) (mod H pi2))
-               (t H)))
-          (hue60 (/ (* H 3) pi))
-          (hi (floor hue60))
-          (f (- hue60 hi))
-          (c (* V (- 1 S)))
-          (a (* V (- 1 (* S f))))
-          (e (* V (- 1 (* S (- 1 f))))))
-    (cond
-      ((= hi 0) (list V e c))
-      ((= hi 1) (list a V c))
-      ((= hi 2) (list c V e))
-      ((= hi 3) (list c a V))
-      ((= hi 4) (list e c V))
-      (t (list V c a)))))
-
 (defun ct/transform-hsv (c transform)
-  "Tweak C in the HSL colorspace. TRANSFORM gets HSL in values {0 to 360,0 to 100,0 to 100}."
+  "Tweak C in the HSV colorspace. TRANSFORM gets HSV in values {0-360,0-100,0-100}."
   (->> (color-name-to-rgb c)
     (apply 'color-rgb-to-hsv)
     (funcall (lambda (hsv)
@@ -277,17 +216,17 @@
 (defun ct/transform-hsluv-s (c func) (ct/transform-prop ct/transform-hsluv 1))
 (defun ct/transform-hsluv-l (c func) (ct/transform-prop ct/transform-hsluv 2))
 
-(defun ct/transform-lch-l (c func) (ct/transform-prop ct/transform-lch 0))
-(defun ct/transform-lch-c (c func) (ct/transform-prop ct/transform-lch 1))
-(defun ct/transform-lch-h (c func) (ct/transform-prop ct/transform-lch 2))
+(defun ct/transform-hpluv-h (c func) (ct/transform-prop ct/transform-hpluv 0))
+(defun ct/transform-hpluv-p (c func) (ct/transform-prop ct/transform-hpluv 1))
+(defun ct/transform-hpluv-l (c func) (ct/transform-prop ct/transform-hpluv 2))
 
 (defun ct/transform-lab-l (c func) (ct/transform-prop ct/transform-lab 0))
 (defun ct/transform-lab-a (c func) (ct/transform-prop ct/transform-lab 1))
 (defun ct/transform-lab-b (c func) (ct/transform-prop ct/transform-lab 2))
 
-(defun ct/transform-hpluv-h (c func) (ct/transform-prop ct/transform-hpluv 0))
-(defun ct/transform-hpluv-p (c func) (ct/transform-prop ct/transform-hpluv 1))
-(defun ct/transform-hpluv-l (c func) (ct/transform-prop ct/transform-hpluv 2))
+(defun ct/transform-lch-l (c func) (ct/transform-prop ct/transform-lch 0))
+(defun ct/transform-lch-c (c func) (ct/transform-prop ct/transform-lch 1))
+(defun ct/transform-lch-h (c func) (ct/transform-prop ct/transform-lch 2))
 
 (defun ct/getter (c transform getter)
   "Internal function for making a GETTER of C using a TRANSFORM function."
@@ -298,11 +237,6 @@
           (setq return (funcall getter _))
           _)))
     return))
-
-(defun ct/get-lab (c) (ct/getter c 'ct/transform-lab 'identity))
-(defun ct/get-lab-l (c) (ct/getter c 'ct/transform-lab 'first))
-(defun ct/get-lab-a (c) (ct/getter c 'ct/transform-lab 'second))
-(defun ct/get-lab-b (c) (ct/getter c 'ct/transform-lab 'third))
 
 (defun ct/get-hsl (c) (ct/getter c 'ct/transform-hsl 'identity))
 (defun ct/get-hsl-h (c) (ct/getter c 'ct/transform-hsl 'first))
@@ -324,12 +258,45 @@
 (defun ct/get-hpluv-s (c) (ct/getter c 'ct/transform-hpluv 'second))
 (defun ct/get-hpluv-l (c) (ct/getter c 'ct/transform-hpluv 'third))
 
+(defun ct/get-lab (c) (ct/getter c 'ct/transform-lab 'identity))
+(defun ct/get-lab-l (c) (ct/getter c 'ct/transform-lab 'first))
+(defun ct/get-lab-a (c) (ct/getter c 'ct/transform-lab 'second))
+(defun ct/get-lab-b (c) (ct/getter c 'ct/transform-lab 'third))
+
 (defun ct/get-lch (c) (ct/getter c 'ct/transform-lch 'identity))
 (defun ct/get-lch-l (c) (ct/getter c 'ct/transform-lch 'first))
 (defun ct/get-lch-c (c) (ct/getter c 'ct/transform-lch 'second))
 (defun ct/get-lch-h (c) (ct/getter c 'ct/transform-lch 'third))
 
-;; other color functions:
+;; make colors within our normalized transform functions:
+(defun ct/make-color-meta (transform properties)
+  "Internal function for creating a color using TRANSFORM function forcing PROPERTIES."
+  (apply transform
+    (list "#cccccc"                     ; throwaway
+      (lambda (&rest _) properties))))
+
+(defun ct/make-hsl (H S L) (ct/make-color-meta 'ct/transform-hsl (list H S L)))
+(defun ct/make-hsv (H S V) (ct/make-color-meta 'ct/transform-hsv (list H S V)))
+(defun ct/make-hsluv (H S L) (ct/make-color-meta 'ct/transform-hsluv (list H S L)))
+(defun ct/make-hpluv (H P L) (ct/make-color-meta 'ct/transform-hpluv (list H P L)))
+(defun ct/make-lab (L A B) (ct/make-color-meta 'ct/transform-lab (list L A B)))
+(defun ct/make-lch (L C H) (ct/make-color-meta 'ct/transform-lch (list L C H)))
+
+
+(defun ct/rotation-meta (transform c interval)
+  (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
+    (number-sequence 0 359 interval)))
+
+(defun ct/rotation-hsluv (c interval) (ct/rotation-meta 'ct/transform-hsluv-h c interval))
+(defun ct/rotation-hpluv (c interval) (ct/rotation-meta 'ct/transform-hpluv-h c interval))
+(defun ct/rotation-hsl (c interval) (ct/rotation-meta 'ct/transform-hsl-h c interval))
+(defun ct/rotation-hsv (c interval) (ct/rotation-meta 'ct/transform-hsv-h c interval))
+(defun ct/rotation-lch (c interval) (ct/rotation-meta 'ct/transform-lch-h c interval))
+
+;;;
+;;; other color functions
+;;;
+
 (defun ct/lab-lighten (c &optional value)
   (ct/transform-lab-l c (-partial '+ (or value 0.5))))
 
@@ -366,29 +333,78 @@
         (color-name-to-rgb end)
         step))))
 
-;; make colors within our normalized transform functions:
-(defun ct/make-color-meta (transform properties)
-  "Internal function for creating a color using TRANSFORM function forcing PROPERTIES."
-  (apply transform
-    (list "#cccccc"                     ; throwaway
-      (lambda (&rest _) properties))))
+(defun ct/luminance-srgb (c)
+  "Get the srgb luminance value of C."
+  ;; cf https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+  (let ((rgb (-map
+               (lambda (part)
+                 (if (<= part 0.03928)
+                   (/ part 12.92)
+                   (expt (/ (+ 0.055 part) 1.055) 2.4)))
+               (color-name-to-rgb c))))
+    (+
+      (* (nth 0 rgb) 0.2126)
+      (* (nth 1 rgb) 0.7152)
+      (* (nth 2 rgb) 0.0722))))
 
-(defun ct/make-hsl (H S L) (ct/make-color-meta 'ct/transform-hsl (list H S L)))
-(defun ct/make-hsv (H S V) (ct/make-color-meta 'ct/transform-hsv (list H S V)))
-(defun ct/make-hsluv (H S L) (ct/make-color-meta 'ct/transform-hsluv (list H S L)))
-(defun ct/make-hpluv (H P L) (ct/make-color-meta 'ct/transform-hpluv (list H P L)))
-(defun ct/make-lab (L A B) (ct/make-color-meta 'ct/transform-lab (list L A B)))
-(defun ct/make-lch (L C H) (ct/make-color-meta 'ct/transform-lch (list L C H)))
+(defun ct/contrast-ratio (c1 c2)
+  "Get the contrast ratio between C1 and C2."
+  ;; cf https://peteroupc.github.io/colorgen.html#Contrast_Between_Two_Colors
+  (let ((rl1 (ct/luminance-srgb c1))
+         (rl2 (ct/luminance-srgb c2)))
+    (/ (+ 0.05 (max rl1 rl2))
+      (+ 0.05 (min rl1 rl2)))))
 
-(defun ct/rotation-meta (transform c interval)
-  (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
-    (number-sequence 0 359 interval)))
+(defun ct/lab-change-whitepoint (c w1 w2)
+  "Convert a color C wrt white points W1 and W2 through the lab colorspace."
+  (ct/lab-to-name (ct/name-to-lab c w1) w2))
 
-(defun ct/rotation-hsluv (c interval) (ct/rotation-meta 'ct/transform-hsluv-h c interval))
-(defun ct/rotation-hpluv (c interval) (ct/rotation-meta 'ct/transform-hpluv-h c interval))
-(defun ct/rotation-hsl (c interval) (ct/rotation-meta 'ct/transform-hsl-h c interval))
-(defun ct/rotation-hsv (c interval) (ct/rotation-meta 'ct/transform-hsv-h c interval))
-(defun ct/rotation-lch (c interval) (ct/rotation-meta 'ct/transform-lch-h c interval))
+(defun ct/name-distance (c1 c2)
+  "Get cie-DE2000 distance between C1 and C2."
+  ;; note: there are 3 additional optional params to cie-de2000: compensation for
+  ;; {lightness,chroma,hue} (all 0.0-1.0)
+  ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
+  (apply 'color-cie-de2000 (-map 'ct/name-to-lab (list c1 c2))))
+
+(defun ct/is-light-p (c &optional scale)
+  "Determine if C is a light color with lightness in the LAB space -- optionally override SCALE comparison value."
+  (> (first (ct/name-to-lab c)) (or scale 65)))
+
+(defun ct/greaten (c percent)
+  "Make a light color lighter, a dark color darker."
+  (ct/shorten
+    (if (ct/is-light-p c)
+      (color-lighten-name c percent)
+      (color-darken-name c percent))))
+
+(defun ct/lessen (c percent)
+  "Make a light color darker, a dark color lighter"
+  (ct/shorten
+    (if (ct/is-light-p c)
+      (color-darken-name c percent)
+      (color-lighten-name c percent))))
+
+(defun ct/iterations (start op condition)
+  "Do OP on START color until CONDITION is met or op has no effect - return all intermediate steps."
+  (let ((colors (list start))
+         (iterations 0))
+    (while (and (not (funcall condition (-last-item colors)))
+             (not (string= (funcall op (-last-item colors)) (-last-item colors)))
+             (< iterations 10000))
+      (setq iterations (+ iterations 1))
+      (setq colors (-snoc colors (funcall op (-last-item colors)))))
+    colors))
+
+(defun ct/iterate (start op condition)
+  "Do OP on START color until CONDITION is met or op has no effect."
+  (-last-item (ct/iterations start op condition)))
+
+(defun ct/tint-ratio (c against ratio)
+  (ct/iterate c
+    (if (ct/is-light-p against)
+      'ct/lab-darken
+      'ct/lab-lighten)
+    (lambda (step) (> (ct/contrast-ratio step against) ratio))))
 
 (provide 'color-tools)
 ;;; color-tools.el ends here
