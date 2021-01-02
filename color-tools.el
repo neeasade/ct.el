@@ -60,7 +60,7 @@
   (->> (append lab (list (or white-point color-d65-xyz)))
     (apply 'color-lab-to-xyz)
     (apply 'color-xyz-to-srgb)
-    ;; when pulling it out we might die
+    ;; when pulling it out we might die (srgb is not big enough to hold all possible values)
     (-map 'color-clamp)
     (apply 'color-rgb-to-hex)
     (ct/maybe-shorten)))
