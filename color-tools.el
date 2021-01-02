@@ -26,14 +26,21 @@
 (defalias 'second 'cadr)
 (defalias 'third 'caddr)
 
-;;;
-;;; helpers to build color space functions
-;;;
+;; customization:
+
+(defgroup color-tools nil
+  "Utilities for editing individual colors."
+  :group 'color-tools
+  :prefix "ct/")
 
 (defcustom ct/always-shorten t
   "Whether results of color functions should ensure format #HHHHHH rather than #HHHHHHHHHHHH."
   :type 'boolean
   :group 'color-tools)
+
+;;;
+;;; helpers to build color space functions
+;;;
 
 (defun ct/clamp (value min max)
   "Make sure VALUE is a number between MIN and MAX inclusive."
@@ -229,8 +236,8 @@
   (let ((return))
     (apply transform
       (list c
-        (lambda (&rest _)
-          (setq return (funcall getter _))
+        (lambda (&rest props)
+          (setq return (funcall getter props))
           _)))
     return))
 
