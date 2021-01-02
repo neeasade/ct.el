@@ -292,12 +292,14 @@
 
 (defun ct/rotation-meta (transform c interval)
   (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
-    (number-sequence 0 359 interval)))
+    (if (< 0 interval)
+      (number-sequence 0 359 interval)
+      (number-sequence 360 1 interval))))
 
-(defun ct/rotation-hsluv (c interval) (ct/rotation-meta 'ct/transform-hsluv-h c interval))
-(defun ct/rotation-hpluv (c interval) (ct/rotation-meta 'ct/transform-hpluv-h c interval))
 (defun ct/rotation-hsl (c interval) (ct/rotation-meta 'ct/transform-hsl-h c interval))
 (defun ct/rotation-hsv (c interval) (ct/rotation-meta 'ct/transform-hsv-h c interval))
+(defun ct/rotation-hsluv (c interval) (ct/rotation-meta 'ct/transform-hsluv-h c interval))
+(defun ct/rotation-hpluv (c interval) (ct/rotation-meta 'ct/transform-hpluv-h c interval))
 (defun ct/rotation-lch (c interval) (ct/rotation-meta 'ct/transform-lch-h c interval))
 
 ;;;
