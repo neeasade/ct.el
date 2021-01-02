@@ -172,10 +172,6 @@
     (apply 'color-rgb-to-hex
       (-map 'color-clamp
         (hsluv-hpluv-to-rgb
-          ;; TODO: consider clamping before we enter transform
-          ;; many rgb colors are outside hpluv space
-          ;; cf https://github.com/hsluv/hsluv-c/issues/6
-          ;; this problem probably affects hsluv transform as well
           (let ((result (apply transform (-> c ct/shorten hsluv-hex-to-hpluv))))
             (list
               (mod (first result) 360.0)
