@@ -113,7 +113,11 @@
   (->> c
     (ct/name-to-lab)
     (apply transform)
-    ;; todo here: clamp lab values into range before going back to name
+    (apply (lambda (L A B)
+             (list
+               (ct/clamp L 0 100)
+               (ct/clamp A -100 100)
+               (ct/clamp B -100 100))))
     (ct/lab-to-name)))
 
 (defun ct/transform-lch (c transform)
@@ -238,7 +242,7 @@
       (list c
         (lambda (&rest props)
           (setq return (funcall getter props))
-          _)))
+          props)))
     return))
 
 (defun ct/get-hsl (c) (ct/getter c 'ct/transform-hsl 'identity))
