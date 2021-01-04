@@ -307,7 +307,10 @@
 ;;;
 
 (defun ct/lab-lighten (c &optional value)
-  (ct/transform-lab-l c (-partial '+ (or value 0.5))))
+  ;; note: lightening colors is a little more sensitive than darkening them
+  ;; the increased default value here reflects that -- so we don't get false
+  ;; stops in color iteration
+  (ct/transform-lab-l c (-partial '+ (or value 0.7))))
 
 (defun ct/lab-darken (c &optional value)
   (ct/transform-lab-l c (-rpartial '- (or value 0.5))))
