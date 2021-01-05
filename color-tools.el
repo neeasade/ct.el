@@ -23,8 +23,6 @@
 (require 'hsluv)
 (require 'dash)
 
-;; some standardish aliases
-
 (defalias 'ct-first 'car)
 (defalias 'ct-second 'cadr)
 (defalias 'ct-third 'caddr)
@@ -194,9 +192,9 @@
         (hsluv-hsluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
             (list
-              (mod (first result) 360.0)
-              (ct-clamp (second result) 0 100)
-              (ct-clamp (third result) 0 100))))))))
+              (mod (ct-first result) 360.0)
+              (ct-clamp (ct-second result) 0 100)
+              (ct-clamp (ct-third result) 0 100))))))))
 
 ;; individual property tweaks:
 (defmacro ct-transform-prop (transform index)
@@ -377,7 +375,7 @@
 
 (defun ct-is-light-p (c &optional scale)
   "Determine if C is a light color with lightness in the LAB space -- optionally override SCALE comparison value."
-  (> (first (ct-name-to-lab c)) (or scale 65)))
+  (> (ct-first (ct-name-to-lab c)) (or scale 65)))
 
 (defun ct-greaten (c percent)
   "Make a light color lighter, a dark color darker."
