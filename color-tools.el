@@ -63,15 +63,6 @@
     (ct-shorten c)
     c))
 
-(defun ct-name-to-lch (name &optional white-point)
-  "Transform NAME into LAB colorspace with optional lighting assumption WHITE-POINT."
-  (--> name
-    (color-name-to-rgb it)
-    (apply 'color-srgb-to-xyz it)
-    (append it (list (or white-point color-d65-xyz)))
-    (apply 'color-xyz-to-lab it)
-    (apply 'color-lab-to-lch it)))
-
 (defun ct-name-to-lab (name &optional white-point)
   "Transform NAME into LAB colorspace with optional lighting assumption WHITE-POINT."
   (--> name
