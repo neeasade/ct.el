@@ -6,7 +6,7 @@
 ;; Author: neeasade
 ;; Keywords: color, theming, rgb, hsv, hsl, cie-lab, background
 ;; URL: https://github.com/neeasade/color-tools.el
-;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (hsluv "1.0.0"))
+;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (dash-functional "2.17.0") (hsluv "1.0.0"))
 
 ;;; Commentary:
 ;; neeasade's color tools for Emacs.
@@ -22,6 +22,7 @@
 (require 'color)
 (require 'hsluv)
 (require 'dash)
+(require 'dash-functional)
 
 (defalias 'ct-first 'car)
 (defalias 'ct-second 'cadr)
