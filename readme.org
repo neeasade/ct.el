@@ -24,12 +24,12 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scal
 *** Color creation
 
 #+begin_src emacs-lisp
-(ct/make-lab 50 30 40)
+(ct-make-lab 50 30 40)
 
 ;; => "#b36033"
 
 
-(ct/make-hsl 60 60 70)
+(ct-make-hsl 60 60 70)
 
 ;; => "#e0e084"
 #+end_src
@@ -37,12 +37,12 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scal
 *** Color inspection
 
 #+begin_src emacs-lisp
-(ct/get-lab "#b36033")
+(ct-get-lab "#b36033")
 
 ;; => (49.72678146037228 29.94907362859206 39.78635241058663)
 
 
-(ct/get-lab-b "#b36033")
+(ct-get-lab-b "#b36033")
 
 ;; => 39.78635241058663
 #+end_src
@@ -51,7 +51,7 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scal
 
 #+begin_src emacs-lisp
 ;; complement color by flipping hue:
-(ct/transform-lch "#b36033"
+(ct-transform-lch "#b36033"
   (lambda (L C H)
     (list L C (+ 180 H))))
 
@@ -59,13 +59,13 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scal
 
 
 ;; 1.5x lightness:
-(ct/transform-lch-l "#b36033" (lambda (L) (* 1.5 L)))
+(ct-transform-lch-l "#b36033" (lambda (L) (* 1.5 L)))
 
 ;; => "#fea06f"
 
 
 ;; max chroma (notice you may pass a function or value):
-(ct/transform-lch-c "#b36033" 100)
+(ct-transform-lch-c "#b36033" 100)
 
 ;; => "#dc3a00"
 #+end_src
@@ -73,26 +73,26 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scal
 *** Contrast levels
 
 #+begin_src emacs-lisp
-(ct/contrast-ratio "#dddddd" "#222222")
+(ct-contrast-ratio "#dddddd" "#222222")
 
 ;; => 11.713614348620013
 
 
 ;; tint to a contrast ratio:
-(ct/iterate
+(ct-iterate
   ;; start color
   "#eeeeee"
   ;; action
-  'ct/lab-darken
+  'ct-lab-darken
   ;; predicate (check contrast against background)
-  (fn (> (ct/contrast-ratio <> "#eeeeee")
+  (fn (> (ct-contrast-ratio <> "#eeeeee")
         4.5)))
 
 ;; => "#6c6c6c"
 
 
 ;; sugar for the above:
-(ct/tint-ratio "#eeeeee" "#eeeeee" 4.5)
+(ct-tint-ratio "#eeeeee" "#eeeeee" 4.5)
 
 ;; => "#6c6c6c"
 #+end_src
@@ -100,8 +100,8 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scal
 *** Hue rotation
 
 #+begin_src emacs-lisp
-(ct/rotation-hsluv
-  (ct/make-hsluv 0 50 50)
+(ct-rotation-hsluv
+  (ct-make-hsluv 0 50 50)
   ;; degrees
   60)
 
@@ -114,18 +114,25 @@ Supported color spaces: ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scal
 Some colors as defined in color spaces may not be represented in the RGB space (and vice versa). The transformation functions here clamp values going out, but not coming in. One example is the narrowly scoped ~hpluv~ space:
 
 #+begin_src emacs-lisp
-(ct/get-hpluv "#dd00cc")
+(ct-get-hpluv "#dd00cc")
 
 ;; these values are way out of range!
 ;; => (314.3830496716472 282.01497572464575 51.53528501195089)
 
 ;; notice we ask for the same color back, but the transform functions clamp the output to maximum HPL values:
-(ct/transform-hpluv
+(ct-transform-hpluv
 "#dd00cc"
  (lambda (H P L) (list H P L)))
 
 ;; => "#9f6898"
 #+end_src
+
+*** Testing
+
+Right now testing happens by using the `ct-make-*` functions(these use the transform functions, which make up the basis for all the color space functions) against:
+
+- https://css.land/lch/
+- http://colorizer.org/
 
 ** Related (Emacs)
 
