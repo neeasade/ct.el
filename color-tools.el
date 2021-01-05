@@ -57,7 +57,7 @@
       (eval it))))
 
 (defun ct-maybe-shorten (c)
-  "Internal function for optionally shortening color C -- see variable ct-always-shorten."
+  "Internal function for optionally shortening color C -- see variable 'ct-always-shorten'."
   (if ct-always-shorten
     (ct-shorten c)
     c))
@@ -202,34 +202,34 @@
   `(,transform c
      (lambda (&rest args)
        (-replace-at ,index
-         (if (functionp func)
-           (funcall func (nth ,index args))
-           func)
+         (if (functionp func-or-val)
+           (funcall func-or-val (nth ,index args))
+           func-or-val)
          args))))
 
-(defun ct-transform-hsl-h (c func) (ct--transform-prop ct-transform-hsl 0))
-(defun ct-transform-hsl-s (c func) (ct--transform-prop ct-transform-hsl 1))
-(defun ct-transform-hsl-l (c func) (ct--transform-prop ct-transform-hsl 2))
+(defun ct-transform-hsl-h (c func-or-val) "Transform property hsl-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 0))
+(defun ct-transform-hsl-s (c func-or-val) "Transform property hsl-s of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 1))
+(defun ct-transform-hsl-l (c func-or-val) "Transform property hsl-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 2))
 
-(defun ct-transform-hsv-h (c func) (ct--transform-prop ct-transform-hsv 0))
-(defun ct-transform-hsv-s (c func) (ct--transform-prop ct-transform-hsv 1))
-(defun ct-transform-hsv-v (c func) (ct--transform-prop ct-transform-hsv 2))
+(defun ct-transform-hsv-h (c func-or-val) "Transform property hsv-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsv 0))
+(defun ct-transform-hsv-s (c func-or-val) "Transform property hsv-s of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsv 1))
+(defun ct-transform-hsv-v (c func-or-val) "Transform property hsv-v of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsv 2))
 
-(defun ct-transform-hsluv-h (c func) (ct--transform-prop ct-transform-hsluv 0))
-(defun ct-transform-hsluv-s (c func) (ct--transform-prop ct-transform-hsluv 1))
-(defun ct-transform-hsluv-l (c func) (ct--transform-prop ct-transform-hsluv 2))
+(defun ct-transform-hsluv-h (c func-or-val) "Transform property hsluv-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsluv 0))
+(defun ct-transform-hsluv-s (c func-or-val) "Transform property hsluv-s of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsluv 1))
+(defun ct-transform-hsluv-l (c func-or-val) "Transform property hsluv-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsluv 2))
 
-(defun ct-transform-hpluv-h (c func) (ct--transform-prop ct-transform-hpluv 0))
-(defun ct-transform-hpluv-p (c func) (ct--transform-prop ct-transform-hpluv 1))
-(defun ct-transform-hpluv-l (c func) (ct--transform-prop ct-transform-hpluv 2))
+(defun ct-transform-hpluv-h (c func-or-val) "Transform property hpluv-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hpluv 0))
+(defun ct-transform-hpluv-p (c func-or-val) "Transform property hpluv-p of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hpluv 1))
+(defun ct-transform-hpluv-l (c func-or-val) "Transform property hpluv-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hpluv 2))
 
-(defun ct-transform-lab-l (c func) (ct--transform-prop ct-transform-lab 0))
-(defun ct-transform-lab-a (c func) (ct--transform-prop ct-transform-lab 1))
-(defun ct-transform-lab-b (c func) (ct--transform-prop ct-transform-lab 2))
+(defun ct-transform-lab-l (c func-or-val) "Transform property lab-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lab 0))
+(defun ct-transform-lab-a (c func-or-val) "Transform property lab-a of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lab 1))
+(defun ct-transform-lab-b (c func-or-val) "Transform property lab-b of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lab 2))
 
-(defun ct-transform-lch-l (c func) (ct--transform-prop ct-transform-lch 0))
-(defun ct-transform-lch-c (c func) (ct--transform-prop ct-transform-lch 1))
-(defun ct-transform-lch-h (c func) (ct--transform-prop ct-transform-lch 2))
+(defun ct-transform-lch-l (c func-or-val) "Transform property lch-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lch 0))
+(defun ct-transform-lch-c (c func-or-val) "Transform property lch-c of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lch 1))
+(defun ct-transform-lch-h (c func-or-val) "Transform property lch-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lch 2))
 
 (defun ct--getter (c transform getter)
   "Internal function for making a GETTER of C using a TRANSFORM function."
@@ -241,49 +241,47 @@
           props)))
     return))
 
-(defun ct-get-hsl (c) (ct--getter c 'ct-transform-hsl 'identity))
-(defun ct-get-hsl-h (c) (ct--getter c 'ct-transform-hsl 'first))
-(defun ct-get-hsl-s (c) (ct--getter c 'ct-transform-hsl 'second))
-(defun ct-get-hsl-l (c) (ct--getter c 'ct-transform-hsl 'third))
+(defun ct-get-hsl (c) "Get hsl representation of color C." (ct--getter c 'ct-transform-hsl 'identity))
+(defun ct-get-hsl-h (c) "Get hsl-h representation of color C." (ct--getter c 'ct-transform-hsl 'first))
+(defun ct-get-hsl-s (c) "Get hsl-s representation of color C." (ct--getter c 'ct-transform-hsl 'second))
+(defun ct-get-hsl-l (c) "Get hsl-l representation of color C." (ct--getter c 'ct-transform-hsl 'third))
 
-(defun ct-get-hsv (c) (ct--getter c 'ct-transform-hsv 'identity))
-(defun ct-get-hsv-h (c) (ct--getter c 'ct-transform-hsv 'first))
-(defun ct-get-hsv-s (c) (ct--getter c 'ct-transform-hsv 'second))
-(defun ct-get-hsv-v (c) (ct--getter c 'ct-transform-hsv 'third))
+(defun ct-get-hsv (c) "Get hsv representation of color C." (ct--getter c 'ct-transform-hsv 'identity))
+(defun ct-get-hsv-h (c) "Get hsv-h representation of color C." (ct--getter c 'ct-transform-hsv 'first))
+(defun ct-get-hsv-s (c) "Get hsv-s representation of color C." (ct--getter c 'ct-transform-hsv 'second))
+(defun ct-get-hsv-v (c) "Get hsv-v representation of color C." (ct--getter c 'ct-transform-hsv 'third))
 
-(defun ct-get-hsluv (c) (ct--getter c 'ct-transform-hsluv 'identity))
-(defun ct-get-hsluv-h (c) (ct--getter c 'ct-transform-hsluv 'first))
-(defun ct-get-hsluv-s (c) (ct--getter c 'ct-transform-hsluv 'second))
-(defun ct-get-hsluv-l (c) (ct--getter c 'ct-transform-hsluv 'third))
+(defun ct-get-hsluv (c) "Get hsluv representation of color C." (ct--getter c 'ct-transform-hsluv 'identity))
+(defun ct-get-hsluv-h (c) "Get hsluv-h representation of color C." (ct--getter c 'ct-transform-hsluv 'first))
+(defun ct-get-hsluv-s (c) "Get hsluv-s representation of color C." (ct--getter c 'ct-transform-hsluv 'second))
+(defun ct-get-hsluv-l (c) "Get hsluv-l representation of color C." (ct--getter c 'ct-transform-hsluv 'third))
 
-(defun ct-get-hpluv (c) (ct--getter c 'ct-transform-hpluv 'identity))
-(defun ct-get-hpluv-h (c) (ct--getter c 'ct-transform-hpluv 'first))
-(defun ct-get-hpluv-s (c) (ct--getter c 'ct-transform-hpluv 'second))
-(defun ct-get-hpluv-l (c) (ct--getter c 'ct-transform-hpluv 'third))
+(defun ct-get-hpluv (c) "Get hpluv representation of color C." (ct--getter c 'ct-transform-hpluv 'identity))
+(defun ct-get-hpluv-h (c) "Get hpluv-h representation of color C." (ct--getter c 'ct-transform-hpluv 'first))
+(defun ct-get-hpluv-s (c) "Get hpluv-s representation of color C." (ct--getter c 'ct-transform-hpluv 'second))
+(defun ct-get-hpluv-l (c) "Get hpluv-l representation of color C." (ct--getter c 'ct-transform-hpluv 'third))
 
-(defun ct-get-lab (c) (ct--getter c 'ct-transform-lab 'identity))
-(defun ct-get-lab-l (c) (ct--getter c 'ct-transform-lab 'first))
-(defun ct-get-lab-a (c) (ct--getter c 'ct-transform-lab 'second))
-(defun ct-get-lab-b (c) (ct--getter c 'ct-transform-lab 'third))
+(defun ct-get-lab (c) "Get lab representation of color C." (ct--getter c 'ct-transform-lab 'identity))
+(defun ct-get-lab-l (c) "Get lab-l representation of color C." (ct--getter c 'ct-transform-lab 'first))
+(defun ct-get-lab-a (c) "Get lab-a representation of color C." (ct--getter c 'ct-transform-lab 'second))
+(defun ct-get-lab-b (c) "Get lab-b representation of color C." (ct--getter c 'ct-transform-lab 'third))
 
-(defun ct-get-lch (c) (ct--getter c 'ct-transform-lch 'identity))
-(defun ct-get-lch-l (c) (ct--getter c 'ct-transform-lch 'first))
-(defun ct-get-lch-c (c) (ct--getter c 'ct-transform-lch 'second))
-(defun ct-get-lch-h (c) (ct--getter c 'ct-transform-lch 'third))
+(defun ct-get-lch (c) "Get lch representation of color C." (ct--getter c 'ct-transform-lch 'identity))
+(defun ct-get-lch-l (c) "Get lch-l representation of color C." (ct--getter c 'ct-transform-lch 'first))
+(defun ct-get-lch-c (c) "Get lch-c representation of color C." (ct--getter c 'ct-transform-lch 'second))
+(defun ct-get-lch-h (c) "Get lch-h representation of color C." (ct--getter c 'ct-transform-lch 'third))
 
 ;; make colors within our normalized transform functions:
 (defun ct--make-color-meta (transform properties)
   "Internal function for creating a color using TRANSFORM function forcing PROPERTIES."
-  (apply transform
-    (list "#cccccc"                     ; throwaway
-      (lambda (&rest _) properties))))
+  (funcall transform "#cccccc" (lambda (&rest _) properties)))
 
-(defun ct-make-hsl (H S L) (ct--make-color-meta 'ct-transform-hsl (list H S L)))
-(defun ct-make-hsv (H S V) (ct--make-color-meta 'ct-transform-hsv (list H S V)))
-(defun ct-make-hsluv (H S L) (ct--make-color-meta 'ct-transform-hsluv (list H S L)))
-(defun ct-make-hpluv (H P L) (ct--make-color-meta 'ct-transform-hpluv (list H P L)))
-(defun ct-make-lab (L A B) (ct--make-color-meta 'ct-transform-lab (list L A B)))
-(defun ct-make-lch (L C H) (ct--make-color-meta 'ct-transform-lch (list L C H)))
+(defun ct-make-hsl (H S L) "Make a color using H*S*L properties." (ct--make-color-meta 'ct-transform-hsl (list H S L)))
+(defun ct-make-hsv (H S V) "Make a color using H*S*V properties." (ct--make-color-meta 'ct-transform-hsv (list H S V)))
+(defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta 'ct-transform-hsluv (list H S L)))
+(defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta 'ct-transform-hpluv (list H P L)))
+(defun ct-make-lab (L A B) "Make a color using L*A*B properties." (ct--make-color-meta 'ct-transform-lab (list L A B)))
+(defun ct-make-lch (L C H) "Make a color using L*C*H properties." (ct--make-color-meta 'ct-transform-lch (list L C H)))
 
 (defun ct--rotation-meta (transform c interval)
   "Internal function for managing hue rotation in TRANSFORM starting at C by degree count INTERVAL."
@@ -292,11 +290,11 @@
       (number-sequence 0 359 interval)
       (number-sequence 360 1 interval))))
 
-(defun ct-rotation-hsl (c interval) (ct--rotation-meta 'ct-transform-hsl-h c interval))
-(defun ct-rotation-hsv (c interval) (ct--rotation-meta 'ct-transform-hsv-h c interval))
-(defun ct-rotation-hsluv (c interval) (ct--rotation-meta 'ct-transform-hsluv-h c interval))
-(defun ct-rotation-hpluv (c interval) (ct--rotation-meta 'ct-transform-hpluv-h c interval))
-(defun ct-rotation-lch (c interval) (ct--rotation-meta 'ct-transform-lch-h c interval))
+(defun ct-rotation-hsl (c interval) "Perform a hue rotation in HSL space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hsl-h c interval))
+(defun ct-rotation-hsv (c interval) "Perform a hue rotation in HSV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hsv-h c interval))
+(defun ct-rotation-hsluv (c interval) "Perform a hue rotation in HSLuv space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hsluv-h c interval))
+(defun ct-rotation-hpluv (c interval) "Perform a hue rotation in HPLUV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hpluv-h c interval))
+(defun ct-rotation-lch (c interval) "Perform a hue rotation in LCH space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-lch-h c interval))
 
 ;;;
 ;;; other color functions
