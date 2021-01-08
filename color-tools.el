@@ -312,8 +312,8 @@
     (lambda (H S L)
       (list
         H
-        (* S (or Smod 0.9))
-        (* L (or Vmod 1.1))))))
+        (- S 5)
+        (+ L 5)))))
 
 (defun ct-gradient (step start end &optional with-ends)
   "Create a gradient length STEP from START to END, optionally including START and END (toggle: WITH-ENDS)."
@@ -360,7 +360,7 @@
   (ct-lab-to-name (ct-name-to-lab c w1) w2))
 
 (defun ct-name-distance (c1 c2)
-  "Get cie-DE2000 distance between C1 and C2."
+  "Get cie-DE2000 distance between C1 and C2 -- value is 0-100."
   ;; note: there are 3 additional optional params to cie-de2000: compensation for
   ;; {lightness,chroma,hue} (all 0.0-1.0)
   ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000

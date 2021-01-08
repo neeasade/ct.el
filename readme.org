@@ -116,13 +116,11 @@ Some colors as defined in color spaces may not be represented in the RGB space (
 #+begin_src emacs-lisp
 (ct-get-hpluv "#dd00cc")
 
-;; these values are way out of range!
+;; That p value is way out of range!
 ;; => (314.3830496716472 282.01497572464575 51.53528501195089)
 
 ;; notice we ask for the same color back, but the transform functions clamp the output to maximum HPL values:
-(ct-transform-hpluv
-"#dd00cc"
- (lambda (H P L) (list H P L)))
+(ct-transform-hpluv "#dd00cc" 'list)
 
 ;; => "#9f6898"
 #+end_src
