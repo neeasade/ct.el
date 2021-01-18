@@ -304,16 +304,16 @@
   (ct-transform-lab-l c (-rpartial '- (or value 0.5))))
 
 (defun ct-pastel (c &optional Smod Vmod)
-  "Make a color C more 'pastel' in the hsl space -- optionally change the rate of change with SMOD and VMOD."
+  "Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD."
   ;; cf https://en.wikipedia.org/wiki/Pastel_(color)
   ;; pastel colors belong to a pale family of colors, which, when described in the HSV color space,
   ;; have high value and low saturation.
-  (ct-transform-hsl c
+  (ct-transform-hsv c
     (lambda (H S L)
       (list
         H
-        (- S 5)
-        (+ L 5)))))
+        (- S (or Smod 5))
+        (+ L (or Vmod 5))))))
 
 (defun ct-gradient (step start end &optional with-ends)
   "Create a gradient length STEP from START to END, optionally including START and END (toggle: WITH-ENDS)."
