@@ -429,5 +429,14 @@
       'ct-lab-lighten)
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
 
+(defun ct-format-rbga (C &optional opacity)
+  "Get a string representation of C as follows: 'rgba(R, G, B, OPACITY)', where values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
+  (->>
+    (ct-get-rgb C)
+    (-map (-partial '* (/ 255.0 100)))
+    (-map #'round)
+    (funcall (lambda (coll) (-snoc coll 1.0)))
+    (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
+
 (provide 'color-tools)
 ;;; color-tools.el ends here
