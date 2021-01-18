@@ -67,24 +67,24 @@
   "Transform NAME into LAB colorspace with optional lighting assumption WHITE-POINT."
   (--> name
     (color-name-to-rgb it)
-    (apply 'color-srgb-to-xyz it)
+    (apply #'color-srgb-to-xyz it)
     (append it (list (or white-point color-d65-xyz)))
-    (apply 'color-xyz-to-lab it)))
+    (apply #'color-xyz-to-lab it)))
 
 (defun ct-lab-to-name (lab &optional white-point)
   "Convert LAB color to #HHHHHH with optional lighting assumption WHITE-POINT."
   (->>
     (-snoc lab (or white-point color-d65-xyz))
-    (apply 'color-lab-to-xyz)
-    (apply 'color-xyz-to-srgb)
+    (apply #'color-lab-to-xyz)
+    (apply #'color-xyz-to-srgb)
     ;; when pulling it out we might die (srgb is not big enough to hold all possible values)
-    (-map 'color-clamp)
-    (apply 'color-rgb-to-hex)
+    (-map #'color-clamp)
+    (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
 (defun ct-hsv-to-rgb (H S V)
   "Convert HSV to RGB. Expected values: H: radian, S,V: 0 to 1."
-  ;; cf http://peteroupc.github.io/colorgen.html#HSV
+  ;; cf https://peteroupc.github.io/colorgen.html#HSV
   (let* ((pi2 (* pi 2))
           (H (cond
                ((< H 0) (- pi2 (mod (- H) pi2)))
@@ -115,8 +115,8 @@
     (-map (lambda (p) (* p 100)))
     (apply transform)
     (-map (lambda (p) (/ p 100)))
-    (-map 'color-clamp)
-    (apply 'color-rgb-to-hex)
+    (-map #'color-clamp)
+    (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
 (defun ct-transform-lab (c transform)
@@ -136,11 +136,11 @@
   (ct-transform-lab c
     (lambda (&rest lab)
       (->> lab
-        (apply 'color-lab-to-lch)
+        (apply #'color-lab-to-lch)
         (apply (lambda (L C H) (list L C (radians-to-degrees H))))
         (apply transform)
         (apply (lambda (L C H) (list L C (degrees-to-radians (mod H 360)))))
-        (apply 'color-lch-to-lab)))))
+        (apply #'color-lch-to-lab)))))
 
 (defun ct-transform-hsl (c transform)
   "Tweak color C in the HSL colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
@@ -150,15 +150,15 @@
     (apply (lambda (H S L) (list (* 360.0 H) (* 100.0 S) (* 100.0 L))))
     (apply transform)
     (apply (lambda (H S L) (list (/ (mod H 360) 360.0) (/ S 100.0) (/ L 100.0))))
-    (apply 'color-hsl-to-rgb)
-    (-map 'color-clamp)
-    (apply 'color-rgb-to-hex)
+    (apply #'color-hsl-to-rgb)
+    (-map #'color-clamp)
+    (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
 (defun ct-transform-hsv (c transform)
   "Tweak color C in the HSV colorspace. Call TRANSFORM function with HSV in ranges {0-360,0-100,0-100}."
   (->> (color-name-to-rgb c)
-    (apply 'color-rgb-to-hsv)
+    (apply #'color-rgb-to-hsv)
     (funcall (lambda (hsv)
                (apply transform
                  (list
@@ -171,15 +171,15 @@
                  (degrees-to-radians (ct-first hsv))
                  (color-clamp (/ (ct-second hsv) 100.0))
                  (color-clamp (/ (ct-third hsv) 100.0)))))
-    (apply 'ct-hsv-to-rgb)
-    (apply 'color-rgb-to-hex)
+    (apply #'ct-hsv-to-rgb)
+    (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
 (defun ct-transform-hpluv (c transform)
   "Tweak color C in the HPLUV colorspace. Call TRANSFORM function with HPL in ranges {0-360,0-100,0-100}."
   (ct-maybe-shorten
     (apply 'color-rgb-to-hex
-      (-map 'color-clamp
+      (-map #'color-clamp
         (hsluv-hpluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
             (list
@@ -190,8 +190,8 @@
 (defun ct-transform-hsluv (c transform)
   "Tweak color C in the HSLUV colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
   (ct-maybe-shorten
-    (apply 'color-rgb-to-hex
-      (-map 'color-clamp
+    (apply #'color-rgb-to-hex
+      (-map #'color-clamp
         (hsluv-hsluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
             (list
@@ -428,5 +428,5 @@
       'ct-lab-lighten)
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
 
-(provide 'ct)
+(provide 'color-tools)
 ;;; color-tools.el ends here
