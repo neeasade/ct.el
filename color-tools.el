@@ -108,6 +108,17 @@
 ;;; color space functions
 ;;;
 
+(defun ct-transform-rgb (c transform)
+  "Work with a color C in the RGB space using function TRANSFORM. Ranges for RGB are all 0-100."
+  (->> c
+    (color-name-to-rgb)
+    (-map (lambda (p) (* p 100)))
+    (apply transform)
+    (-map (lambda (p) (/ p 100)))
+    (-map 'color-clamp)
+    (apply 'color-rgb-to-hex)
+    (ct-maybe-shorten)))
+
 (defun ct-transform-lab (c transform)
   "Work with a color C in the LAB space using function TRANSFORM. Ranges for LAB are 0-100, -100 -> 100, -100 -> 100."
   (->> c
@@ -199,6 +210,10 @@
            func-or-val)
          args))))
 
+(defun ct-transform-rgb-r (c func-or-val) "Transform property rgb-r of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-rgb 0))
+(defun ct-transform-rgb-g (c func-or-val) "Transform property rgb-g of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-rgb 1))
+(defun ct-transform-rgb-b (c func-or-val) "Transform property rgb-b of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-rgb 2))
+
 (defun ct-transform-hsl-h (c func-or-val) "Transform property hsl-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 0))
 (defun ct-transform-hsl-s (c func-or-val) "Transform property hsl-s of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 1))
 (defun ct-transform-hsl-l (c func-or-val) "Transform property hsl-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 2))
@@ -232,6 +247,11 @@
           (setq return (funcall getter props))
           props)))
     return))
+
+(defun ct-get-rgb (c) "Get rgb representation of color C." (ct--getter c 'ct-transform-rgb 'identity))
+(defun ct-get-rgb-r (c) "Get rgb-r representation of color C." (ct--getter c 'ct-transform-rgb 'first))
+(defun ct-get-rgb-g (c) "Get rgb-g representation of color C." (ct--getter c 'ct-transform-rgb 'second))
+(defun ct-get-rgb-b (c) "Get rgb-b representation of color C." (ct--getter c 'ct-transform-rgb 'third))
 
 (defun ct-get-hsl (c) "Get hsl representation of color C." (ct--getter c 'ct-transform-hsl 'identity))
 (defun ct-get-hsl-h (c) "Get hsl-h representation of color C." (ct--getter c 'ct-transform-hsl 'first))
@@ -268,6 +288,7 @@
   "Internal function for creating a color using TRANSFORM function forcing PROPERTIES."
   (funcall transform "#cccccc" (lambda (&rest _) properties)))
 
+(defun ct-make-rgb (R G B) "Make a color using R*G*B properties." (ct--make-color-meta 'ct-transform-rgb (list R G B)))
 (defun ct-make-hsl (H S L) "Make a color using H*S*L properties." (ct--make-color-meta 'ct-transform-hsl (list H S L)))
 (defun ct-make-hsv (H S V) "Make a color using H*S*V properties." (ct--make-color-meta 'ct-transform-hsv (list H S V)))
 (defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta 'ct-transform-hsluv (list H S L)))
