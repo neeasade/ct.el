@@ -435,7 +435,7 @@
     (ct-get-rgb C)
     (-map (-partial '* (/ 255.0 100)))
     (-map #'round)
-    (funcall (lambda (coll) (-snoc coll 1.0)))
+    (funcall (lambda (coll) (-snoc coll (or opacity 1.0))))
     (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
 
 (provide 'color-tools)
