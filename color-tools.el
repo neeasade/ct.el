@@ -113,9 +113,9 @@
   "Work with a color C in the RGB space using function TRANSFORM. Ranges for RGB are all 0-100."
   (->> c
     (color-name-to-rgb)
-    (-map (lambda (p) (* p 100)))
+    (-map (lambda (p) (* p 100.0)))
     (apply transform)
-    (-map (lambda (p) (/ p 100)))
+    (-map (lambda (p) (/ p 100.0)))
     (-map #'color-clamp)
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
