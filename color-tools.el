@@ -1,6 +1,7 @@
 ;;; color-tools.el --- Utilities for editing individual colors -*- coding: utf-8; lexical-binding: t -*-
 
 ;; Copyright (c) 2020 neeasade
+;; SPDX-License-Identifier: MIT
 ;;
 ;; Version: 0.1
 ;; Author: neeasade
