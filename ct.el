@@ -1,4 +1,4 @@
-;;; ct.el --- color tools - A color api -*- coding: utf-8; lexical-binding: t -*-
+;;; ct.el --- color tools - a color api -*- coding: utf-8; lexical-binding: t -*-
 
 ;; Copyright (c) 2020 neeasade
 ;; SPDX-License-Identifier: MIT
