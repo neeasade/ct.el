@@ -21,13 +21,11 @@
 ;;; Code:
 
 (require 'color)
+(require 'seq)
+
 (require 'hsluv)
 (require 'dash)
 (require 'dash-functional)
-
-(defalias 'ct-first 'car)
-(defalias 'ct-second 'cadr)
-(defalias 'ct-third 'caddr)
 
 ;; customization:
 
@@ -163,15 +161,15 @@
     (funcall (lambda (hsv)
                (apply transform
                  (list
-                   (radians-to-degrees (ct-first hsv))
-                   (* 100.0 (ct-second hsv))
-                   (* 100.0 (ct-third hsv))))))
+                   (radians-to-degrees (-first-item hsv))
+                   (* 100.0 (-second-item hsv))
+                   (* 100.0 (-third-item hsv))))))
     ;; from transformed to what our function expects
     (funcall (lambda (hsv)
                (list
-                 (degrees-to-radians (ct-first hsv))
-                 (color-clamp (/ (ct-second hsv) 100.0))
-                 (color-clamp (/ (ct-third hsv) 100.0)))))
+                 (degrees-to-radians (-first-item hsv))
+                 (color-clamp (/ (-second-item hsv) 100.0))
+                 (color-clamp (/ (-third-item hsv) 100.0)))))
     (apply #'ct-hsv-to-rgb)
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
@@ -184,9 +182,9 @@
         (hsluv-hpluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
             (list
-              (mod (ct-first result) 360.0)
-              (ct-clamp (ct-second result) 0 100)
-              (ct-clamp (ct-third result) 0 100))))))))
+              (mod (-first-item result) 360.0)
+              (ct-clamp (-second-item result) 0 100)
+              (ct-clamp (-third-item result) 0 100))))))))
 
 (defun ct-transform-hsluv (c transform)
   "Tweak color C in the HSLUV colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
@@ -196,9 +194,9 @@
         (hsluv-hsluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
             (list
-              (mod (ct-first result) 360.0)
-              (ct-clamp (ct-second result) 0 100)
-              (ct-clamp (ct-third result) 0 100))))))))
+              (mod (-first-item result) 360.0)
+              (ct-clamp (-second-item result) 0 100)
+              (ct-clamp (-third-item result) 0 100))))))))
 
 ;; individual property tweaks:
 (defmacro ct--transform-prop (transform index)
@@ -390,7 +388,7 @@
 
 (defun ct-is-light-p (c &optional scale)
   "Determine if C is a light color with lightness in the LAB space -- optionally override SCALE comparison value."
-  (> (ct-first (ct-name-to-lab c)) (or scale 65)))
+  (> (-first-item (ct-name-to-lab c)) (or scale 65)))
 
 (defun ct-greaten (c &optional percent)
   "Make a light color C lighter, a dark color C darker (by PERCENT)."
