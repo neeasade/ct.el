@@ -436,5 +436,43 @@
     (funcall (lambda (coll) (-snoc coll (or opacity 1.0))))
     (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
 
+(defun ct-mix-opacity (top bottom opacity)
+  "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
+  ;; cf https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
+  (seq-let (r1 g1 b1 r2 g2 b2)
+    (append (ct-get-rgb top) (ct-get-rgb bottom))
+    (ct-make-rgb
+      (+ r2 (* (- r1 r2) opacity))
+      (+ g2 (* (- g1 g2) opacity))
+      (+ b2 (* (- b1 b2) opacity)))))
+
+(defun ct--colorspace-map (label)
+  "Map a LABEL to utility functions associated with a space. Pass a string label: rgb hsl hsluv hpluv lch lab hsv."
+  (-map (lambda (s)
+          (intern
+            (format s label)))
+    ;; TODO: considering plist representation instead.
+    `("ct-transform-%s"
+       "ct-make-%s"
+       "ct-get-%s"
+       ,(concat "ct-get-%s-" (string (elt label 0)))
+       ,(concat  "ct-get-%s-" (string (elt label 1)))
+       ,(concat "ct-get-%s-" (string (elt label 2))))))
+
+(defun ct-average-color (space colors)
+  "Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'."
+  (apply (nth 1 (ct--colorspace-map space))
+    (-reduce-from
+      (lambda (acc new)
+        (seq-let (p1 p2 p3 P1 P2 P3)
+          (append acc
+            (funcall (nth 2 (ct--colorspace-map space)) new))
+          (list
+            (/ (+ P1 p1) 2.0)
+            (/ (+ P2 p2) 2.0)
+            (/ (+ P3 p3) 2.0))))
+      (funcall (nth 2 (ct--colorspace-map space)) (-first-item colors))
+      (cdr colors))))
+
 (provide 'ct)
 ;;; ct.el ends here
