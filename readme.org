@@ -1,4 +1,4 @@
-Utilities for tweaking colors with properties from various color spaces. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/tarps][tarps]].
+ct.el (color tools) is a color api for Emacs. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/tarps][tarps]].
 
 ** Installation
 
@@ -6,9 +6,9 @@ Install with [[https://github.com/raxod502/straight.el][straight.el]]:
 
 #+begin_src emacs-lisp
 (straight-use-package
- '(color-tools
+ '(ct
    :host github
-   :repo "neeasade/color-tools.el"
+   :repo "neeasade/ct.el"
    :branch "master"))
 #+end_src
 

@@ -1,12 +1,12 @@
-;;; color-tools.el --- Utilities for editing individual colors -*- coding: utf-8; lexical-binding: t -*-
+;;; ct.el --- color tools - A color api -*- coding: utf-8; lexical-binding: t -*-
 
 ;; Copyright (c) 2020 neeasade
 ;; SPDX-License-Identifier: MIT
 ;;
 ;; Version: 0.1
 ;; Author: neeasade
-;; Keywords: color, theming, rgb, hsv, hsl, cie-lab, background
-;; URL: https://github.com/neeasade/color-tools.el
+;; Keywords: color theming rgb hsv hsl cie-lab background
+;; URL: https://github.com/neeasade/ct.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (dash-functional "2.17.0") (hsluv "1.0.0"))
 
 ;;; Commentary:
@@ -31,15 +31,15 @@
 
 ;; customization:
 
-(defgroup color-tools nil
+(defgroup ct nil
   "Utilities for editing individual colors."
-  :group 'color-tools
+  :group 'ct
   :prefix "ct-")
 
 (defcustom ct-always-shorten t
   "Whether results of color functions should ensure format #HHHHHH rather than #HHHHHHHHHHHH."
   :type 'boolean
-  :group 'color-tools)
+  :group 'ct)
 
 ;;;
 ;;; helpers to build color space functions
@@ -438,5 +438,5 @@
     (funcall (lambda (coll) (-snoc coll (or opacity 1.0))))
     (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
 
-(provide 'color-tools)
-;;; color-tools.el ends here
+(provide 'ct)
+;;; ct.el ends here
