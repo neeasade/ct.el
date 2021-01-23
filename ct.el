@@ -1,11 +1,11 @@
-;;; ct.el --- color tools - a color api -*- coding: utf-8; lexical-binding: t -*-
+;;; ct.el --- Color Tools - a color api -*- coding: utf-8; lexical-binding: t -*-
 
 ;; Copyright (c) 2020 neeasade
 ;; SPDX-License-Identifier: MIT
 ;;
 ;; Version: 0.1
 ;; Author: neeasade
-;; Keywords: color theming rgb hsv hsl cie-lab background
+;; Keywords: convenience color theming rgb hsv hsl cie-lab background
 ;; URL: https://github.com/neeasade/ct.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (dash-functional "2.17.0") (hsluv "1.0.0"))
 
@@ -51,9 +51,9 @@
     (cond
       ((= end start) (list start))
       ((> end start)
-        (number-sequence start (- end 1) step))
+        (number-sequence start end step))
       ((< end start)
-        (number-sequence start (+ 1 end) step)))))
+        (number-sequence start end step)))))
 
 (defun ct-clamp (value min max)
   "Make sure VALUE is a number between MIN and MAX inclusive."
@@ -157,7 +157,7 @@
   "Tweak color C in the HSL colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
   (->> c
     (color-name-to-rgb)
-    (apply 'color-rgb-to-hsl)
+    (apply #'color-rgb-to-hsl)
     (apply (lambda (H S L) (list (* 360.0 H) (* 100.0 S) (* 100.0 L))))
     (apply transform)
     (apply (lambda (H S L) (list (/ (mod H 360) 360.0) (/ S 100.0) (/ L 100.0))))
@@ -189,7 +189,7 @@
 (defun ct-transform-hpluv (c transform)
   "Tweak color C in the HPLUV colorspace. Call TRANSFORM function with HPL in ranges {0-360,0-100,0-100}."
   (ct-maybe-shorten
-    (apply 'color-rgb-to-hex
+    (apply #'color-rgb-to-hex
       (-map #'color-clamp
         (hsluv-hpluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
@@ -378,7 +378,7 @@
   ;; note: there are 3 additional optional params to cie-de2000: compensation for
   ;; {lightness,chroma,hue} (all 0.0-1.0)
   ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-  (apply 'color-cie-de2000 (-map 'ct-name-to-lab (list c1 c2))))
+  (apply #'color-cie-de2000 (-map 'ct-name-to-lab (list c1 c2))))
 
 (defun ct-is-light-p (c &optional scale)
   "Determine if C is a light color with lightness in the LAB space -- optionally override SCALE comparison value."
@@ -461,9 +461,7 @@
   ;; NB: this might not go the right direction WRT hue properties
   ;; TODO: account for hue step direction via closeness to 360 or 0.
   (let* ((op-map (ct--colorspace-map (or space "rgb")))
-          (step (if with-ends
-                  (- step 1)
-                  (+ step 1)))
+          (step (if with-ends (- step 2) step))
           (get-offsets
             (lambda (start end)
               ;; tolerance
@@ -476,9 +474,18 @@
       (-zip-lists
         (funcall (plist-get op-map :get) start)
         (funcall (plist-get op-map :get) end))
-      (-map (-partial 'apply get-offsets))
-      (apply '-zip-lists)
-      (-map (-partial 'apply (plist-get op-map :make)))
+
+      (-map (-applify get-offsets))
+
+      ;; TODO: this is a hack -- sometimes get-offsets is short one -- pad out by the end goal prop.
+      (-map
+        (lambda (parts)
+          (if (< (length parts) step)
+            (append parts (-repeat (- step (length parts)) (-last-item parts)))
+            parts)))
+
+      (apply #'-zip-lists)
+      (-map (-applify (plist-get op-map :make)))
       (funcall
         (lambda (result)
           (if with-ends
