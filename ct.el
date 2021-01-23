@@ -43,6 +43,18 @@
 ;;; helpers to build color space functions
 ;;;
 
+(defun ct--range (one &optional two step)
+  "Create a range from ONE to TWO with step STEP."
+  (let* ((start (if two one 0))
+          (end (if two two one))
+          (step (or step (if (> end start) 1 -1))))
+    (cond
+      ((= end start) (list start))
+      ((> end start)
+        (number-sequence start (- end 1) step))
+      ((< end start)
+        (number-sequence start (+ 1 end) step)))))
+
 (defun ct-clamp (value min max)
   "Make sure VALUE is a number between MIN and MAX inclusive."
   (min max (max min value)))
@@ -335,24 +347,6 @@
         (- S (or Smod 5))
         (+ L (or Vmod 5))))))
 
-(defun ct-gradient (step start end &optional with-ends)
-  "Create a gradient length STEP from START to END, optionally including START and END (toggle: WITH-ENDS)."
-  (if with-ends
-    `(,start
-       ,@(-map
-           (lambda (c) (eval `(color-rgb-to-hex ,@c 2)))
-           (color-gradient
-             (color-name-to-rgb start)
-             (color-name-to-rgb end)
-             (- step 2)))
-       ,end)
-    (-map
-      (lambda (c) (eval `(color-rgb-to-hex ,@c 2)))
-      (color-gradient
-        (color-name-to-rgb start)
-        (color-name-to-rgb end)
-        step))))
-
 (defun ct-luminance-srgb (c)
   "Get the srgb luminance value of C."
   ;; cf https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
@@ -447,31 +441,64 @@
       (+ b2 (* (- b1 b2) opacity)))))
 
 (defun ct--colorspace-map (label)
-  "Map a LABEL to utility functions associated with a space. Pass a string label: rgb hsl hsluv hpluv lch lab hsv."
-  (-map (lambda (s)
-          (intern
-            (format s label)))
-    ;; TODO: considering plist representation instead.
-    `("ct-transform-%s"
-       "ct-make-%s"
-       "ct-get-%s"
-       ,(concat "ct-get-%s-" (string (elt label 0)))
-       ,(concat  "ct-get-%s-" (string (elt label 1)))
-       ,(concat "ct-get-%s-" (string (elt label 2))))))
+  "Map a LABEL to plist'd utility functions associated with a space. Pass a string label: rgb hsl hsluv hpluv lch lab hsv."
+  (->>
+    `(:transform "ct-transform-%s"
+       :make "ct-make-%s"
+       :get "ct-get-%s"
+       :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
+       :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
+       :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
+    (-partition 2)
+    (-map (lambda (parts)
+            (list
+              (car parts)
+              (intern (format (cadr parts) label)))))
+    (-flatten)))
+
+(defun ct-gradient (step start end &optional with-ends space)
+  "Create a gradient from color START to color END with STEP steps. Optionally include START and END in results using WITH-ENDS. Optionally choose a colorspace with SPACE (see 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed results."
+  ;; NB: this might not go the right direction WRT hue properties
+  ;; TODO: account for hue step direction via closeness to 360 or 0.
+  (let* ((op-map (ct--colorspace-map (or space "rgb")))
+          (step (if with-ends
+                  (- step 1)
+                  (+ step 1)))
+          (get-offsets
+            (lambda (start end)
+              ;; tolerance
+              (if (<= (abs (- end start)) 0.1)
+                (-repeat (+ step 2) start)
+                (append
+                  (ct--range start end (/ (- end start) (float step)))
+                  (list end))))))
+    (->>
+      (-zip-lists
+        (funcall (plist-get op-map :get) start)
+        (funcall (plist-get op-map :get) end))
+      (-map (-partial 'apply get-offsets))
+      (apply '-zip-lists)
+      (-map (-partial 'apply (plist-get op-map :make)))
+      (funcall
+        (lambda (result)
+          (if with-ends
+            result
+            (cdr (-drop-last 1 result))))))))
 
 (defun ct-average-color (space colors)
   "Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'."
-  (apply (nth 1 (ct--colorspace-map space))
+  (apply (plist-get (ct--colorspace-map space) :make)
     (-reduce-from
       (lambda (acc new)
         (seq-let (p1 p2 p3 P1 P2 P3)
           (append acc
-            (funcall (nth 2 (ct--colorspace-map space)) new))
+            (funcall (plist-get (ct--colorspace-map space) :get) new))
           (list
             (/ (+ P1 p1) 2.0)
             (/ (+ P2 p2) 2.0)
             (/ (+ P3 p3) 2.0))))
-      (funcall (nth 2 (ct--colorspace-map space)) (-first-item colors))
+      (funcall (plist-get (ct--colorspace-map space) :get)
+        (-first-item colors))
       (cdr colors))))
 
 (provide 'ct)
