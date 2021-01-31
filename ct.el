@@ -11,14 +11,13 @@
 
 ;;; Commentary:
 ;; neeasade's color tools for Emacs.
-;; primarily oriented towards a consistent interface into color spaces.
-;;
+
+;;; Code:
 ;; There are 3 sections to this file (IE, you may use these bullets as search text):
 ;; - helpers to build color space functions
 ;; - color space functions
 ;; - other color functions
 
-;;; Code:
 
 (require 'color)
 (require 'hsluv)
@@ -430,13 +429,27 @@
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
 
 (defun ct-format-rbga (C &optional opacity)
-  "Get a string representation of C as follows: 'rgba(R, G, B, OPACITY)', where values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
+  "Pass in C and OPACITY 0-100, get a string representation of C as follows: 'rgba(R, G, B, OPACITY)', where values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
   (->>
     (ct-get-rgb C)
     (-map (-partial '* (/ 255.0 100)))
     (-map #'round)
-    (funcall (lambda (coll) (-snoc coll (or opacity 1.0))))
+    (funcall (lambda (coll) (-snoc coll
+                              (/
+                                (ct-clamp (or opacity 100) 0 100)
+                                100.0))))
     (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
+
+(defun ct-format-arbg (C &optional opacity)
+  "Pass in C and OPACITY 0-100, get a string representation of C as follows: '0xAAFFFFFF', where AA is a hex pair for the alpha, followed by FF times 3 hex pairs for red, green, blue."
+  (->>
+    (ct-clamp (or opacity 100) 0 100)
+    (* (/ 255.0 100))
+    (round)
+    (format "%02x")
+    (funcall (lambda (A)
+               (format "#%s%s" A
+                 (-> C ct-shorten (substring 1)))))))
 
 (provide 'ct)
 ;;; ct.el ends here
