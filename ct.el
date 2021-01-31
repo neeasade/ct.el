@@ -1,11 +1,11 @@
-;;; ct.el --- color tools - a color api -*- coding: utf-8; lexical-binding: t -*-
+;;; ct.el --- Color Tools - a color api -*- coding: utf-8; lexical-binding: t -*-
 
 ;; Copyright (c) 2020 neeasade
 ;; SPDX-License-Identifier: MIT
 ;;
 ;; Version: 0.1
 ;; Author: neeasade
-;; Keywords: color theming rgb hsv hsl cie-lab background
+;; Keywords: convenience color theming rgb hsv hsl cie-lab background
 ;; URL: https://github.com/neeasade/ct.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (dash-functional "2.17.0") (hsluv "1.0.0"))
 
@@ -20,13 +20,11 @@
 
 
 (require 'color)
+(require 'seq)
+
 (require 'hsluv)
 (require 'dash)
 (require 'dash-functional)
-
-(defalias 'ct-first 'car)
-(defalias 'ct-second 'cadr)
-(defalias 'ct-third 'caddr)
 
 ;; customization:
 
@@ -43,6 +41,18 @@
 ;;;
 ;;; helpers to build color space functions
 ;;;
+
+(defun ct--range (one &optional two step)
+  "Create a range from ONE to TWO with step STEP."
+  (let* ((start (if two one 0))
+          (end (if two two one))
+          (step (or step (if (> end start) 1 -1))))
+    (cond
+      ((= end start) (list start))
+      ((> end start)
+        (number-sequence start end step))
+      ((< end start)
+        (number-sequence start end step)))))
 
 (defun ct-clamp (value min max)
   "Make sure VALUE is a number between MIN and MAX inclusive."
@@ -146,7 +156,7 @@
   "Tweak color C in the HSL colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
   (->> c
     (color-name-to-rgb)
-    (apply 'color-rgb-to-hsl)
+    (apply #'color-rgb-to-hsl)
     (apply (lambda (H S L) (list (* 360.0 H) (* 100.0 S) (* 100.0 L))))
     (apply transform)
     (apply (lambda (H S L) (list (/ (mod H 360) 360.0) (/ S 100.0) (/ L 100.0))))
@@ -162,15 +172,15 @@
     (funcall (lambda (hsv)
                (apply transform
                  (list
-                   (radians-to-degrees (ct-first hsv))
-                   (* 100.0 (ct-second hsv))
-                   (* 100.0 (ct-third hsv))))))
+                   (radians-to-degrees (-first-item hsv))
+                   (* 100.0 (-second-item hsv))
+                   (* 100.0 (-third-item hsv))))))
     ;; from transformed to what our function expects
     (funcall (lambda (hsv)
                (list
-                 (degrees-to-radians (ct-first hsv))
-                 (color-clamp (/ (ct-second hsv) 100.0))
-                 (color-clamp (/ (ct-third hsv) 100.0)))))
+                 (degrees-to-radians (-first-item hsv))
+                 (color-clamp (/ (-second-item hsv) 100.0))
+                 (color-clamp (/ (-third-item hsv) 100.0)))))
     (apply #'ct-hsv-to-rgb)
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
@@ -178,14 +188,14 @@
 (defun ct-transform-hpluv (c transform)
   "Tweak color C in the HPLUV colorspace. Call TRANSFORM function with HPL in ranges {0-360,0-100,0-100}."
   (ct-maybe-shorten
-    (apply 'color-rgb-to-hex
+    (apply #'color-rgb-to-hex
       (-map #'color-clamp
         (hsluv-hpluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
             (list
-              (mod (ct-first result) 360.0)
-              (ct-clamp (ct-second result) 0 100)
-              (ct-clamp (ct-third result) 0 100))))))))
+              (mod (-first-item result) 360.0)
+              (ct-clamp (-second-item result) 0 100)
+              (ct-clamp (-third-item result) 0 100))))))))
 
 (defun ct-transform-hsluv (c transform)
   "Tweak color C in the HSLUV colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
@@ -195,9 +205,9 @@
         (hsluv-hsluv-to-rgb
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
             (list
-              (mod (ct-first result) 360.0)
-              (ct-clamp (ct-second result) 0 100)
-              (ct-clamp (ct-third result) 0 100))))))))
+              (mod (-first-item result) 360.0)
+              (ct-clamp (-second-item result) 0 100)
+              (ct-clamp (-third-item result) 0 100))))))))
 
 ;; individual property tweaks:
 (defmacro ct--transform-prop (transform index)
@@ -248,40 +258,40 @@
           props)))
     return))
 
-(defun ct-get-rgb (c) "Get rgb representation of color C." (ct--getter c 'ct-transform-rgb 'identity))
-(defun ct-get-rgb-r (c) "Get rgb-r representation of color C." (ct--getter c 'ct-transform-rgb 'first))
-(defun ct-get-rgb-g (c) "Get rgb-g representation of color C." (ct--getter c 'ct-transform-rgb 'second))
-(defun ct-get-rgb-b (c) "Get rgb-b representation of color C." (ct--getter c 'ct-transform-rgb 'third))
+(defun ct-get-rgb (c) "Get rgb representation of color C." (ct--getter c #'ct-transform-rgb #'identity))
+(defun ct-get-rgb-r (c) "Get rgb-r representation of color C." (ct--getter c #'ct-transform-rgb #'-first-item))
+(defun ct-get-rgb-g (c) "Get rgb-g representation of color C." (ct--getter c #'ct-transform-rgb #'-second-item))
+(defun ct-get-rgb-b (c) "Get rgb-b representation of color C." (ct--getter c #'ct-transform-rgb #'-third-item))
 
-(defun ct-get-hsl (c) "Get hsl representation of color C." (ct--getter c 'ct-transform-hsl 'identity))
-(defun ct-get-hsl-h (c) "Get hsl-h representation of color C." (ct--getter c 'ct-transform-hsl 'first))
-(defun ct-get-hsl-s (c) "Get hsl-s representation of color C." (ct--getter c 'ct-transform-hsl 'second))
-(defun ct-get-hsl-l (c) "Get hsl-l representation of color C." (ct--getter c 'ct-transform-hsl 'third))
+(defun ct-get-hsl (c) "Get hsl representation of color C." (ct--getter c #'ct-transform-hsl #'identity))
+(defun ct-get-hsl-h (c) "Get hsl-h representation of color C." (ct--getter c #'ct-transform-hsl #'-first-item))
+(defun ct-get-hsl-s (c) "Get hsl-s representation of color C." (ct--getter c #'ct-transform-hsl #'-second-item))
+(defun ct-get-hsl-l (c) "Get hsl-l representation of color C." (ct--getter c #'ct-transform-hsl #'-third-item))
 
-(defun ct-get-hsv (c) "Get hsv representation of color C." (ct--getter c 'ct-transform-hsv 'identity))
-(defun ct-get-hsv-h (c) "Get hsv-h representation of color C." (ct--getter c 'ct-transform-hsv 'first))
-(defun ct-get-hsv-s (c) "Get hsv-s representation of color C." (ct--getter c 'ct-transform-hsv 'second))
-(defun ct-get-hsv-v (c) "Get hsv-v representation of color C." (ct--getter c 'ct-transform-hsv 'third))
+(defun ct-get-hsv (c) "Get hsv representation of color C." (ct--getter c #'ct-transform-hsv #'identity))
+(defun ct-get-hsv-h (c) "Get hsv-h representation of color C." (ct--getter c #'ct-transform-hsv #'-first-item))
+(defun ct-get-hsv-s (c) "Get hsv-s representation of color C." (ct--getter c #'ct-transform-hsv #'-second-item))
+(defun ct-get-hsv-v (c) "Get hsv-v representation of color C." (ct--getter c #'ct-transform-hsv #'-third-item))
 
-(defun ct-get-hsluv (c) "Get hsluv representation of color C." (ct--getter c 'ct-transform-hsluv 'identity))
-(defun ct-get-hsluv-h (c) "Get hsluv-h representation of color C." (ct--getter c 'ct-transform-hsluv 'first))
-(defun ct-get-hsluv-s (c) "Get hsluv-s representation of color C." (ct--getter c 'ct-transform-hsluv 'second))
-(defun ct-get-hsluv-l (c) "Get hsluv-l representation of color C." (ct--getter c 'ct-transform-hsluv 'third))
+(defun ct-get-hsluv (c) "Get hsluv representation of color C." (ct--getter c #'ct-transform-hsluv #'identity))
+(defun ct-get-hsluv-h (c) "Get hsluv-h representation of color C." (ct--getter c #'ct-transform-hsluv #'-first-item))
+(defun ct-get-hsluv-s (c) "Get hsluv-s representation of color C." (ct--getter c #'ct-transform-hsluv #'-second-item))
+(defun ct-get-hsluv-l (c) "Get hsluv-l representation of color C." (ct--getter c #'ct-transform-hsluv #'-third-item))
 
-(defun ct-get-hpluv (c) "Get hpluv representation of color C." (ct--getter c 'ct-transform-hpluv 'identity))
-(defun ct-get-hpluv-h (c) "Get hpluv-h representation of color C." (ct--getter c 'ct-transform-hpluv 'first))
-(defun ct-get-hpluv-s (c) "Get hpluv-s representation of color C." (ct--getter c 'ct-transform-hpluv 'second))
-(defun ct-get-hpluv-l (c) "Get hpluv-l representation of color C." (ct--getter c 'ct-transform-hpluv 'third))
+(defun ct-get-hpluv (c) "Get hpluv representation of color C." (ct--getter c #'ct-transform-hpluv #'identity))
+(defun ct-get-hpluv-h (c) "Get hpluv-h representation of color C." (ct--getter c #'ct-transform-hpluv #'-first-item))
+(defun ct-get-hpluv-s (c) "Get hpluv-s representation of color C." (ct--getter c #'ct-transform-hpluv #'-second-item))
+(defun ct-get-hpluv-l (c) "Get hpluv-l representation of color C." (ct--getter c #'ct-transform-hpluv #'-third-item))
 
-(defun ct-get-lab (c) "Get lab representation of color C." (ct--getter c 'ct-transform-lab 'identity))
-(defun ct-get-lab-l (c) "Get lab-l representation of color C." (ct--getter c 'ct-transform-lab 'first))
-(defun ct-get-lab-a (c) "Get lab-a representation of color C." (ct--getter c 'ct-transform-lab 'second))
-(defun ct-get-lab-b (c) "Get lab-b representation of color C." (ct--getter c 'ct-transform-lab 'third))
+(defun ct-get-lab (c) "Get lab representation of color C." (ct--getter c #'ct-transform-lab #'identity))
+(defun ct-get-lab-l (c) "Get lab-l representation of color C." (ct--getter c #'ct-transform-lab #'-first-item))
+(defun ct-get-lab-a (c) "Get lab-a representation of color C." (ct--getter c #'ct-transform-lab #'-second-item))
+(defun ct-get-lab-b (c) "Get lab-b representation of color C." (ct--getter c #'ct-transform-lab #'-third-item))
 
-(defun ct-get-lch (c) "Get lch representation of color C." (ct--getter c 'ct-transform-lch 'identity))
-(defun ct-get-lch-l (c) "Get lch-l representation of color C." (ct--getter c 'ct-transform-lch 'first))
-(defun ct-get-lch-c (c) "Get lch-c representation of color C." (ct--getter c 'ct-transform-lch 'second))
-(defun ct-get-lch-h (c) "Get lch-h representation of color C." (ct--getter c 'ct-transform-lch 'third))
+(defun ct-get-lch (c) "Get lch representation of color C." (ct--getter c #'ct-transform-lch #'identity))
+(defun ct-get-lch-l (c) "Get lch-l representation of color C." (ct--getter c #'ct-transform-lch #'-first-item))
+(defun ct-get-lch-c (c) "Get lch-c representation of color C." (ct--getter c #'ct-transform-lch #'-second-item))
+(defun ct-get-lch-h (c) "Get lch-h representation of color C." (ct--getter c #'ct-transform-lch #'-third-item))
 
 ;; make colors within our normalized transform functions:
 (defun ct--make-color-meta (transform properties)
@@ -336,24 +346,6 @@
         (- S (or Smod 5))
         (+ L (or Vmod 5))))))
 
-(defun ct-gradient (step start end &optional with-ends)
-  "Create a gradient length STEP from START to END, optionally including START and END (toggle: WITH-ENDS)."
-  (if with-ends
-    `(,start
-       ,@(-map
-           (lambda (c) (eval `(color-rgb-to-hex ,@c 2)))
-           (color-gradient
-             (color-name-to-rgb start)
-             (color-name-to-rgb end)
-             (- step 2)))
-       ,end)
-    (-map
-      (lambda (c) (eval `(color-rgb-to-hex ,@c 2)))
-      (color-gradient
-        (color-name-to-rgb start)
-        (color-name-to-rgb end)
-        step))))
-
 (defun ct-luminance-srgb (c)
   "Get the srgb luminance value of C."
   ;; cf https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
@@ -385,11 +377,11 @@
   ;; note: there are 3 additional optional params to cie-de2000: compensation for
   ;; {lightness,chroma,hue} (all 0.0-1.0)
   ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-  (apply 'color-cie-de2000 (-map 'ct-name-to-lab (list c1 c2))))
+  (apply #'color-cie-de2000 (-map 'ct-name-to-lab (list c1 c2))))
 
 (defun ct-is-light-p (c &optional scale)
   "Determine if C is a light color with lightness in the LAB space -- optionally override SCALE comparison value."
-  (> (ct-first (ct-name-to-lab c)) (or scale 65)))
+  (> (-first-item (ct-name-to-lab c)) (or scale 65)))
 
 (defun ct-greaten (c &optional percent)
   "Make a light color C lighter, a dark color C darker (by PERCENT)."
@@ -450,6 +442,84 @@
     (funcall (lambda (A)
                (format "#%s%s" A
                  (-> C ct-shorten (substring 1)))))))
+
+(defun ct-mix-opacity (top bottom opacity)
+  "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
+  ;; cf https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
+  (seq-let (r1 g1 b1 r2 g2 b2)
+    (append (ct-get-rgb top) (ct-get-rgb bottom))
+    (ct-make-rgb
+      (+ r2 (* (- r1 r2) opacity))
+      (+ g2 (* (- g1 g2) opacity))
+      (+ b2 (* (- b1 b2) opacity)))))
+
+(defun ct--colorspace-map (label)
+  "Map a LABEL to plist'd utility functions associated with a space. Pass a string label: rgb hsl hsluv hpluv lch lab hsv."
+  (->>
+    `(:transform "ct-transform-%s"
+       :make "ct-make-%s"
+       :get "ct-get-%s"
+       :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
+       :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
+       :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
+    (-partition 2)
+    (-map (lambda (parts)
+            (list
+              (car parts)
+              (intern (format (cadr parts) label)))))
+    (-flatten)))
+
+(defun ct-gradient (step start end &optional with-ends space)
+  "Create a gradient from color START to color END with STEP steps. Optionally include START and END in results using WITH-ENDS. Optionally choose a colorspace with SPACE (see 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed results."
+  ;; NB: this might not go the right direction WRT hue properties
+  ;; TODO: account for hue step direction via closeness to 360 or 0.
+  (let* ((op-map (ct--colorspace-map (or space "rgb")))
+          (step (if with-ends (- step 2) step))
+          (get-offsets
+            (lambda (start end)
+              ;; tolerance
+              (if (<= (abs (- end start)) 0.1)
+                (-repeat (+ step 2) start)
+                (append
+                  (ct--range start end (/ (- end start) (float step)))
+                  (list end))))))
+    (->>
+      (-zip-lists
+        (funcall (plist-get op-map :get) start)
+        (funcall (plist-get op-map :get) end))
+
+      (-map (-applify get-offsets))
+
+      ;; TODO: this is a hack -- sometimes get-offsets is short one -- pad out by the end goal prop.
+      (-map
+        (lambda (parts)
+          (if (< (length parts) step)
+            (append parts (-repeat (- step (length parts)) (-last-item parts)))
+            parts)))
+
+      (apply #'-zip-lists)
+      (-map (-applify (plist-get op-map :make)))
+      (funcall
+        (lambda (result)
+          (if with-ends
+            result
+            (cdr (-drop-last 1 result))))))))
+
+(defun ct-average-color (space colors)
+  "Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'."
+  (apply (plist-get (ct--colorspace-map space) :make)
+    (-reduce-from
+      (lambda (acc new)
+        (seq-let (p1 p2 p3 P1 P2 P3)
+          (append acc
+            (funcall (plist-get (ct--colorspace-map space) :get) new))
+          (list
+            (/ (+ P1 p1) 2.0)
+            (/ (+ P2 p2) 2.0)
+            (/ (+ P3 p3) 2.0))))
+      (funcall (plist-get (ct--colorspace-map space) :get)
+        (-first-item colors))
+      (cdr colors))))
 
 (provide 'ct)
 ;;; ct.el ends here
