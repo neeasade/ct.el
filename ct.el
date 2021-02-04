@@ -348,14 +348,14 @@ Component value in 0-100 range."
 Ranges for sRGB color are all 0-100."
   (ct-transform-rgb c
     (lambda (&rest comps)
-      (-map 'ct-linearize comps))))
+      (-map 'ct--linearize comps))))
 
 (defun ct-rgb-to-srgb (c)
   "Convert linear color C to sRGB color space.
 Ranges for RGB color are all 0-100."
   (ct-transform-rgb c
     (lambda (&rest comps)
-      (-map 'ct-delinearize comps))))
+      (-map 'ct--delinearize comps))))
 
 (defun ct-lab-lighten (c &optional value)
   "Lighten color C by VALUE in the lab space. Value defaults to a very small amount."
