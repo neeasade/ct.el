@@ -325,7 +325,7 @@
 
 ;; sRGB <-> linear RGB convertion
 ;; https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_(CIE_XYZ_to_sRGB)
-(defun ct-linearize (comp)
+(defun ct--linearize (comp)
   "Convert a color COMPonent value from sRGB to linear RGB.
 Component value in 0-100 range."
   (let ((c (/ comp 100.0)))
@@ -334,7 +334,7 @@ Component value in 0-100 range."
            (/ c 12.92)
          (expt (/ (+ c 0.055) 1.055) 2.4)))))
 
-(defun ct-delinearize (comp)
+(defun ct--delinearize (comp)
   "Convert a color COMPonent value from linear RGB to sRGB.
 Component value in 0-100 range."
   (let ((c (/ comp 100.0)))
@@ -343,15 +343,19 @@ Component value in 0-100 range."
            (* c 12.92)
          (- (* 1.055 (expt c (/ 1 2.4))) 0.055)))))
 
-(defun ct-srgb-to-rgb (color)
-  "Convert COLOR from sRGB color space to linear RGB.
+(defun ct-srgb-to-rgb (c)
+  "Convert color C from sRGB color space to linear RGB.
 Ranges for sRGB color are all 0-100."
-  (mapcar #'ct-linearize color))
+  (ct-transform-rgb c
+    (lambda (&rest comps)
+      (-map 'ct-linearize comps))))
 
-(defun ct-rgb-to-srgb (color)
-  "Convert linear RGB COLOR to sRGB color space.
+(defun ct-rgb-to-srgb (c)
+  "Convert linear color C to sRGB color space.
 Ranges for RGB color are all 0-100."
-  (mapcar #'ct-delinearize color))
+  (ct-transform-rgb c
+    (lambda (&rest comps)
+      (-map 'ct-delinearize comps))))
 
 (defun ct-lab-lighten (c &optional value)
   "Lighten color C by VALUE in the lab space. Value defaults to a very small amount."
