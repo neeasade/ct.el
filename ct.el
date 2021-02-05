@@ -13,11 +13,15 @@
 ;; neeasade's color tools for Emacs.
 
 ;;; Code:
+
 ;; There are 3 sections to this file (IE, you may use these bullets as search text):
 ;; - helpers to build color space functions
 ;; - color space functions
 ;; - other color functions
 
+;; conventions:
+;; setting the wrap convention for docstrings at ~100 chars.
+;; TODO: .editorconfig: spaces, 2 space indent
 
 (require 'color)
 (require 'seq)
@@ -130,7 +134,8 @@
     (ct-maybe-shorten)))
 
 (defun ct-transform-lab (c transform)
-  "Work with a color C in the LAB space using function TRANSFORM. Ranges for LAB are 0-100, -100 -> 100, -100 -> 100."
+  "Work with a color C in the LAB space using function TRANSFORM.
+Ranges for LAB are {0-100,-100-100,-100-100}."
   (->> c
     (ct-name-to-lab)
     (apply transform)
@@ -142,7 +147,8 @@
     (ct-lab-to-name)))
 
 (defun ct-transform-lch (c transform)
-  "Tweak color C in the LCH colorspace. Call TRANSFORM function with LCH in ranges {0-100,0-100,0-360}."
+  "Work with a color C in the LCH space using function TRANSFORM.
+Ranges for LCH are {0-100,0-100,0-360}."
   (ct-transform-lab c
     (lambda (&rest lab)
       (->> lab
@@ -153,7 +159,8 @@
         (apply #'color-lch-to-lab)))))
 
 (defun ct-transform-hsl (c transform)
-  "Tweak color C in the HSL colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
+  "Work with a color C in the HSL space using function TRANSFORM.
+Ranges for HSL are {0-360,0-100,0-100}."
   (->> c
     (color-name-to-rgb)
     (apply #'color-rgb-to-hsl)
@@ -166,7 +173,8 @@
     (ct-maybe-shorten)))
 
 (defun ct-transform-hsv (c transform)
-  "Tweak color C in the HSV colorspace. Call TRANSFORM function with HSV in ranges {0-360,0-100,0-100}."
+  "Work with a color C in the HSV space using function TRANSFORM.
+Ranges for HSV are {0-360,0-100,0-100}."
   (->> (color-name-to-rgb c)
     (apply #'color-rgb-to-hsv)
     (funcall (lambda (hsv)
@@ -186,7 +194,8 @@
     (ct-maybe-shorten)))
 
 (defun ct-transform-hpluv (c transform)
-  "Tweak color C in the HPLUV colorspace. Call TRANSFORM function with HPL in ranges {0-360,0-100,0-100}."
+  "Work with a color C in the HPLUV space using function TRANSFORM.
+Ranges for HPLUV are {0-360,0-100,0-100}."
   (ct-maybe-shorten
     (apply #'color-rgb-to-hex
       (-map #'color-clamp
@@ -198,7 +207,8 @@
               (ct-clamp (-third-item result) 0 100))))))))
 
 (defun ct-transform-hsluv (c transform)
-  "Tweak color C in the HSLUV colorspace. Call TRANSFORM function with HSL in ranges {0-360,0-100,0-100}."
+  "Work with a color C in the HSLUV space using function TRANSFORM.
+Ranges for HSLUV are {0-360,0-100,0-100}."
   (ct-maybe-shorten
     (apply #'color-rgb-to-hex
       (-map #'color-clamp
@@ -325,14 +335,15 @@
 
 ;; sRGB <-> linear RGB convertion
 ;; https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_(CIE_XYZ_to_sRGB)
+;; TODO: compare to 'ct-luminance-srgb' -- the comparison value is different though.
 (defun ct--linearize (comp)
   "Convert a color COMPonent value from sRGB to linear RGB.
 Component value in 0-100 range."
   (let ((c (/ comp 100.0)))
     (* 100
-       (if (<= c 0.04045)
-           (/ c 12.92)
-         (expt (/ (+ c 0.055) 1.055) 2.4)))))
+      (if (<= c 0.04045)
+        (/ c 12.92)
+        (expt (/ (+ c 0.055) 1.055) 2.4)))))
 
 (defun ct--delinearize (comp)
   "Convert a color COMPonent value from linear RGB to sRGB.
@@ -414,7 +425,8 @@ Ranges for RGB color are all 0-100."
   (apply #'color-cie-de2000 (-map 'ct-name-to-lab (list c1 c2))))
 
 (defun ct-is-light-p (c &optional scale)
-  "Determine if C is a light color with lightness in the LAB space -- optionally override SCALE comparison value."
+  "Determine if C is a light color with lightness in the LAB space.
+Optionally override SCALE comparison value."
   (> (-first-item (ct-name-to-lab c)) (or scale 65)))
 
 (defun ct-greaten (c &optional percent)
@@ -455,7 +467,10 @@ Ranges for RGB color are all 0-100."
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
 
 (defun ct-format-rbga (C &optional opacity)
-  "Pass in C and OPACITY 0-100, get a string representation of C as follows: 'rgba(R, G, B, OPACITY)', where values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
+  "RGBA formatting:
+Pass in C and OPACITY 0-100, get a string
+representation of C as follows: 'rgba(R, G, B, OPACITY)', where
+values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
   (->>
     (ct-get-rgb C)
     (-map (-partial '* (/ 255.0 100)))
@@ -466,16 +481,21 @@ Ranges for RGB color are all 0-100."
                                 100.0))))
     (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
 
-(defun ct-format-arbg (C &optional opacity)
-  "Pass in C and OPACITY 0-100, get a string representation of C as follows: '0xAAFFFFFF', where AA is a hex pair for the alpha, followed by FF times 3 hex pairs for red, green, blue."
+(defun ct-format-argb (C &optional opacity end)
+  "Argb formatting:
+Pass in C and OPACITY 0-100, get a string representation of C
+as follows: '#AAFFFFFF', where AA is a hex pair for the alpha,
+followed by FF times 3 hex pairs for red, green, blue. If END is
+truthy, then format will be '#FFFFFFAA'."
   (->>
     (ct-clamp (or opacity 100) 0 100)
     (* (/ 255.0 100))
     (round)
     (format "%02x")
     (funcall (lambda (A)
-               (format "#%s%s" A
-                 (-> C ct-shorten (substring 1)))))))
+               (if end
+                 (format "#%s%s" (-> C ct-shorten (substring 1)) A)
+                 (format "#%s%s" A (-> C ct-shorten (substring 1))))))))
 
 (defun ct-mix-opacity (top bottom opacity)
   "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
@@ -488,7 +508,7 @@ Ranges for RGB color are all 0-100."
       (+ b2 (* (- b1 b2) opacity)))))
 
 (defun ct--colorspace-map (label)
-  "Map a LABEL to plist'd utility functions associated with a space. Pass a string label: rgb hsl hsluv hpluv lch lab hsv."
+  "Map a LABEL to plist'd utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv."
   (->>
     `(:transform "ct-transform-%s"
        :make "ct-make-%s"
@@ -504,7 +524,11 @@ Ranges for RGB color are all 0-100."
     (-flatten)))
 
 (defun ct-gradient (step start end &optional with-ends space)
-  "Create a gradient from color START to color END with STEP steps. Optionally include START and END in results using WITH-ENDS. Optionally choose a colorspace with SPACE (see 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed results."
+  "Create a gradient from color START to color END with STEP steps.
+Optionally include START and END in results using
+WITH-ENDS. Optionally choose a colorspace with SPACE (see
+'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
+results."
   ;; NB: this might not go the right direction WRT hue properties
   ;; TODO: account for hue step direction via closeness to 360 or 0.
   (let* ((op-map (ct--colorspace-map (or space "rgb")))
