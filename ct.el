@@ -1,6 +1,6 @@
 ;;; ct.el --- Color Tools - a color api -*- coding: utf-8; lexical-binding: t -*-
 
-;; Copyright (c) 2020 neeasade
+;; Copyright (c) 2022 neeasade
 ;; SPDX-License-Identifier: MIT
 ;;
 ;; Version: 0.1
@@ -21,7 +21,6 @@
 
 ;; conventions:
 ;; setting the wrap convention for docstrings at ~100 chars.
-;; TODO: .editorconfig: spaces, 2 space indent
 
 (require 'color)
 (require 'seq)
@@ -97,7 +96,7 @@
 
 (defun ct-hsv-to-rgb (H S V)
   "Convert HSV to RGB. Expected values: H: radian, S,V: 0 to 1."
-  ;; cf https://peteroupc.github.io/colorgen.html#HSV
+  ;; ref https://peteroupc.github.io/colorgen.html#HSV
   (let* ((pi2 (* pi 2))
           (H (cond
                ((< H 0) (- pi2 (mod (- H) pi2)))
@@ -260,11 +259,10 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 (defun ct--getter (c transform getter)
   "Internal function for making a GETTER of C using a TRANSFORM function."
   (let ((return))
-    (apply transform
-      (list c
-        (lambda (&rest props)
-          (setq return (funcall getter props))
-          props)))
+    (funcall transform c
+      (lambda (&rest props)
+        (setq return (funcall getter props))
+        props))
     return))
 
 (defun ct-get-rgb (c) "Get rgb representation of color C." (ct--getter c #'ct-transform-rgb #'identity))
@@ -332,7 +330,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 ;;; other color functions
 ;;;
 
-;; sRGB <-> linear RGB convertion
+;; sRGB <-> linear RGB conversion
 ;; https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_(CIE_XYZ_to_sRGB)
 ;; TODO: compare to 'ct-luminance-srgb' -- the comparison value is different though.
 (defun ct--linearize (comp)
@@ -380,7 +378,7 @@ Ranges for RGB color are all 0-100."
 
 (defun ct-pastel (c &optional Smod Vmod)
   "Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD."
-  ;; cf https://en.wikipedia.org/wiki/Pastel_(color)
+  ;; ref https://en.wikipedia.org/wiki/Pastel_(color)
   ;; pastel colors belong to a pale family of colors, which, when described in the HSV color space,
   ;; have high value and low saturation.
   (ct-transform-hsv c
@@ -392,10 +390,11 @@ Ranges for RGB color are all 0-100."
 
 (defun ct-luminance-srgb (c)
   "Get the srgb luminance value of C."
-  ;; cf https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+  ;; ref https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
   (let ((rgb (-map
                (lambda (part)
-                 (if (<= part 0.03928)
+                 (if (<= part
+                       0.03928)
                    (/ part 12.92)
                    (expt (/ (+ 0.055 part) 1.055) 2.4)))
                (color-name-to-rgb c))))
@@ -406,7 +405,7 @@ Ranges for RGB color are all 0-100."
 
 (defun ct-contrast-ratio (c1 c2)
   "Get the contrast ratio between C1 and C2."
-  ;; cf https://peteroupc.github.io/colorgen.html#Contrast_Between_Two_Colors
+  ;; ref https://peteroupc.github.io/colorgen.html#Contrast_Between_Two_Colors
   (let ((rl1 (ct-luminance-srgb c1))
          (rl2 (ct-luminance-srgb c2)))
     (/ (+ 0.05 (max rl1 rl2))
@@ -498,7 +497,7 @@ truthy, then format will be '#FFFFFFAA'."
 
 (defun ct-mix-opacity (top bottom opacity)
   "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
-  ;; cf https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
+  ;; ref https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
   (seq-let (r1 g1 b1 r2 g2 b2)
     (append (ct-get-rgb top) (ct-get-rgb bottom))
     (ct-make-rgb
@@ -516,10 +515,10 @@ truthy, then format will be '#FFFFFFAA'."
        :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
        :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
     (-partition 2)
-    (-map (lambda (parts)
+    (-map (-lambda ((key format))
             (list
-              (car parts)
-              (intern (format (cadr parts) label)))))
+              key
+              (intern (format name label)))))
     (-flatten)))
 
 (defun ct-gradient (step start end &optional with-ends space)
@@ -560,23 +559,25 @@ results."
         (lambda (result)
           (if with-ends
             result
-            (cdr (-drop-last 1 result))))))))
+            (->> result
+              (-drop 1)
+              (-drop-last 1))))))))
 
 (defun ct-average-color (space colors)
   "Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'."
-  (apply (plist-get (ct--colorspace-map space) :make)
-    (-reduce-from
-      (lambda (acc new)
-        (seq-let (p1 p2 p3 P1 P2 P3)
-          (append acc
-            (funcall (plist-get (ct--colorspace-map space) :get) new))
-          (list
-            (/ (+ P1 p1) 2.0)
-            (/ (+ P2 p2) 2.0)
-            (/ (+ P3 p3) 2.0))))
-      (funcall (plist-get (ct--colorspace-map space) :get)
-        (-first-item colors))
-      (cdr colors))))
+  (let ((get-fn (plist-get (ct--colorspace-map space) :get))
+         (make-fn (plist-get (ct--colorspace-map space) :make))
+         (avg-fn (lambda (a b) (/ (+ a b) 2.0))))
+    (apply make-fn
+      (-reduce-from
+        (-lambda (acc new)
+          (-map
+            (-applify 'avg-fn)
+            (-zip-lists
+              acc
+              (funcall get-fn new))))
+        (funcall get-fn (-first-item colors))
+        (cdr colors)))))
 
 (provide 'ct)
 ;;; ct.el ends here
