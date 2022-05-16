@@ -1,4 +1,6 @@
-ct.el (color tools) is a color api for Emacs. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/tarps][tarps]].
+[[https://melpa.org/#/ct][file:https://melpa.org/packages/ct-badge.svg]]
+
+ct.el (color tools) is a color api for Emacs. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/tarps][tarps]]. Shouted out by [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][prot]] (of modus themes fame).
 
 ** Installation
 
@@ -12,14 +14,9 @@ Install with [[https://github.com/raxod502/straight.el][straight.el]]:
    :branch "master"))
 #+end_src
 
-*** Dependencies
-
-- [[https://github.com/magnars/dash.el][dash.el]]
-- [[https://github.com/hsluv/hsluv-emacs][hsluv.el]]
-
 ** Examples:
 
-Supported color spaces: ~rgb~ ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Generally, scalar values fall within range 0 to 100 (consistent interface across spaces for the convenience of using this library). Exceptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
+Supported color spaces: ~rgb~ ~lab~ ~lch~ ~hsl~ ~hsv~ ~hsluv~ ~hpluv~. Scalar values fall within range 0 to 100 (consistent interface across spaces for the convenience of using this library). Exceptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
 
 *** Color creation
 
