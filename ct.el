@@ -50,11 +50,11 @@
           (end (if two two one))
           (step (or step (if (> end start) 1 -1))))
     (cond
-      ((= end start) (list start))
+      ((= end start) (list))
       ((> end start)
-        (number-sequence start end step))
+        (number-sequence start (- end 1) step))
       ((< end start)
-        (number-sequence start end step)))))
+        (number-sequence start (+ 1 end) step)))))
 
 (defun ct-clamp (value min max)
   "Make sure VALUE is a number between MIN and MAX inclusive."
@@ -74,6 +74,29 @@
   (if ct-always-shorten
     (ct-shorten c)
     c))
+
+(defun ct--within (value tolerance anchor)
+  "Return if a VALUE is within TOLERANCE of ANCHOR."
+  (>= (+ anchor tolerance)
+    value
+    (- anchor tolerance)))
+
+(defun ct--amp-value (v fn arg1 arg1-amp-fn tolerance-fn)
+  "Call FN with V and ARG1 and see if V changes.
+If V does not change, call ARG1-AMP-FN on ARG1 and call FN with the new ARG1.
+Use TOLERANCE-FN to check if ARG1 can be updated further "
+  (let* ((next v)
+          (iterations 0))
+    (while (and (string= next v)
+             (funcall tolerance-fn arg1)
+             (< iterations 1000))
+      ;; (message (format "arg is %s" arg1))
+      (setq iterations (+ 1 iterations))
+      (setq next (funcall fn v arg1))
+      (setq arg1 (funcall arg1-amp-fn arg1)))
+    (when (= 1000 iterations)
+      (messaage (format "amp tapped out! arg: %s" arg1)))
+    next))
 
 (defun ct-name-to-lab (name &optional white-point)
   "Transform NAME into LAB colorspace with optional lighting assumption WHITE-POINT."
@@ -124,9 +147,9 @@
   "Work with a color C in the RGB space using function TRANSFORM. Ranges for RGB are all 0-100."
   (->> c
     (color-name-to-rgb)
-    (-map (lambda (p) (* p 100.0)))
+    (-map (-partial #'* 100.0))
     (apply transform)
-    (-map (lambda (p) (/ p 100.0)))
+    (-map (-rpartial #'/ 100.0))
     (-map #'color-clamp)
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
@@ -366,15 +389,30 @@ Ranges for RGB color are all 0-100."
       (-map 'ct--delinearize comps))))
 
 (defun ct-lab-lighten (c &optional value)
-  "Lighten color C by VALUE in the lab space. Value defaults to a very small amount."
-  ;; note: lightening colors is a little more sensitive than darkening them
-  ;; the increased default value here reflects that -- so we don't get false
-  ;; stops in color iteration
-  (ct-transform-lab-l c (-partial '+ (or value 0.7))))
+  "Lighten color C by VALUE in the lab space.
+If no VALUE is passed, will lighten color by a very small possible amount."
+  (if value
+    (ct-transform-lab-l c (-partial #'+ value))
+    (ct--amp-value c
+      (lambda (color amount)
+        (ct-transform-lab-l color (-partial #'+ amount)))
+      0.1
+      (-partial #'+ 0.1)
+      ;; nb: 30% limit is arbitrary
+      (lambda (arg) (ct--within arg 30 0.1)))))
 
 (defun ct-lab-darken (c &optional value)
-  "Darken color C by VALUE in the lab space. Value defaults to a very small amount."
-  (ct-transform-lab-l c (-rpartial '- (or value 0.5))))
+  "Darken color C by VALUE in the lab space.
+If no VALUE is passed, will darken color by a very small possible amount."
+  (if value
+    (ct-transform-lab-l c (-rpartial #'- value))
+    (ct--amp-value c
+      (lambda (color amount)
+        (ct-transform-lab-l color (-partial #'+ amount)))
+      -0.1
+      (-rpartial #'- 0.1)
+      ;; nb: 30% limit is arbitrary
+      (lambda (arg) (ct--within arg 30 0.1)))))
 
 (defun ct-pastel (c &optional Smod Vmod)
   "Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD."
@@ -429,6 +467,7 @@ Optionally override SCALE comparison value."
 
 (defun ct-greaten (c &optional percent)
   "Make a light color C lighter, a dark color C darker (by PERCENT)."
+  ;; todo:amp
   (ct-shorten
     (if (ct-is-light-p c)
       (color-lighten-name c percent)
@@ -436,6 +475,7 @@ Optionally override SCALE comparison value."
 
 (defun ct-lessen (c &optional percent)
   "Make a light color C darker, a dark color C lighter (by PERCENT)."
+  ;; todo:amp
   (ct-shorten
     (if (ct-is-light-p c)
       (color-darken-name c percent)
