@@ -91,11 +91,11 @@ Use TOLERANCE-FN to check if ARG1 can be updated further "
              (funcall tolerance-fn arg1)
              (< iterations 1000))
       ;; (message (format "arg is %s" arg1))
-      (setq iterations (+ 1 iterations))
-      (setq next (funcall fn v arg1))
-      (setq arg1 (funcall arg1-amp-fn arg1)))
+      (setq iterations (+ 1 iterations)
+        next (funcall fn v arg1)
+        arg1 (funcall arg1-amp-fn arg1)))
     (when (= 1000 iterations)
-      (messaage (format "amp tapped out! arg: %s" arg1)))
+      (message (format "amp tapped out! arg: %s" arg1)))
     next))
 
 (defun ct-name-to-lab (name &optional white-point)
@@ -115,6 +115,7 @@ Use TOLERANCE-FN to check if ARG1 can be updated further "
     ;; when pulling it out we might die (srgb is not big enough to hold all possible values)
     (-map #'color-clamp)
     (apply #'color-rgb-to-hex)
+    (ct-srgb-to-rgb)
     (ct-maybe-shorten)))
 
 (defun ct-hsv-to-rgb (H S V)
@@ -488,20 +489,29 @@ Optionally override SCALE comparison value."
     (while (and (not (funcall condition (-last-item colors)))
              (not (string= (funcall op (-last-item colors)) (-last-item colors)))
              (< iterations 10000))
-      (setq iterations (+ iterations 1))
-      (setq colors (-snoc colors (funcall op (-last-item colors)))))
+      (setq iterations (+ iterations 1)
+        colors (-snoc colors (funcall op (-last-item colors)))))
     colors))
 
 (defun ct-iterate (start op condition)
   "Do OP on START color until CONDITION is met or op has no effect."
-  (-last-item (ct-iterations start op condition)))
+  (let ((color start)
+         (iterations 0))
+    (while (and (not (funcall condition color))
+             (not (string= (funcall op color) color))
+             (< iterations 10000))
+      (setq iterations (+ iterations 1)
+        color (funcall op color)))
+    color))
 
 (defun ct-tint-ratio (c against ratio)
   "Tint a foreground color C against background color AGAINST until contrast RATIO minimum is reached."
   (ct-iterate c
     (if (ct-is-light-p against)
-      'ct-lab-darken
-      'ct-lab-lighten)
+      ;; 'ct-lab-darken 'ct-lab-lighten
+      (-rpartial 'ct-lab-darken 0.5)
+      (-rpartial 'ct-lab-lighten 0.7)
+      )
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
 
 (defun ct-format-rbga (C &optional opacity)
