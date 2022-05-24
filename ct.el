@@ -94,8 +94,6 @@ Use TOLERANCE-FN to check if ARG1 can be updated further "
       (setq iterations (+ 1 iterations)
         next (funcall fn v arg1)
         arg1 (funcall arg1-amp-fn arg1)))
-    (when (= 1000 iterations)
-      (message (format "amp tapped out! arg: %s" arg1)))
     next))
 
 (defun ct-name-to-lab (name &optional white-point)
@@ -115,18 +113,17 @@ Use TOLERANCE-FN to check if ARG1 can be updated further "
     ;; when pulling it out we might die (srgb is not big enough to hold all possible values)
     (-map #'color-clamp)
     (apply #'color-rgb-to-hex)
-    (ct-srgb-to-rgb)
     (ct-maybe-shorten)))
 
 (defun ct-hsv-to-rgb (H S V)
   "Convert HSV to RGB. Expected values: H: radian, S,V: 0 to 1."
   ;; ref https://peteroupc.github.io/colorgen.html#HSV
-  (let* ((pi2 (* pi 2))
+  (let* ((pi2 (* float-pi 2))
           (H (cond
                ((< H 0) (- pi2 (mod (- H) pi2)))
                ((>= H pi2) (mod H pi2))
                (t H)))
-          (hue60 (/ (* H 3) pi))
+          (hue60 (/ (* H 3) float-pi))
           (hi (floor hue60))
           (f (- hue60 hi))
           (c (* V (- 1 S)))
@@ -241,88 +238,80 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
               (ct-clamp (-second-item result) 0 100)
               (ct-clamp (-third-item result) 0 100))))))))
 
-;; individual property tweaks:
-(defmacro ct--transform-prop (transform index)
-  "Internal function for making a TRANSFORM function on property INDEX of a color property list."
-  `(,transform c
-     (lambda (&rest args)
-       (-replace-at ,index
-         (if (functionp func-or-val)
-           (funcall func-or-val (nth ,index args))
-           func-or-val)
-         args))))
+(defun ct--colorspace-map (label)
+  "Map a LABEL to plist'd utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv."
+  (->>
+    `(:transform "ct-transform-%s"
+       :make "ct-make-%s"
+       :get "ct-get-%s"
+       :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
+       :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
+       :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
+    (-partition 2)
+    (-map (-lambda ((key name))
+            (list key (intern (format name label)))))
+    (-flatten)))
 
-(defun ct-transform-rgb-r (c func-or-val) "Transform property rgb-r of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-rgb 0))
-(defun ct-transform-rgb-g (c func-or-val) "Transform property rgb-g of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-rgb 1))
-(defun ct-transform-rgb-b (c func-or-val) "Transform property rgb-b of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-rgb 2))
+(defmacro ct--make-transform-property-functions (colorspace)
+  "Build the functions for tweaking individual properties of colors in COLORSPACE."
+  (-let* (((&plist :transform transform :get get) (ct--colorspace-map colorspace))
+           (result '(progn))
+           (collect (lambda (sexp) (setq result (-snoc result sexp)))))
 
-(defun ct-transform-hsl-h (c func-or-val) "Transform property hsl-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 0))
-(defun ct-transform-hsl-s (c func-or-val) "Transform property hsl-s of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 1))
-(defun ct-transform-hsl-l (c func-or-val) "Transform property hsl-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsl 2))
+    (funcall collect
+      `(defun ,get (c)
+         ,(format "Get %s representation of color C." colorspace)
+         (let ((return))
+           (,transform c
+             (lambda (&rest props)
+               (setq return props)
+               props))
+           return)))
 
-(defun ct-transform-hsv-h (c func-or-val) "Transform property hsv-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsv 0))
-(defun ct-transform-hsv-s (c func-or-val) "Transform property hsv-s of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsv 1))
-(defun ct-transform-hsv-v (c func-or-val) "Transform property hsv-v of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsv 2))
+    (->> '(0 1 2)
+      (-map
+        (lambda (index)
+          (let* ((prop-name (format "%s-%s" colorspace (substring colorspace index (+ index 1))))
+                  (transform-prop-fn (format "ct-transform-%s" prop-name)))
+            (funcall collect
+              `(defun ,(intern transform-prop-fn) (c func-or-val)
+                 ,(format "Transform property %s of C using FUNC-OR-VAL." prop-name)
+                 (,transform c
+                   (lambda (&rest color-props)
+                     (-replace-at ,index
+                       (if (functionp func-or-val)
+                         (funcall func-or-val (nth ,index color-props))
+                         func-or-val)
+                       color-props)))))
 
-(defun ct-transform-hsluv-h (c func-or-val) "Transform property hsluv-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsluv 0))
-(defun ct-transform-hsluv-s (c func-or-val) "Transform property hsluv-s of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsluv 1))
-(defun ct-transform-hsluv-l (c func-or-val) "Transform property hsluv-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hsluv 2))
+            (funcall collect
+              `(defun ,(intern (format "ct-get-%s" prop-name)) (c)
+                 ,(format "Get %s representation of color C." prop-name)
+                 (nth ,index (,get c))))
 
-(defun ct-transform-hpluv-h (c func-or-val) "Transform property hpluv-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hpluv 0))
-(defun ct-transform-hpluv-p (c func-or-val) "Transform property hpluv-p of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hpluv 1))
-(defun ct-transform-hpluv-l (c func-or-val) "Transform property hpluv-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-hpluv 2))
+            (funcall collect
+              `(defun ,(intern (format "%s-inc" transform-prop-fn)) (c)
+                 ,(format "Increase %s value of C by the minimum amound needed to change C." prop-name)
+                 (ct--amp-value c
+                   (lambda (color amount)
+                     (,(intern transform-prop-fn) color (-partial #'+ amount)))
+                   0.1 (-partial #'+ 0.1)
+                   ;; nb: 30% limit is arbitrary
+                   (lambda (arg) (ct--within arg 30 0.1)))))
 
-(defun ct-transform-lab-l (c func-or-val) "Transform property lab-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lab 0))
-(defun ct-transform-lab-a (c func-or-val) "Transform property lab-a of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lab 1))
-(defun ct-transform-lab-b (c func-or-val) "Transform property lab-b of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lab 2))
+            (funcall collect
+              `(defun ,(intern (format "%s-dec" transform-prop-fn)) (c)
+                 ,(format "Decrease %s value of C by the minimum amound needed to change C." prop-name)
+                 (ct--amp-value c
+                   (lambda (color amount)
+                     (,(intern transform-prop-fn) color (-partial #'+ amount)))
+                   -0.1 (-rpartial #'- 0.1)
+                   ;; nb: 30% limit is arbitrary
+                   (lambda (arg) (ct--within arg 30 0.1)))))))))
+    result))
 
-(defun ct-transform-lch-l (c func-or-val) "Transform property lch-l of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lch 0))
-(defun ct-transform-lch-c (c func-or-val) "Transform property lch-c of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lch 1))
-(defun ct-transform-lch-h (c func-or-val) "Transform property lch-h of C using FUNC-OR-VAL." (ct--transform-prop ct-transform-lch 2))
-
-(defun ct--getter (c transform getter)
-  "Internal function for making a GETTER of C using a TRANSFORM function."
-  (let ((return))
-    (funcall transform c
-      (lambda (&rest props)
-        (setq return (funcall getter props))
-        props))
-    return))
-
-(defun ct-get-rgb (c) "Get rgb representation of color C." (ct--getter c #'ct-transform-rgb #'identity))
-(defun ct-get-rgb-r (c) "Get rgb-r representation of color C." (ct--getter c #'ct-transform-rgb #'-first-item))
-(defun ct-get-rgb-g (c) "Get rgb-g representation of color C." (ct--getter c #'ct-transform-rgb #'-second-item))
-(defun ct-get-rgb-b (c) "Get rgb-b representation of color C." (ct--getter c #'ct-transform-rgb #'-third-item))
-
-(defun ct-get-hsl (c) "Get hsl representation of color C." (ct--getter c #'ct-transform-hsl #'identity))
-(defun ct-get-hsl-h (c) "Get hsl-h representation of color C." (ct--getter c #'ct-transform-hsl #'-first-item))
-(defun ct-get-hsl-s (c) "Get hsl-s representation of color C." (ct--getter c #'ct-transform-hsl #'-second-item))
-(defun ct-get-hsl-l (c) "Get hsl-l representation of color C." (ct--getter c #'ct-transform-hsl #'-third-item))
-
-(defun ct-get-hsv (c) "Get hsv representation of color C." (ct--getter c #'ct-transform-hsv #'identity))
-(defun ct-get-hsv-h (c) "Get hsv-h representation of color C." (ct--getter c #'ct-transform-hsv #'-first-item))
-(defun ct-get-hsv-s (c) "Get hsv-s representation of color C." (ct--getter c #'ct-transform-hsv #'-second-item))
-(defun ct-get-hsv-v (c) "Get hsv-v representation of color C." (ct--getter c #'ct-transform-hsv #'-third-item))
-
-(defun ct-get-hsluv (c) "Get hsluv representation of color C." (ct--getter c #'ct-transform-hsluv #'identity))
-(defun ct-get-hsluv-h (c) "Get hsluv-h representation of color C." (ct--getter c #'ct-transform-hsluv #'-first-item))
-(defun ct-get-hsluv-s (c) "Get hsluv-s representation of color C." (ct--getter c #'ct-transform-hsluv #'-second-item))
-(defun ct-get-hsluv-l (c) "Get hsluv-l representation of color C." (ct--getter c #'ct-transform-hsluv #'-third-item))
-
-(defun ct-get-hpluv (c) "Get hpluv representation of color C." (ct--getter c #'ct-transform-hpluv #'identity))
-(defun ct-get-hpluv-h (c) "Get hpluv-h representation of color C." (ct--getter c #'ct-transform-hpluv #'-first-item))
-(defun ct-get-hpluv-s (c) "Get hpluv-s representation of color C." (ct--getter c #'ct-transform-hpluv #'-second-item))
-(defun ct-get-hpluv-l (c) "Get hpluv-l representation of color C." (ct--getter c #'ct-transform-hpluv #'-third-item))
-
-(defun ct-get-lab (c) "Get lab representation of color C." (ct--getter c #'ct-transform-lab #'identity))
-(defun ct-get-lab-l (c) "Get lab-l representation of color C." (ct--getter c #'ct-transform-lab #'-first-item))
-(defun ct-get-lab-a (c) "Get lab-a representation of color C." (ct--getter c #'ct-transform-lab #'-second-item))
-(defun ct-get-lab-b (c) "Get lab-b representation of color C." (ct--getter c #'ct-transform-lab #'-third-item))
-
-(defun ct-get-lch (c) "Get lch representation of color C." (ct--getter c #'ct-transform-lch #'identity))
-(defun ct-get-lch-l (c) "Get lch-l representation of color C." (ct--getter c #'ct-transform-lch #'-first-item))
-(defun ct-get-lch-c (c) "Get lch-c representation of color C." (ct--getter c #'ct-transform-lch #'-second-item))
-(defun ct-get-lch-h (c) "Get lch-h representation of color C." (ct--getter c #'ct-transform-lch #'-third-item))
+(-map 'ct--make-transform-property-functions
+  '("hsl" "rgb" "hsv" "lch" "lab" "hpluv" "hsluv"))
 
 ;; make colors within our normalized transform functions:
 (defun ct--make-color-meta (transform properties)
@@ -341,6 +330,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
   "Internal function for managing hue rotation in TRANSFORM starting at C by degree count INTERVAL."
   (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
     (if (< 0 interval)
+      ;; todo: should this be range?
       (number-sequence 0 359 interval)
       (number-sequence 360 1 interval))))
 
@@ -394,38 +384,29 @@ Ranges for RGB color are all 0-100."
 If no VALUE is passed, will lighten color by a very small possible amount."
   (if value
     (ct-transform-lab-l c (-partial #'+ value))
-    (ct--amp-value c
-      (lambda (color amount)
-        (ct-transform-lab-l color (-partial #'+ amount)))
-      0.1
-      (-partial #'+ 0.1)
-      ;; nb: 30% limit is arbitrary
-      (lambda (arg) (ct--within arg 30 0.1)))))
+    (ct-transform-lab-l-inc)))
 
 (defun ct-lab-darken (c &optional value)
   "Darken color C by VALUE in the lab space.
 If no VALUE is passed, will darken color by a very small possible amount."
   (if value
     (ct-transform-lab-l c (-rpartial #'- value))
-    (ct--amp-value c
-      (lambda (color amount)
-        (ct-transform-lab-l color (-partial #'+ amount)))
-      -0.1
-      (-rpartial #'- 0.1)
-      ;; nb: 30% limit is arbitrary
-      (lambda (arg) (ct--within arg 30 0.1)))))
+    (ct-transform-lab-l-dec)))
 
 (defun ct-pastel (c &optional Smod Vmod)
   "Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD."
   ;; ref https://en.wikipedia.org/wiki/Pastel_(color)
-  ;; pastel colors belong to a pale family of colors, which, when described in the HSV color space,
-  ;; have high value and low saturation.
-  (ct-transform-hsv c
+  (ct-transform-hsl c
     (lambda (H S L)
-      (list
-        H
-        (- S (or Smod 5))
-        (+ L (or Vmod 5))))))
+      (let ((new-S (- S (or Smod 1)))
+             (new-L (+ L (or Vmod 1))))
+        (list
+          H
+          ;; pastel colors have high lightness, low saturation
+          ;; arbitrary clamps here
+          ;; todo: maybe try and make this smarter (preserve ratio when clamping either s or l
+          (ct-clamp new-S 0 40)
+          (ct-clamp new-L 60 100))))))
 
 (defun ct-luminance-srgb (c)
   "Get the srgb luminance value of C."
@@ -468,19 +449,17 @@ Optionally override SCALE comparison value."
 
 (defun ct-greaten (c &optional percent)
   "Make a light color C lighter, a dark color C darker (by PERCENT)."
-  ;; todo:amp
-  (ct-shorten
+  (ct-maybe-shorten
     (if (ct-is-light-p c)
-      (color-lighten-name c percent)
-      (color-darken-name c percent))))
+      (ct-lab-lighten c percent)
+      (ct-lab-darken c percent))))
 
 (defun ct-lessen (c &optional percent)
   "Make a light color C darker, a dark color C lighter (by PERCENT)."
-  ;; todo:amp
-  (ct-shorten
+  (ct-maybe-shorten
     (if (ct-is-light-p c)
-      (color-darken-name c percent)
-      (color-lighten-name c percent))))
+      (ct-lab-darken c percent)
+      (ct-lab-lighten c percent))))
 
 (defun ct-iterations (start op condition)
   "Do OP on START color until CONDITION is met or op has no effect - return all intermediate steps."
@@ -508,10 +487,8 @@ Optionally override SCALE comparison value."
   "Tint a foreground color C against background color AGAINST until contrast RATIO minimum is reached."
   (ct-iterate c
     (if (ct-is-light-p against)
-      ;; 'ct-lab-darken 'ct-lab-lighten
-      (-rpartial 'ct-lab-darken 0.5)
-      (-rpartial 'ct-lab-lighten 0.7)
-      )
+      #'ct-lab-darken
+      #'ct-lab-lighten)
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
 
 (defun ct-format-rbga (C &optional opacity)
@@ -555,21 +532,6 @@ truthy, then format will be '#FFFFFFAA'."
       (+ g2 (* (- g1 g2) opacity))
       (+ b2 (* (- b1 b2) opacity)))))
 
-(defun ct--colorspace-map (label)
-  "Map a LABEL to plist'd utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv."
-  (->>
-    `(:transform "ct-transform-%s"
-       :make "ct-make-%s"
-       :get "ct-get-%s"
-       :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
-       :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
-       :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
-    (-partition 2)
-    (-map (-lambda ((key format))
-            (list
-              key
-              (intern (format name label)))))
-    (-flatten)))
 
 (defun ct-gradient (step start end &optional with-ends space)
   "Create a gradient from color START to color END with STEP steps.
@@ -579,32 +541,22 @@ WITH-ENDS. Optionally choose a colorspace with SPACE (see
 results."
   ;; NB: this might not go the right direction WRT hue properties
   ;; TODO: account for hue step direction via closeness to 360 or 0.
-  (let* ((op-map (ct--colorspace-map (or space "rgb")))
-          (step (if with-ends (- step 2) step))
-          (get-offsets
-            (lambda (start end)
-              ;; tolerance
-              (if (<= (abs (- end start)) 0.1)
-                (-repeat (+ step 2) start)
-                (append
-                  (ct--range start end (/ (- end start) (float step)))
-                  (list end))))))
+  (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map (or space "rgb")))
+           (step (if with-ends (- step 2) step))
+           (get-offsets
+             (lambda (start end)
+               (ct--range start end
+                 (/ (- end start)
+                   (float step))))))
     (->>
       (-zip-lists
-        (funcall (plist-get op-map :get) start)
-        (funcall (plist-get op-map :get) end))
+        (funcall get-color start)
+        (funcall get-color end))
 
       (-map (-applify get-offsets))
 
-      ;; TODO: this is a hack -- sometimes get-offsets is short one -- pad out by the end goal prop.
-      (-map
-        (lambda (parts)
-          (if (< (length parts) step)
-            (append parts (-repeat (- step (length parts)) (-last-item parts)))
-            parts)))
-
       (apply #'-zip-lists)
-      (-map (-applify (plist-get op-map :make)))
+      (-map (-applify make-color))
       (funcall
         (lambda (result)
           (if with-ends
