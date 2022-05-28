@@ -338,6 +338,37 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 ;;; other color functions
 ;;;
 
+(defun ct-format-rbga (C &optional opacity)
+  "RGBA formatting:
+Pass in C and OPACITY 0-100, get a string
+representation of C as follows: 'rgba(R, G, B, OPACITY)', where
+values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
+  (->>
+    (ct-get-rgb C)
+    (-map (-partial '* (/ 255.0 100)))
+    (-map #'round)
+    (funcall (lambda (coll) (-snoc coll
+                              (/
+                                (ct-clamp (or opacity 100) 0 100)
+                                100.0))))
+    (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
+
+(defun ct-format-argb (C &optional opacity end)
+  "Argb formatting:
+Pass in C and OPACITY 0-100, get a string representation of C
+as follows: '#AAFFFFFF', where AA is a hex pair for the alpha,
+followed by FF times 3 hex pairs for red, green, blue. If END is
+truthy, then format will be '#FFFFFFAA'."
+  (->>
+    (ct-clamp (or opacity 100) 0 100)
+    (* (/ 255.0 100))
+    (round)
+    (format "%02x")
+    (funcall (lambda (A)
+               (if end
+                 (format "#%s%s" (-> C ct-shorten (substring 1)) A)
+                 (format "#%s%s" A (-> C ct-shorten (substring 1))))))))
+
 ;; sRGB <-> linear RGB conversion
 ;; https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_(CIE_XYZ_to_sRGB)
 ;; TODO: compare to 'ct-luminance-srgb' -- the comparison value is different though.
@@ -418,7 +449,7 @@ Ranges for RGB color are all 0-100."
   "Convert a color C wrt white points W1 and W2 through the lab colorspace."
   (ct-lab-to-name (ct-name-to-lab c w1) w2))
 
-(defun ct-name-distance (c1 c2)
+(defun ct-distance (c1 c2)
   "Get cie-DE2000 distance between C1 and C2 -- value is 0-100."
   ;; note: there are 3 additional optional params to cie-de2000: compensation for
   ;; {lightness,chroma,hue} (all 0.0-1.0)
@@ -474,37 +505,6 @@ Optionally override SCALE comparison value."
       #'ct-lab-lighten)
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
 
-(defun ct-format-rbga (C &optional opacity)
-  "RGBA formatting:
-Pass in C and OPACITY 0-100, get a string
-representation of C as follows: 'rgba(R, G, B, OPACITY)', where
-values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
-  (->>
-    (ct-get-rgb C)
-    (-map (-partial '* (/ 255.0 100)))
-    (-map #'round)
-    (funcall (lambda (coll) (-snoc coll
-                              (/
-                                (ct-clamp (or opacity 100) 0 100)
-                                100.0))))
-    (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
-
-(defun ct-format-argb (C &optional opacity end)
-  "Argb formatting:
-Pass in C and OPACITY 0-100, get a string representation of C
-as follows: '#AAFFFFFF', where AA is a hex pair for the alpha,
-followed by FF times 3 hex pairs for red, green, blue. If END is
-truthy, then format will be '#FFFFFFAA'."
-  (->>
-    (ct-clamp (or opacity 100) 0 100)
-    (* (/ 255.0 100))
-    (round)
-    (format "%02x")
-    (funcall (lambda (A)
-               (if end
-                 (format "#%s%s" (-> C ct-shorten (substring 1)) A)
-                 (format "#%s%s" A (-> C ct-shorten (substring 1))))))))
-
 (defun ct-mix-opacity (top bottom opacity)
   "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
   ;; ref https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
@@ -521,6 +521,7 @@ Optionally include START and END in results using
 WITH-ENDS. Optionally choose a colorspace with SPACE (see
 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
 results."
+  ;; todo: consider hue
   (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map (or space "rgb")))
            (step (if with-ends (- step 2) step))
            (get-step-vals (lambda (start end)
@@ -552,21 +553,15 @@ results."
                      (-drop 1)
                      (-drop-last 1))))))))
 
-(defun ct-average-color (space colors)
+(defun ct-mix (c1 c2 &optional space)
+  "Mix colors C1 and C2 in SPACE."
+  (-second-item (ct-gradient 3 c1 c2 t space)))
+
+(defun ct-average (colors &optional space)
   "Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'."
-  (let ((get-fn (plist-get (ct--colorspace-map space) :get))
-         (make-fn (plist-get (ct--colorspace-map space) :make))
-         (avg-fn (lambda (a b) (/ (+ a b) 2.0))))
-    (apply make-fn
-      (-reduce-from
-        (-lambda (acc new)
-          (-map
-            (-applify 'avg-fn)
-            (-zip-lists
-              acc
-              (funcall get-fn new))))
-        (funcall get-fn (-first-item colors))
-        (cdr colors)))))
+  (-reduce (lambda (color new)
+             (ct-mix color new space))
+    colors))
 
 (provide 'ct)
 ;;; ct.el ends here
