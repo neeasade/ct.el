@@ -23,10 +23,9 @@
 ;; setting the wrap convention for docstrings at ~100 chars.
 
 (require 'color)
-(require 'seq)
-
-(require 'hsluv)
 (require 'dash)
+(require 'hsluv)
+(require 'seq)
 
 ;; customization:
 
@@ -43,18 +42,6 @@
 ;;;
 ;;; helpers to build color space functions
 ;;;
-
-(defun ct--range (one &optional two step)
-  "Create a range from ONE to TWO with step STEP."
-  (let* ((start (if two one 0))
-          (end (if two two one))
-          (step (or step (if (> end start) 1 -1))))
-    (cond
-      ((= end start) (list))
-      ((> end start)
-        (number-sequence start (- end 1) step))
-      ((< end start)
-        (number-sequence start (+ 1 end) step)))))
 
 (defun ct-clamp (value min max)
   "Make sure VALUE is a number between MIN and MAX inclusive."
@@ -196,18 +183,18 @@ Ranges for HSL are {0-360,0-100,0-100}."
 Ranges for HSV are {0-360,0-100,0-100}."
   (->> (color-name-to-rgb c)
     (apply #'color-rgb-to-hsv)
-    (funcall (lambda (hsv)
+    (funcall (-lambda ((H S V))
                (apply transform
                  (list
-                   (radians-to-degrees (-first-item hsv))
-                   (* 100.0 (-second-item hsv))
-                   (* 100.0 (-third-item hsv))))))
+                   (radians-to-degrees H)
+                   (* 100.0 S)
+                   (* 100.0 V)))))
     ;; from transformed to what our function expects
-    (funcall (lambda (hsv)
+    (funcall (-lambda ((H S V))
                (list
-                 (degrees-to-radians (-first-item hsv))
-                 (color-clamp (/ (-second-item hsv) 100.0))
-                 (color-clamp (/ (-third-item hsv) 100.0)))))
+                 (degrees-to-radians H)
+                 (color-clamp (/ S 100.0))
+                 (color-clamp (/ V 100.0)))))
     (apply #'ct-hsv-to-rgb)
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
@@ -219,11 +206,11 @@ Ranges for HPLUV are {0-360,0-100,0-100}."
     (apply #'color-rgb-to-hex
       (-map #'color-clamp
         (hsluv-hpluv-to-rgb
-          (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
+          (-let (((H P L) (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
             (list
-              (mod (-first-item result) 360.0)
-              (ct-clamp (-second-item result) 0 100)
-              (ct-clamp (-third-item result) 0 100))))))))
+              (mod H 360.0)
+              (ct-clamp P 0 100)
+              (ct-clamp L 0 100))))))))
 
 (defun ct-transform-hsluv (c transform)
   "Work with a color C in the HSLUV space using function TRANSFORM.
@@ -290,28 +277,35 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
                  (nth ,index (,get c))))
 
             (funcall collect
-              `(defun ,(intern (format "%s-inc" transform-prop-fn)) (c)
-                 ,(format "Increase %s value of C by the minimum amound needed to change C." prop-name)
-                 (ct--amp-value c
-                   (lambda (color amount)
-                     (,(intern transform-prop-fn) color (-partial #'+ amount)))
-                   0.1 (-partial #'+ 0.1)
-                   ;; nb: 30% limit is arbitrary
-                   (lambda (arg) (ct--within arg 30 0.1)))))
+              `(defun ,(intern (format "%s-inc" transform-prop-fn)) (c &optional v)
+                 ,(format "Increase %s value of C by V (defaults to the minimum amound needed to change C)." prop-name)
+                 (if v (,(intern transform-prop-fn) c (-partial #'+ v))
+                   (ct--amp-value c
+                     (lambda (color amount)
+                       (,(intern transform-prop-fn) color (-partial #'+ amount)))
+                     0.1 (-partial #'+ 0.1)
+                     ;; nb: 30% limit is arbitrary
+                     (lambda (arg) (ct--within arg 30 0.1))))))
 
             (funcall collect
-              `(defun ,(intern (format "%s-dec" transform-prop-fn)) (c)
+              `(defun ,(intern (format "%s-dec" transform-prop-fn)) (c &optional v)
                  ,(format "Decrease %s value of C by the minimum amound needed to change C." prop-name)
-                 (ct--amp-value c
-                   (lambda (color amount)
-                     (,(intern transform-prop-fn) color (-partial #'+ amount)))
-                   -0.1 (-rpartial #'- 0.1)
-                   ;; nb: 30% limit is arbitrary
-                   (lambda (arg) (ct--within arg 30 0.1)))))))))
+                 (if v (,(intern transform-prop-fn) c (-rpartial #'- v))
+                   (ct--amp-value c
+                     (lambda (color amount)
+                       (,(intern transform-prop-fn) color (-partial #'+ amount)))
+                     -0.1 (-rpartial #'- 0.1)
+                     ;; nb: 30% limit is arbitrary
+                     (lambda (arg) (ct--within arg 30 0.1))))))))))
     result))
 
-(-map 'ct--make-transform-property-functions
-  '("hsl" "rgb" "hsv" "lch" "lab" "hpluv" "hsluv"))
+(ct--make-transform-property-functions "rgb")
+(ct--make-transform-property-functions "hsl")
+(ct--make-transform-property-functions "hsv")
+(ct--make-transform-property-functions "lch")
+(ct--make-transform-property-functions "lab")
+(ct--make-transform-property-functions "hpluv")
+(ct--make-transform-property-functions "hsluv")
 
 ;; make colors within our normalized transform functions:
 (defun ct--make-color-meta (transform properties)
@@ -379,19 +373,8 @@ Ranges for RGB color are all 0-100."
     (lambda (&rest comps)
       (-map 'ct--delinearize comps))))
 
-(defun ct-lab-lighten (c &optional value)
-  "Lighten color C by VALUE in the lab space.
-If no VALUE is passed, will lighten color by a very small possible amount."
-  (if value
-    (ct-transform-lab-l c (-partial #'+ value))
-    (ct-transform-lab-l-inc)))
-
-(defun ct-lab-darken (c &optional value)
-  "Darken color C by VALUE in the lab space.
-If no VALUE is passed, will darken color by a very small possible amount."
-  (if value
-    (ct-transform-lab-l c (-rpartial #'- value))
-    (ct-transform-lab-l-dec)))
+(defalias 'ct-lab-lighten 'ct-transform-lab-l-inc)
+(defalias 'ct-lab-darken 'ct-transform-lab-l-dec)
 
 (defun ct-pastel (c &optional Smod Vmod)
   "Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD."
@@ -532,38 +515,42 @@ truthy, then format will be '#FFFFFFAA'."
       (+ g2 (* (- g1 g2) opacity))
       (+ b2 (* (- b1 b2) opacity)))))
 
-
 (defun ct-gradient (step start end &optional with-ends space)
   "Create a gradient from color START to color END with STEP steps.
 Optionally include START and END in results using
 WITH-ENDS. Optionally choose a colorspace with SPACE (see
 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
 results."
-  ;; NB: this might not go the right direction WRT hue properties
-  ;; TODO: account for hue step direction via closeness to 360 or 0.
   (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map (or space "rgb")))
            (step (if with-ends (- step 2) step))
-           (get-offsets
-             (lambda (start end)
-               (ct--range start end
-                 (/ (- end start)
-                   (float step))))))
-    (->>
-      (-zip-lists
-        (funcall get-color start)
-        (funcall get-color end))
-
-      (-map (-applify get-offsets))
-
+           (get-step-vals (lambda (start end)
+                            (number-sequence
+                              start end
+                              (if (> end start)
+                                (/ (- end start) (float (+ step 1)))
+                                (/ (- start end) (float (+ step 1))))))))
+    (->> (-zip-lists
+           (funcall get-color start)
+           (funcall get-color end))
+      (-map (-lambda ((start end))
+              (funcall get-step-vals start end)))
+      ;; if start and end have REALLY similar values, the range is nil
+      ;; cope here
+      (funcall (lambda (result)
+                 (let ((expected-length (apply 'max (-map 'length result))))
+                   (-map-indexed
+                     (lambda (i l)
+                       (if l l
+                         (-repeat expected-length (nth i (funcall get-color start)))))
+                     result))))
       (apply #'-zip-lists)
       (-map (-applify make-color))
-      (funcall
-        (lambda (result)
-          (if with-ends
-            result
-            (->> result
-              (-drop 1)
-              (-drop-last 1))))))))
+      (funcall (lambda (result)
+                 (if with-ends
+                   result
+                   (->> result
+                     (-drop 1)
+                     (-drop-last 1))))))))
 
 (defun ct-average-color (space colors)
   "Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'."
