@@ -3,7 +3,7 @@
 ;; Copyright (c) 2022 neeasade
 ;; SPDX-License-Identifier: MIT
 ;;
-;; Version: 0.1
+;; Version: 0.2
 ;; Author: neeasade
 ;; Keywords: convenience color theming rgb hsv hsl cie-lab background
 ;; URL: https://github.com/neeasade/ct.el
@@ -48,7 +48,7 @@
   (min max (max min value)))
 
 (defun ct-shorten (c)
-  "Optionally transform C #HHHHHHHHHHHH to #HHHHHH."
+  "Optionally shorten C #HHHHHHHHHHHH to #HHHHHH."
   (if (= (length c) 7)
     c
     (--> c
@@ -69,9 +69,9 @@
     (- anchor tolerance)))
 
 (defun ct--amp-value (v fn arg1 arg1-amp-fn tolerance-fn)
-  "Call FN with V and ARG1 and see if V changes.
+  "Call FN with V and ARG1 and see if V is affected.
 If V does not change, call ARG1-AMP-FN on ARG1 and call FN with the new ARG1.
-Use TOLERANCE-FN to check if ARG1 can be updated further "
+Use TOLERANCE-FN to check if ARG1 can be updated further."
   (let* ((next v)
           (iterations 0))
     (while (and (string= next v)
@@ -128,7 +128,7 @@ Use TOLERANCE-FN to check if ARG1 can be updated further "
 ;;; color space functions
 ;;;
 
-(defun ct-transform-rgb (c transform)
+(defun ct-edit-rgb (c transform)
   "Work with a color C in the RGB space using function TRANSFORM. Ranges for RGB are all 0-100."
   (->> c
     (color-name-to-rgb)
@@ -139,7 +139,7 @@ Use TOLERANCE-FN to check if ARG1 can be updated further "
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
-(defun ct-transform-lab (c transform)
+(defun ct-edit-lab (c transform)
   "Work with a color C in the LAB space using function TRANSFORM.
 Ranges for LAB are {0-100,-100-100,-100-100}."
   (->> c
@@ -152,10 +152,10 @@ Ranges for LAB are {0-100,-100-100,-100-100}."
                (ct-clamp B -100 100))))
     (ct-lab-to-name)))
 
-(defun ct-transform-lch (c transform)
+(defun ct-edit-lch (c transform)
   "Work with a color C in the LCH space using function TRANSFORM.
 Ranges for LCH are {0-100,0-100,0-360}."
-  (ct-transform-lab c
+  (ct-edit-lab c
     (lambda (&rest lab)
       (->> lab
         (apply #'color-lab-to-lch)
@@ -164,7 +164,7 @@ Ranges for LCH are {0-100,0-100,0-360}."
         (apply (lambda (L C H) (list L C (degrees-to-radians (mod H 360)))))
         (apply #'color-lch-to-lab)))))
 
-(defun ct-transform-hsl (c transform)
+(defun ct-edit-hsl (c transform)
   "Work with a color C in the HSL space using function TRANSFORM.
 Ranges for HSL are {0-360,0-100,0-100}."
   (->> c
@@ -178,7 +178,7 @@ Ranges for HSL are {0-360,0-100,0-100}."
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
-(defun ct-transform-hsv (c transform)
+(defun ct-edit-hsv (c transform)
   "Work with a color C in the HSV space using function TRANSFORM.
 Ranges for HSV are {0-360,0-100,0-100}."
   (->> (color-name-to-rgb c)
@@ -199,7 +199,7 @@ Ranges for HSV are {0-360,0-100,0-100}."
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
-(defun ct-transform-hpluv (c transform)
+(defun ct-edit-hpluv (c transform)
   "Work with a color C in the HPLUV space using function TRANSFORM.
 Ranges for HPLUV are {0-360,0-100,0-100}."
   (ct-maybe-shorten
@@ -212,7 +212,7 @@ Ranges for HPLUV are {0-360,0-100,0-100}."
               (ct-clamp P 0 100)
               (ct-clamp L 0 100))))))))
 
-(defun ct-transform-hsluv (c transform)
+(defun ct-edit-hsluv (c transform)
   "Work with a color C in the HSLUV space using function TRANSFORM.
 Ranges for HSLUV are {0-360,0-100,0-100}."
   (ct-maybe-shorten
@@ -228,7 +228,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 (defun ct--colorspace-map (label)
   "Map a LABEL to plist'd utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv."
   (->>
-    `(:transform "ct-transform-%s"
+    `(:transform "ct-edit-%s"
        :make "ct-make-%s"
        :get "ct-get-%s"
        :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
@@ -244,7 +244,6 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
   (-let* (((&plist :transform transform :get get) (ct--colorspace-map colorspace))
            (result '(progn))
            (collect (lambda (sexp) (setq result (-snoc result sexp)))))
-
     (funcall collect
       `(defun ,get (c)
          ,(format "Get %s representation of color C." colorspace)
@@ -259,7 +258,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
       (-map
         (lambda (index)
           (let* ((prop-name (format "%s-%s" colorspace (substring colorspace index (+ index 1))))
-                  (transform-prop-fn (format "ct-transform-%s" prop-name)))
+                  (transform-prop-fn (format "ct-edit-%s" prop-name)))
             (funcall collect
               `(defun ,(intern transform-prop-fn) (c func-or-val)
                  ,(format "Transform property %s of C using FUNC-OR-VAL." prop-name)
@@ -278,7 +277,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 
             (funcall collect
               `(defun ,(intern (format "%s-inc" transform-prop-fn)) (c &optional v)
-                 ,(format "Increase %s value of C by V (defaults to the minimum amound needed to change C)." prop-name)
+                 ,(format "Increase %s value of C by V (defaults to the minimum amount needed to change C)." prop-name)
                  (if v (,(intern transform-prop-fn) c (-partial #'+ v))
                    (ct--amp-value c
                      (lambda (color amount)
@@ -289,7 +288,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 
             (funcall collect
               `(defun ,(intern (format "%s-dec" transform-prop-fn)) (c &optional v)
-                 ,(format "Decrease %s value of C by the minimum amound needed to change C." prop-name)
+                 ,(format "Decrease %s value of C by V (defaults to the minimum amount needed to change C)." prop-name)
                  (if v (,(intern transform-prop-fn) c (-rpartial #'- v))
                    (ct--amp-value c
                      (lambda (color amount)
@@ -312,27 +311,26 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
   "Internal function for creating a color using TRANSFORM function forcing PROPERTIES."
   (funcall transform "#cccccc" (lambda (&rest _) properties)))
 
-(defun ct-make-rgb (R G B) "Make a color using R*G*B properties." (ct--make-color-meta 'ct-transform-rgb (list R G B)))
-(defun ct-make-hsl (H S L) "Make a color using H*S*L properties." (ct--make-color-meta 'ct-transform-hsl (list H S L)))
-(defun ct-make-hsv (H S V) "Make a color using H*S*V properties." (ct--make-color-meta 'ct-transform-hsv (list H S V)))
-(defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta 'ct-transform-hsluv (list H S L)))
-(defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta 'ct-transform-hpluv (list H P L)))
-(defun ct-make-lab (L A B) "Make a color using L*A*B properties." (ct--make-color-meta 'ct-transform-lab (list L A B)))
-(defun ct-make-lch (L C H) "Make a color using L*C*H properties." (ct--make-color-meta 'ct-transform-lch (list L C H)))
+(defun ct-make-rgb (R G B) "Make a color using R*G*B properties." (ct--make-color-meta 'ct-edit-rgb (list R G B)))
+(defun ct-make-hsl (H S L) "Make a color using H*S*L properties." (ct--make-color-meta 'ct-edit-hsl (list H S L)))
+(defun ct-make-hsv (H S V) "Make a color using H*S*V properties." (ct--make-color-meta 'ct-edit-hsv (list H S V)))
+(defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta 'ct-edit-hsluv (list H S L)))
+(defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta 'ct-edit-hpluv (list H P L)))
+(defun ct-make-lab (L A B) "Make a color using L*A*B properties." (ct--make-color-meta 'ct-edit-lab (list L A B)))
+(defun ct-make-lch (L C H) "Make a color using L*C*H properties." (ct--make-color-meta 'ct-edit-lch (list L C H)))
 
 (defun ct--rotation-meta (transform c interval)
   "Internal function for managing hue rotation in TRANSFORM starting at C by degree count INTERVAL."
   (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
     (if (< 0 interval)
-      ;; todo: should this be range?
       (number-sequence 0 359 interval)
       (number-sequence 360 1 interval))))
 
-(defun ct-rotation-hsl (c interval) "Perform a hue rotation in HSL space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hsl-h c interval))
-(defun ct-rotation-hsv (c interval) "Perform a hue rotation in HSV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hsv-h c interval))
-(defun ct-rotation-hsluv (c interval) "Perform a hue rotation in HSLuv space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hsluv-h c interval))
-(defun ct-rotation-hpluv (c interval) "Perform a hue rotation in HPLUV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-hpluv-h c interval))
-(defun ct-rotation-lch (c interval) "Perform a hue rotation in LCH space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-transform-lch-h c interval))
+(defun ct-rotation-hsl (c interval) "Perform a hue rotation in HSL space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hsl-h c interval))
+(defun ct-rotation-hsv (c interval) "Perform a hue rotation in HSV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hsv-h c interval))
+(defun ct-rotation-hsluv (c interval) "Perform a hue rotation in HSLuv space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hsluv-h c interval))
+(defun ct-rotation-hpluv (c interval) "Perform a hue rotation in HPLUV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hpluv-h c interval))
+(defun ct-rotation-lch (c interval) "Perform a hue rotation in LCH space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-lch-h c interval))
 
 ;;;
 ;;; other color functions
@@ -373,7 +371,7 @@ truthy, then format will be '#FFFFFFAA'."
 ;; https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_(CIE_XYZ_to_sRGB)
 ;; TODO: compare to 'ct-luminance-srgb' -- the comparison value is different though.
 (defun ct--linearize (comp)
-  "Convert a color COMPonent value from sRGB to linear RGB.
+  "Convert a color COMP*onent value from sRGB to linear RGB.
 Component value in 0-100 range."
   (let ((c (/ comp 100.0)))
     (* 100
@@ -382,7 +380,7 @@ Component value in 0-100 range."
         (expt (/ (+ c 0.055) 1.055) 2.4)))))
 
 (defun ct--delinearize (comp)
-  "Convert a color COMPonent value from linear RGB to sRGB.
+  "Convert a color COMP*onent value from linear RGB to sRGB.
 Component value in 0-100 range."
   (let ((c (/ comp 100.0)))
     (* 100
@@ -393,24 +391,21 @@ Component value in 0-100 range."
 (defun ct-srgb-to-rgb (c)
   "Convert color C from sRGB color space to linear RGB.
 Ranges for sRGB color are all 0-100."
-  (ct-transform-rgb c
+  (ct-edit-rgb c
     (lambda (&rest comps)
       (-map 'ct--linearize comps))))
 
 (defun ct-rgb-to-srgb (c)
   "Convert linear color C to sRGB color space.
 Ranges for RGB color are all 0-100."
-  (ct-transform-rgb c
+  (ct-edit-rgb c
     (lambda (&rest comps)
       (-map 'ct--delinearize comps))))
-
-(defalias 'ct-lab-lighten 'ct-transform-lab-l-inc)
-(defalias 'ct-lab-darken 'ct-transform-lab-l-dec)
 
 (defun ct-pastel (c &optional Smod Vmod)
   "Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD."
   ;; ref https://en.wikipedia.org/wiki/Pastel_(color)
-  (ct-transform-hsl c
+  (ct-edit-hsl c
     (lambda (H S L)
       (let ((new-S (- S (or Smod 1)))
              (new-L (+ L (or Vmod 1))))
@@ -456,27 +451,23 @@ Ranges for RGB color are all 0-100."
   ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
   (apply #'color-cie-de2000 (-map 'ct-name-to-lab (list c1 c2))))
 
-(defun ct-is-light-p (c &optional scale)
+(defun ct-light-p (c &optional scale)
   "Determine if C is a light color with lightness in the LAB space.
 Optionally override SCALE comparison value."
   (> (-first-item (ct-name-to-lab c)) (or scale 65)))
 
 (defun ct-greaten (c &optional percent)
   "Make a light color C lighter, a dark color C darker (by PERCENT)."
-  (ct-maybe-shorten
-    (if (ct-is-light-p c)
-      (ct-lab-lighten c percent)
-      (ct-lab-darken c percent))))
+  (ct-edit-lab-l-inc c
+    (* percent (if (ct-light-p c) 1 -1))))
 
 (defun ct-lessen (c &optional percent)
   "Make a light color C darker, a dark color C lighter (by PERCENT)."
-  (ct-maybe-shorten
-    (if (ct-is-light-p c)
-      (ct-lab-darken c percent)
-      (ct-lab-lighten c percent))))
+  (ct-edit-lab-l-inc c
+    (* percent (if (ct-light-p c) -1 1))))
 
 (defun ct-iterations (start op condition)
-  "Do OP on START color until CONDITION is met or op has no effect - return all intermediate steps."
+  "Do OP on START color until CONDITION is met or op has no effect - return all intermediate parts."
   (let ((colors (list start))
          (iterations 0))
     (while (and (not (funcall condition (-last-item colors)))
@@ -500,7 +491,7 @@ Optionally override SCALE comparison value."
 (defun ct-tint-ratio (c against ratio)
   "Tint a foreground color C against background color AGAINST until contrast RATIO minimum is reached."
   (ct-iterate c
-    (if (ct-is-light-p against)
+    (if (ct-light-p against)
       #'ct-lab-darken
       #'ct-lab-lighten)
     (lambda (step) (> (ct-contrast-ratio step against) ratio))))
@@ -516,7 +507,7 @@ Optionally override SCALE comparison value."
       (+ b2 (* (- b1 b2) opacity)))))
 
 (defun ct-gradient (step start end &optional with-ends space)
-  "Create a gradient from color START to color END with STEP steps.
+  "Create a gradient from color START to color END in STEP parts.
 Optionally include START and END in results using
 WITH-ENDS. Optionally choose a colorspace with SPACE (see
 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
@@ -562,6 +553,15 @@ results."
   (-reduce (lambda (color new)
              (ct-mix color new space))
     colors))
+
+(defun ct-complement (c)
+  "Return a complement color of C in the HSLUV space."
+  (ct-edit-hsluv-h-inc c 180))
+
+(define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
+(define-obsolete-function-alias 'ct-lab-lighten 'ct-edit-lab-l-inc "2022-06-03")
+(define-obsolete-function-alias 'ct-lab-darken 'ct-edit-lab-l-dec "2022-06-03")
+(define-obsolete-function-alias 'ct-is-light-p 'ct-light-p "2022-06-03")
 
 (provide 'ct)
 ;;; ct.el ends here
