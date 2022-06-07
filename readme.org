@@ -204,10 +204,10 @@ Functions for modifying colors in some way potentially unrelated to a specific c
 **** ct-average ~(COLORS &optional SPACE)~
 Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'.
 #+BEGIN_src elisp
-(ct-average (list "#40a5e8" "#bbbbbb" "#bf9736")) ;; => "#9eb0e8"
+(ct-average (list "#40a5e8" "#bbbbbb" "#bf9736")) ;; => "#9ea383"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/9eb0e8/000000.png?text=+]]
+ → [[https://via.placeholder.com/16/9ea383/000000.png?text=+]]
 #+END_quote
 **** ct-complement ~(C)~
 Return a complement color of C in the HSLUV space.
@@ -224,10 +224,10 @@ WITH-ENDS. Optionally choose a colorspace with SPACE (see
 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
 results.
 #+BEGIN_src elisp
-(ct-gradient 5 "#40a5e8" "#bf9736") ;; => ("#55a4e8" "#6aa4e8" "#7fa4e8" "#94a4e8" "#a9a4e8")
+(ct-gradient 5 "#40a5e8" "#bf9736") ;; => ("#55a2ca" "#6aa0ac" "#7f9e8f" "#949b71" "#a99953")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → [[https://via.placeholder.com/16/55a4e8/000000.png?text=+]],[[https://via.placeholder.com/16/6aa4e8/000000.png?text=+]],[[https://via.placeholder.com/16/7fa4e8/000000.png?text=+]],[[https://via.placeholder.com/16/94a4e8/000000.png?text=+]],[[https://via.placeholder.com/16/a9a4e8/000000.png?text=+]]
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → [[https://via.placeholder.com/16/55a2ca/000000.png?text=+]],[[https://via.placeholder.com/16/6aa0ac/000000.png?text=+]],[[https://via.placeholder.com/16/7f9e8f/000000.png?text=+]],[[https://via.placeholder.com/16/949b71/000000.png?text=+]],[[https://via.placeholder.com/16/a99953/000000.png?text=+]]
 #+END_quote
 **** ct-greaten ~(C &optional PERCENT)~
 Make a light color C lighter, a dark color C darker (by PERCENT).
@@ -272,10 +272,10 @@ Convert a color C wrt white points W1 and W2 through the lab colorspace.
 **** ct-mix ~(C1 C2 &optional SPACE)~
 Mix colors C1 and C2 in SPACE.
 #+BEGIN_src elisp
-(ct-mix "#40a5e8" "#bf9736") ;; => "#7fa4e8"
+(ct-mix "#40a5e8" "#bf9736") ;; => "#7f9e8f"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → [[https://via.placeholder.com/16/7fa4e8/000000.png?text=+]]
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → [[https://via.placeholder.com/16/7f9e8f/000000.png?text=+]]
 #+END_quote
 **** ct-mix-opacity ~(TOP BOTTOM OPACITY)~
 Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0.
@@ -1096,6 +1096,7 @@ Increase hpluv-p value of C by V (defaults to the minimum amount needed to chang
 #+BEGIN_src elisp
 (ct-edit-hpluv-p-inc "#40a5e8") ;; => "#6ea2d0"
 #+END_src
+
 ** Related links
 
 Emacs color libraries:

@@ -516,33 +516,23 @@ results."
   (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map (or space "rgb")))
            (step (if with-ends (- step 2) step))
            (get-step-vals (lambda (start end)
-                            (number-sequence
-                              start end
-                              (if (> end start)
-                                (/ (- end start) (float (+ step 1)))
-                                (/ (- start end) (float (+ step 1))))))))
+                            ;; (-iota end start end)
+                            (let ((step-amount (if (> end start)
+                                                 (/ (- end start) (float (+ 1 step)))
+                                                 (- (/ (- start end) (float (+ 1 step)))))))
+                              (-iota step (+ start step-amount)
+                                step-amount)))))
     (->> (-zip-lists
            (funcall get-color start)
            (funcall get-color end))
       (-map (-lambda ((start end))
               (funcall get-step-vals start end)))
-      ;; if start and end have REALLY similar values, the range is nil
-      ;; cope here
-      (funcall (lambda (result)
-                 (let ((expected-length (apply 'max (-map 'length result))))
-                   (-map-indexed
-                     (lambda (i l)
-                       (if l l
-                         (-repeat expected-length (nth i (funcall get-color start)))))
-                     result))))
       (apply #'-zip-lists)
       (-map (-applify make-color))
       (funcall (lambda (result)
                  (if with-ends
-                   result
-                   (->> result
-                     (-drop 1)
-                     (-drop-last 1))))))))
+                   `(,start ,@result ,end)
+                   result))))))
 
 (defun ct-mix (c1 c2 &optional space)
   "Mix colors C1 and C2 in SPACE."
