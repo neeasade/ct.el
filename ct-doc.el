@@ -50,7 +50,7 @@
 
   (let* ((ct-funcs (ct--get-functions))
           (color "#40a5e8")
-          (color-comp (ct-complement color))
+          (color-complement (ct-complement color))
           (plain-color "#bbbbbb"))
     (setq ct--docs
       `(
@@ -63,19 +63,19 @@
            (ct-light-p ,color))
          ("TODO Color Modification" "Functions for modifying colors in some way potentially unrelated to a specific colorspace")
          (
-           (ct-average color)
+           (ct-average ,(list 'list color plain-color color-complement))
            (ct-complement ,color)
            (ct-gradient 5 ,color ,color-complement)
            (ct-greaten ,color 20)
            (ct-lessen ,color 20)
 
-           (ct-iterate ,color 'ct-edit-hsluv )
-           (ct-iterations color)
+           (ct-iterate ,color 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c ,color) 10)))
+           (ct-iterations ,color 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c ,color) 10)))
 
            (ct-lab-change-whitepoint ,color color-d50-xyz color-d55-xyz)
 
            (ct-mix ,color ,color-complement)
-           (ct-mix-opacity ,color ,color-plain 0.8)
+           (ct-mix-opacity ,color ,plain-color 0.8)
            (ct-pastel ,color)
            (ct-rotation-hpluv ,color 60)
            (ct-rotation-hsl ,color 60)
@@ -86,7 +86,11 @@
            )
 
          ("RGB" "https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8")
-         (
+         ((ct-make-rgb ,@(ct-get-rgb color))
+           (ct-get-rgb ,color)
+           (ct-get-rgb-r ,color)
+           (ct-get-rgb-g ,color)
+           (ct-get-rgb-b ,color)
            (ct-edit-rgb ,color (lambda (R G B) (list R 0 0)))
            (ct-edit-rgb-b ,color (lambda (b) (+ b 50)))
            (ct-edit-rgb-b-dec ,plain-color 10)
@@ -99,7 +103,12 @@
            (ct-edit-rgb-r-inc ,plain-color))
 
          ("LAB" "https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e")
-         ((ct-edit-lab ,color (lambda (L A B) (list L -100 -100)))
+         ((ct-make-lab ,@(ct-get-lab color))
+           (ct-get-lab ,color)
+           (ct-get-lab-l ,color)
+           (ct-get-lab-b ,color)
+           (ct-get-lab-a ,color)
+           (ct-edit-lab ,color (lambda (L A B) (list L -100 -100)))
            (ct-edit-lab-a ,color (lambda (a) (- a 20)))
            (ct-edit-lab-a-dec ,color 20)
            (ct-edit-lab-a-inc ,color 20)
@@ -111,7 +120,12 @@
            (ct-edit-lab-l-inc ,color))
 
          ("HSL" "https://notes.neeasade.net/color-spaces.html#h-43869bc7-a7d1-410f-9341-521974751dac")
-         ((ct-edit-hsl ,color (lambda (H S L) (list (+ H 60) 100 L)))
+         ((ct-make-hsl ,@(ct-get-hsl color))
+           (ct-get-hsl ,color)
+           (ct-get-hsl-s ,color)
+           (ct-get-hsl-l ,color)
+           (ct-get-hsl-h ,color)
+           (ct-edit-hsl ,color (lambda (H S L) (list (+ H 60) 100 L)))
            (ct-edit-hsl-h ,color (lambda (H) (+ H 60)))
            (ct-edit-hsl-h-dec ,color)
            (ct-edit-hsl-h-inc ,color)
@@ -123,7 +137,12 @@
            (ct-edit-hsl-s-inc ,color))
 
          ("HSLuv" "https://notes.neeasade.net/color-spaces.html#h-c147b84d-d95b-4d2d-8426-2f96529a8428")
-         ((ct-edit-hsluv ,color (lambda (H S L) (list (+ H 60) 100 L)))
+         ((ct-make-hsluv ,@(ct-get-hsluv color))
+           (ct-get-hsluv ,color)
+           (ct-get-hsluv-s ,color)
+           (ct-get-hsluv-l ,color)
+           (ct-get-hsluv-h ,color)
+           (ct-edit-hsluv ,color (lambda (H S L) (list (+ H 60) 100 L)))
            (ct-edit-hsluv-h ,color (lambda (H) (+ H 60)))
            (ct-edit-hsluv-h-dec ,color)
            (ct-edit-hsluv-h-inc ,color)
@@ -135,7 +154,12 @@
            (ct-edit-hsluv-s-inc ,color))
 
          ("LCH" "https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413")
-         ((ct-edit-lch ,color (lambda (L C H) (list L 100 (+ H 90))))
+         ((ct-make-lch ,@(ct-get-lch color))
+           (ct-get-lch ,color)
+           (ct-get-lch-l ,color)
+           (ct-get-lch-h ,color)
+           (ct-get-lch-c ,color)
+           (ct-edit-lch ,color (lambda (L C H) (list L 100 (+ H 90))))
            (ct-edit-lch-c ,color 100)
            (ct-edit-lch-c-dec ,color)
            (ct-edit-lch-c-inc ,color)
@@ -147,7 +171,12 @@
            (ct-edit-lch-l-inc ,color))
 
          ("HSV" "https://en.wikipedia.org/wiki/HSL_and_HSV")
-         ((ct-edit-hsv ,color (lambda (H S V) (list H 20 100)))
+         ((ct-make-hsv ,@(ct-get-hsv color))
+           (ct-get-hsv ,color)
+           (ct-get-hsv-v ,color)
+           (ct-get-hsv-s ,color)
+           (ct-get-hsv-h ,color)
+           (ct-edit-hsv ,color (lambda (H S V) (list H 20 100)))
            (ct-edit-hsv-h ,color (-partial #'+ 30))
            (ct-edit-hsv-h-dec ,color)
            (ct-edit-hsv-h-inc ,color)
@@ -159,7 +188,12 @@
            (ct-edit-hsv-v-inc ,color))
 
          ("HPLUV" "https://ajalt.github.io/colormath/api/colormath/com.github.ajalt.colormath.model/-h-p-luv/index.html")
-         ((ct-edit-hpluv ,color (lambda (H P L) (list H 100 L)))
+         ((ct-make-hpluv ,@(ct-get-hpluv color))
+           (ct-get-hpluv ,color)
+           (ct-get-hpluv-p ,color)
+           (ct-get-hpluv-l ,color)
+           (ct-get-hpluv-h ,color)
+           (ct-edit-hpluv ,color (lambda (H P L) (list H 100 L)))
            (ct-edit-hpluv-h ,color 0)
            (ct-edit-hpluv-h-dec ,color)
            (ct-edit-hpluv-h-inc ,color)
@@ -259,7 +293,6 @@
         name args)))
 
   )
-
 
 (provide 'ct-doc)
 ;;; ct-doc.el ends here
