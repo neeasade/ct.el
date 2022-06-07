@@ -13,102 +13,278 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 (straight-use-package '(ct :host github :repo "neeasade/ct.el" :branch "master"))
 #+end_src
 
-** Functions
-
-Scalar values fall within range 0 to 100 (consistent interface across spaces for the convenience of using this library). Exceptions are: Hue (0 to 360), and the AB values in ~lab~, which are -100 to 100.
 *** TODO Color Properties
 - [[#ct-contrast-ratio-c1-c2][ct-contrast-ratio]] ~(C1 C2)~
+- [[#ct-distance-c1-c2][ct-distance]] ~(C1 C2)~
+- [[#ct-format-argb-c-optional-opacity-end][ct-format-argb]] ~(C &optional OPACITY END)~
+- [[#ct-format-rbga-c-optional-opacity][ct-format-rbga]] ~(C &optional OPACITY)~
+- [[#ct-light-p-c-optional-scale][ct-light-p]] ~(C &optional SCALE)~
 *** TODO Color Modification
+- [[#ct-average-colors-optional-space][ct-average]] ~(COLORS &optional SPACE)~
+- [[#ct-complement-c][ct-complement]] ~(C)~
+- [[#ct-gradient-step-start-end-optional-with-ends-space][ct-gradient]] ~(STEP START END &optional WITH-ENDS SPACE)~
+- [[#ct-greaten-c-optional-percent][ct-greaten]] ~(C &optional PERCENT)~
+- [[#ct-lessen-c-optional-percent][ct-lessen]] ~(C &optional PERCENT)~
+- [[#ct-iterate-start-op-condition][ct-iterate]] ~(START OP CONDITION)~
+- [[#ct-iterations-start-op-condition][ct-iterations]] ~(START OP CONDITION)~
+- [[#ct-lab-change-whitepoint-c-w1-w2][ct-lab-change-whitepoint]] ~(C W1 W2)~
+- [[#ct-mix-c1-c2-optional-space][ct-mix]] ~(C1 C2 &optional SPACE)~
+- [[#ct-mix-opacity-top-bottom-opacity][ct-mix-opacity]] ~(TOP BOTTOM OPACITY)~
 - [[#ct-pastel-c-optional-smod-vmod][ct-pastel]] ~(C &optional SMOD VMOD)~
+- [[#ct-rotation-hpluv-c-interval][ct-rotation-hpluv]] ~(C INTERVAL)~
+- [[#ct-rotation-hsl-c-interval][ct-rotation-hsl]] ~(C INTERVAL)~
+- [[#ct-rotation-hsluv-c-interval][ct-rotation-hsluv]] ~(C INTERVAL)~
+- [[#ct-rotation-hsv-c-interval][ct-rotation-hsv]] ~(C INTERVAL)~
+- [[#ct-rotation-lch-c-interval][ct-rotation-lch]] ~(C INTERVAL)~
+- [[#ct-tint-ratio-c-against-ratio][ct-tint-ratio]] ~(C AGAINST RATIO)~
 *** RGB
-- [[#ct-transform-rgb-c-transform][ct-transform-rgb]] ~(C TRANSFORM)~
-- [[#ct-transform-rgb-b-c-func-or-val][ct-transform-rgb-b]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-rgb-b-dec-c-optional-v][ct-transform-rgb-b-dec]] ~(C &optional V)~
-- [[#ct-transform-rgb-b-inc-c-optional-v][ct-transform-rgb-b-inc]] ~(C &optional V)~
-- [[#ct-transform-rgb-g-c-func-or-val][ct-transform-rgb-g]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-rgb-g-dec-c-optional-v][ct-transform-rgb-g-dec]] ~(C &optional V)~
-- [[#ct-transform-rgb-g-inc-c-optional-v][ct-transform-rgb-g-inc]] ~(C &optional V)~
-- [[#ct-transform-rgb-r-c-func-or-val][ct-transform-rgb-r]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-rgb-r-dec-c-optional-v][ct-transform-rgb-r-dec]] ~(C &optional V)~
-- [[#ct-transform-rgb-r-inc-c-optional-v][ct-transform-rgb-r-inc]] ~(C &optional V)~
+- [[#ct-make-rgb-r-g-b][ct-make-rgb]] ~(R G B)~
+- [[#ct-get-rgb-c][ct-get-rgb]] ~(C)~
+- [[#ct-get-rgb-r-c][ct-get-rgb-r]] ~(C)~
+- [[#ct-get-rgb-g-c][ct-get-rgb-g]] ~(C)~
+- [[#ct-get-rgb-b-c][ct-get-rgb-b]] ~(C)~
+- [[#ct-edit-rgb-c-transform][ct-edit-rgb]] ~(C TRANSFORM)~
+- [[#ct-edit-rgb-b-c-func-or-val][ct-edit-rgb-b]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-rgb-b-dec-c-optional-v][ct-edit-rgb-b-dec]] ~(C &optional V)~
+- [[#ct-edit-rgb-b-inc-c-optional-v][ct-edit-rgb-b-inc]] ~(C &optional V)~
+- [[#ct-edit-rgb-g-c-func-or-val][ct-edit-rgb-g]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-rgb-g-dec-c-optional-v][ct-edit-rgb-g-dec]] ~(C &optional V)~
+- [[#ct-edit-rgb-g-inc-c-optional-v][ct-edit-rgb-g-inc]] ~(C &optional V)~
+- [[#ct-edit-rgb-r-c-func-or-val][ct-edit-rgb-r]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-rgb-r-dec-c-optional-v][ct-edit-rgb-r-dec]] ~(C &optional V)~
+- [[#ct-edit-rgb-r-inc-c-optional-v][ct-edit-rgb-r-inc]] ~(C &optional V)~
 *** LAB
-- [[#ct-transform-lab-c-transform][ct-transform-lab]] ~(C TRANSFORM)~
-- [[#ct-transform-lab-a-c-func-or-val][ct-transform-lab-a]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-lab-a-dec-c-optional-v][ct-transform-lab-a-dec]] ~(C &optional V)~
-- [[#ct-transform-lab-a-inc-c-optional-v][ct-transform-lab-a-inc]] ~(C &optional V)~
-- [[#ct-transform-lab-b-c-func-or-val][ct-transform-lab-b]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-lab-b-dec-c-optional-v][ct-transform-lab-b-dec]] ~(C &optional V)~
-- [[#ct-transform-lab-b-inc-c-optional-v][ct-transform-lab-b-inc]] ~(C &optional V)~
-- [[#ct-transform-lab-l-c-func-or-val][ct-transform-lab-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-lab-l-dec-c-optional-v][ct-transform-lab-l-dec]] ~(C &optional V)~
-- [[#ct-transform-lab-l-inc-c-optional-v][ct-transform-lab-l-inc]] ~(C &optional V)~
+- [[#ct-make-lab-l-a-b][ct-make-lab]] ~(L A B)~
+- [[#ct-get-lab-c][ct-get-lab]] ~(C)~
+- [[#ct-get-lab-l-c][ct-get-lab-l]] ~(C)~
+- [[#ct-get-lab-b-c][ct-get-lab-b]] ~(C)~
+- [[#ct-get-lab-a-c][ct-get-lab-a]] ~(C)~
+- [[#ct-edit-lab-c-transform][ct-edit-lab]] ~(C TRANSFORM)~
+- [[#ct-edit-lab-a-c-func-or-val][ct-edit-lab-a]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-lab-a-dec-c-optional-v][ct-edit-lab-a-dec]] ~(C &optional V)~
+- [[#ct-edit-lab-a-inc-c-optional-v][ct-edit-lab-a-inc]] ~(C &optional V)~
+- [[#ct-edit-lab-b-c-func-or-val][ct-edit-lab-b]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-lab-b-dec-c-optional-v][ct-edit-lab-b-dec]] ~(C &optional V)~
+- [[#ct-edit-lab-b-inc-c-optional-v][ct-edit-lab-b-inc]] ~(C &optional V)~
+- [[#ct-edit-lab-l-c-func-or-val][ct-edit-lab-l]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-lab-l-dec-c-optional-v][ct-edit-lab-l-dec]] ~(C &optional V)~
+- [[#ct-edit-lab-l-inc-c-optional-v][ct-edit-lab-l-inc]] ~(C &optional V)~
 *** HSL
-- [[#ct-transform-hsl-c-transform][ct-transform-hsl]] ~(C TRANSFORM)~
-- [[#ct-transform-hsl-h-c-func-or-val][ct-transform-hsl-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsl-h-dec-c-optional-v][ct-transform-hsl-h-dec]] ~(C &optional V)~
-- [[#ct-transform-hsl-h-inc-c-optional-v][ct-transform-hsl-h-inc]] ~(C &optional V)~
-- [[#ct-transform-hsl-l-c-func-or-val][ct-transform-hsl-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsl-l-dec-c-optional-v][ct-transform-hsl-l-dec]] ~(C &optional V)~
-- [[#ct-transform-hsl-l-inc-c-optional-v][ct-transform-hsl-l-inc]] ~(C &optional V)~
-- [[#ct-transform-hsl-s-c-func-or-val][ct-transform-hsl-s]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsl-s-dec-c-optional-v][ct-transform-hsl-s-dec]] ~(C &optional V)~
-- [[#ct-transform-hsl-s-inc-c-optional-v][ct-transform-hsl-s-inc]] ~(C &optional V)~
+- [[#ct-make-hsl-h-s-l][ct-make-hsl]] ~(H S L)~
+- [[#ct-get-hsl-c][ct-get-hsl]] ~(C)~
+- [[#ct-get-hsl-s-c][ct-get-hsl-s]] ~(C)~
+- [[#ct-get-hsl-l-c][ct-get-hsl-l]] ~(C)~
+- [[#ct-get-hsl-h-c][ct-get-hsl-h]] ~(C)~
+- [[#ct-edit-hsl-c-transform][ct-edit-hsl]] ~(C TRANSFORM)~
+- [[#ct-edit-hsl-h-c-func-or-val][ct-edit-hsl-h]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsl-h-dec-c-optional-v][ct-edit-hsl-h-dec]] ~(C &optional V)~
+- [[#ct-edit-hsl-h-inc-c-optional-v][ct-edit-hsl-h-inc]] ~(C &optional V)~
+- [[#ct-edit-hsl-l-c-func-or-val][ct-edit-hsl-l]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsl-l-dec-c-optional-v][ct-edit-hsl-l-dec]] ~(C &optional V)~
+- [[#ct-edit-hsl-l-inc-c-optional-v][ct-edit-hsl-l-inc]] ~(C &optional V)~
+- [[#ct-edit-hsl-s-c-func-or-val][ct-edit-hsl-s]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsl-s-dec-c-optional-v][ct-edit-hsl-s-dec]] ~(C &optional V)~
+- [[#ct-edit-hsl-s-inc-c-optional-v][ct-edit-hsl-s-inc]] ~(C &optional V)~
 *** HSLuv
-- [[#ct-transform-hsluv-c-transform][ct-transform-hsluv]] ~(C TRANSFORM)~
-- [[#ct-transform-hsluv-h-c-func-or-val][ct-transform-hsluv-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsluv-h-dec-c-optional-v][ct-transform-hsluv-h-dec]] ~(C &optional V)~
-- [[#ct-transform-hsluv-h-inc-c-optional-v][ct-transform-hsluv-h-inc]] ~(C &optional V)~
-- [[#ct-transform-hsluv-l-c-func-or-val][ct-transform-hsluv-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsluv-l-dec-c-optional-v][ct-transform-hsluv-l-dec]] ~(C &optional V)~
-- [[#ct-transform-hsluv-l-inc-c-optional-v][ct-transform-hsluv-l-inc]] ~(C &optional V)~
-- [[#ct-transform-hsluv-s-c-func-or-val][ct-transform-hsluv-s]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsluv-s-dec-c-optional-v][ct-transform-hsluv-s-dec]] ~(C &optional V)~
-- [[#ct-transform-hsluv-s-inc-c-optional-v][ct-transform-hsluv-s-inc]] ~(C &optional V)~
+- [[#ct-make-hsluv-h-s-l][ct-make-hsluv]] ~(H S L)~
+- [[#ct-get-hsluv-c][ct-get-hsluv]] ~(C)~
+- [[#ct-get-hsluv-s-c][ct-get-hsluv-s]] ~(C)~
+- [[#ct-get-hsluv-l-c][ct-get-hsluv-l]] ~(C)~
+- [[#ct-get-hsluv-h-c][ct-get-hsluv-h]] ~(C)~
+- [[#ct-edit-hsluv-c-transform][ct-edit-hsluv]] ~(C TRANSFORM)~
+- [[#ct-edit-hsluv-h-c-func-or-val][ct-edit-hsluv-h]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsluv-h-dec-c-optional-v][ct-edit-hsluv-h-dec]] ~(C &optional V)~
+- [[#ct-edit-hsluv-h-inc-c-optional-v][ct-edit-hsluv-h-inc]] ~(C &optional V)~
+- [[#ct-edit-hsluv-l-c-func-or-val][ct-edit-hsluv-l]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsluv-l-dec-c-optional-v][ct-edit-hsluv-l-dec]] ~(C &optional V)~
+- [[#ct-edit-hsluv-l-inc-c-optional-v][ct-edit-hsluv-l-inc]] ~(C &optional V)~
+- [[#ct-edit-hsluv-s-c-func-or-val][ct-edit-hsluv-s]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsluv-s-dec-c-optional-v][ct-edit-hsluv-s-dec]] ~(C &optional V)~
+- [[#ct-edit-hsluv-s-inc-c-optional-v][ct-edit-hsluv-s-inc]] ~(C &optional V)~
 *** LCH
-- [[#ct-transform-lch-c-transform][ct-transform-lch]] ~(C TRANSFORM)~
-- [[#ct-transform-lch-c-c-func-or-val][ct-transform-lch-c]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-lch-c-dec-c-optional-v][ct-transform-lch-c-dec]] ~(C &optional V)~
-- [[#ct-transform-lch-c-inc-c-optional-v][ct-transform-lch-c-inc]] ~(C &optional V)~
-- [[#ct-transform-lch-h-c-func-or-val][ct-transform-lch-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-lch-h-dec-c-optional-v][ct-transform-lch-h-dec]] ~(C &optional V)~
-- [[#ct-transform-lch-h-inc-c-optional-v][ct-transform-lch-h-inc]] ~(C &optional V)~
-- [[#ct-transform-lch-l-c-func-or-val][ct-transform-lch-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-lch-l-dec-c-optional-v][ct-transform-lch-l-dec]] ~(C &optional V)~
-- [[#ct-transform-lch-l-inc-c-optional-v][ct-transform-lch-l-inc]] ~(C &optional V)~
+- [[#ct-make-lch-l-c-h][ct-make-lch]] ~(L C H)~
+- [[#ct-get-lch-c][ct-get-lch]] ~(C)~
+- [[#ct-get-lch-l-c][ct-get-lch-l]] ~(C)~
+- [[#ct-get-lch-h-c][ct-get-lch-h]] ~(C)~
+- [[#ct-get-lch-c-c][ct-get-lch-c]] ~(C)~
+- [[#ct-edit-lch-c-transform][ct-edit-lch]] ~(C TRANSFORM)~
+- [[#ct-edit-lch-c-c-func-or-val][ct-edit-lch-c]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-lch-c-dec-c-optional-v][ct-edit-lch-c-dec]] ~(C &optional V)~
+- [[#ct-edit-lch-c-inc-c-optional-v][ct-edit-lch-c-inc]] ~(C &optional V)~
+- [[#ct-edit-lch-h-c-func-or-val][ct-edit-lch-h]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-lch-h-dec-c-optional-v][ct-edit-lch-h-dec]] ~(C &optional V)~
+- [[#ct-edit-lch-h-inc-c-optional-v][ct-edit-lch-h-inc]] ~(C &optional V)~
+- [[#ct-edit-lch-l-c-func-or-val][ct-edit-lch-l]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-lch-l-dec-c-optional-v][ct-edit-lch-l-dec]] ~(C &optional V)~
+- [[#ct-edit-lch-l-inc-c-optional-v][ct-edit-lch-l-inc]] ~(C &optional V)~
 *** HSV
-- [[#ct-transform-hsv-c-transform][ct-transform-hsv]] ~(C TRANSFORM)~
-- [[#ct-transform-hsv-h-c-func-or-val][ct-transform-hsv-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsv-h-dec-c-optional-v][ct-transform-hsv-h-dec]] ~(C &optional V)~
-- [[#ct-transform-hsv-h-inc-c-optional-v][ct-transform-hsv-h-inc]] ~(C &optional V)~
-- [[#ct-transform-hsv-s-c-func-or-val][ct-transform-hsv-s]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsv-s-dec-c-optional-v][ct-transform-hsv-s-dec]] ~(C &optional V)~
-- [[#ct-transform-hsv-s-inc-c-optional-v][ct-transform-hsv-s-inc]] ~(C &optional V)~
-- [[#ct-transform-hsv-v-c-func-or-val][ct-transform-hsv-v]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hsv-v-dec-c-optional-v][ct-transform-hsv-v-dec]] ~(C &optional V)~
-- [[#ct-transform-hsv-v-inc-c-optional-v][ct-transform-hsv-v-inc]] ~(C &optional V)~
+- [[#ct-make-hsv-h-s-v][ct-make-hsv]] ~(H S V)~
+- [[#ct-get-hsv-c][ct-get-hsv]] ~(C)~
+- [[#ct-get-hsv-v-c][ct-get-hsv-v]] ~(C)~
+- [[#ct-get-hsv-s-c][ct-get-hsv-s]] ~(C)~
+- [[#ct-get-hsv-h-c][ct-get-hsv-h]] ~(C)~
+- [[#ct-edit-hsv-c-transform][ct-edit-hsv]] ~(C TRANSFORM)~
+- [[#ct-edit-hsv-h-c-func-or-val][ct-edit-hsv-h]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsv-h-dec-c-optional-v][ct-edit-hsv-h-dec]] ~(C &optional V)~
+- [[#ct-edit-hsv-h-inc-c-optional-v][ct-edit-hsv-h-inc]] ~(C &optional V)~
+- [[#ct-edit-hsv-s-c-func-or-val][ct-edit-hsv-s]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsv-s-dec-c-optional-v][ct-edit-hsv-s-dec]] ~(C &optional V)~
+- [[#ct-edit-hsv-s-inc-c-optional-v][ct-edit-hsv-s-inc]] ~(C &optional V)~
+- [[#ct-edit-hsv-v-c-func-or-val][ct-edit-hsv-v]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hsv-v-dec-c-optional-v][ct-edit-hsv-v-dec]] ~(C &optional V)~
+- [[#ct-edit-hsv-v-inc-c-optional-v][ct-edit-hsv-v-inc]] ~(C &optional V)~
 *** HPLUV
-- [[#ct-transform-hpluv-c-transform][ct-transform-hpluv]] ~(C TRANSFORM)~
-- [[#ct-transform-hpluv-h-c-func-or-val][ct-transform-hpluv-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hpluv-h-dec-c-optional-v][ct-transform-hpluv-h-dec]] ~(C &optional V)~
-- [[#ct-transform-hpluv-h-inc-c-optional-v][ct-transform-hpluv-h-inc]] ~(C &optional V)~
-- [[#ct-transform-hpluv-l-c-func-or-val][ct-transform-hpluv-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hpluv-l-dec-c-optional-v][ct-transform-hpluv-l-dec]] ~(C &optional V)~
-- [[#ct-transform-hpluv-l-inc-c-optional-v][ct-transform-hpluv-l-inc]] ~(C &optional V)~
-- [[#ct-transform-hpluv-p-c-func-or-val][ct-transform-hpluv-p]] ~(C FUNC-OR-VAL)~
-- [[#ct-transform-hpluv-p-dec-c-optional-v][ct-transform-hpluv-p-dec]] ~(C &optional V)~
-- [[#ct-transform-hpluv-p-inc-c-optional-v][ct-transform-hpluv-p-inc]] ~(C &optional V)~
+- [[#ct-make-hpluv-h-p-l][ct-make-hpluv]] ~(H P L)~
+- [[#ct-get-hpluv-c][ct-get-hpluv]] ~(C)~
+- [[#ct-get-hpluv-p-c][ct-get-hpluv-p]] ~(C)~
+- [[#ct-get-hpluv-l-c][ct-get-hpluv-l]] ~(C)~
+- [[#ct-get-hpluv-h-c][ct-get-hpluv-h]] ~(C)~
+- [[#ct-edit-hpluv-c-transform][ct-edit-hpluv]] ~(C TRANSFORM)~
+- [[#ct-edit-hpluv-h-c-func-or-val][ct-edit-hpluv-h]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hpluv-h-dec-c-optional-v][ct-edit-hpluv-h-dec]] ~(C &optional V)~
+- [[#ct-edit-hpluv-h-inc-c-optional-v][ct-edit-hpluv-h-inc]] ~(C &optional V)~
+- [[#ct-edit-hpluv-l-c-func-or-val][ct-edit-hpluv-l]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hpluv-l-dec-c-optional-v][ct-edit-hpluv-l-dec]] ~(C &optional V)~
+- [[#ct-edit-hpluv-l-inc-c-optional-v][ct-edit-hpluv-l-inc]] ~(C &optional V)~
+- [[#ct-edit-hpluv-p-c-func-or-val][ct-edit-hpluv-p]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-hpluv-p-dec-c-optional-v][ct-edit-hpluv-p-dec]] ~(C &optional V)~
+- [[#ct-edit-hpluv-p-inc-c-optional-v][ct-edit-hpluv-p-inc]] ~(C &optional V)~
 ** TODO Color Properties
 Functions for seeing properties of colors not necessarily related to a particular color space.
 **** ct-contrast-ratio ~(C1 C2)~
 Get the contrast ratio between C1 and C2.
 #+BEGIN_src elisp
-(ct-contrast-ratio "#e8ebec" "#40a5e8") ;; => 2.2569303437167934
+(ct-contrast-ratio "#bbbbbb" "#40a5e8") ;; => 1.408660798678192
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/e8ebec/000000.png?text=+]],[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 2.2569303437167934
+[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]],[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 1.408660798678192
+#+END_quote
+**** ct-distance ~(C1 C2)~
+Get cie-DE2000 distance between C1 and C2 -- value is 0-100.
+#+BEGIN_src elisp
+(ct-distance "#40a5e8" "#bf9736") ;; => 54.26727209019093
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → 54.26727209019093
+#+END_quote
+**** ct-format-argb ~(C &optional OPACITY END)~
+Argb formatting:
+Pass in C and OPACITY 0-100, get a string representation of C
+as follows: '#AAFFFFFF', where AA is a hex pair for the alpha,
+followed by FF times 3 hex pairs for red, green, blue. If END is
+truthy, then format will be '#FFFFFFAA'.
+#+BEGIN_src elisp
+(ct-format-argb "#40a5e8" 0.8 t) ;; => "#40a5e802"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → #40a5e802
+#+END_quote
+**** ct-format-rbga ~(C &optional OPACITY)~
+RGBA formatting:
+Pass in C and OPACITY 0-100, get a string
+representation of C as follows: 'rgba(R, G, B, OPACITY)', where
+values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0).
+#+BEGIN_src elisp
+(ct-format-rbga "#40a5e8" 0.8) ;; => "rgba(64, 165, 232, 0.008)"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → rgba(64, 165, 232, 0.008)
+#+END_quote
+**** ct-light-p ~(C &optional SCALE)~
+Determine if C is a light color with lightness in the LAB space.
+Optionally override SCALE comparison value.
+#+BEGIN_src elisp
+(ct-light-p "#40a5e8") ;; => nil
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → nil
 #+END_quote
 ** TODO Color Modification
-Functions fo modifying colors in some way unrelated to a colorspace
+Functions for modifying colors in some way potentially unrelated to a specific colorspace
+**** ct-average ~(COLORS &optional SPACE)~
+Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'.
+#+BEGIN_src elisp
+(ct-average (list "#40a5e8" "#bbbbbb" "#bf9736")) ;; => "#9eb0e8"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/9eb0e8/000000.png?text=+]]
+#+END_quote
+**** ct-complement ~(C)~
+Return a complement color of C in the HSLUV space.
+#+BEGIN_src elisp
+(ct-complement "#40a5e8") ;; => "#bf9736"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/bf9736/000000.png?text=+]]
+#+END_quote
+**** ct-gradient ~(STEP START END &optional WITH-ENDS SPACE)~
+Create a gradient from color START to color END in STEP parts.
+Optionally include START and END in results using
+WITH-ENDS. Optionally choose a colorspace with SPACE (see
+'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
+results.
+#+BEGIN_src elisp
+(ct-gradient 5 "#40a5e8" "#bf9736") ;; => ("#55a4e8" "#6aa4e8" "#7fa4e8" "#94a4e8" "#a9a4e8")
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → [[https://via.placeholder.com/16/55a4e8/000000.png?text=+]],[[https://via.placeholder.com/16/6aa4e8/000000.png?text=+]],[[https://via.placeholder.com/16/7fa4e8/000000.png?text=+]],[[https://via.placeholder.com/16/94a4e8/000000.png?text=+]],[[https://via.placeholder.com/16/a9a4e8/000000.png?text=+]]
+#+END_quote
+**** ct-greaten ~(C &optional PERCENT)~
+Make a light color C lighter, a dark color C darker (by PERCENT).
+#+BEGIN_src elisp
+(ct-greaten "#40a5e8" 20) ;; => "#0071af"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/0071af/000000.png?text=+]]
+#+END_quote
+**** ct-lessen ~(C &optional PERCENT)~
+Make a light color C darker, a dark color C lighter (by PERCENT).
+#+BEGIN_src elisp
+(ct-lessen "#40a5e8" 20) ;; => "#83dbff"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/83dbff/000000.png?text=+]]
+#+END_quote
+**** ct-iterate ~(START OP CONDITION)~
+Do OP on START color until CONDITION is met or op has no effect.
+#+BEGIN_src elisp
+(ct-iterate "#40a5e8" 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c "#40a5e8") 10))) ;; => "#40a3ff"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/40a3ff/000000.png?text=+]]
+#+END_quote
+**** ct-iterations ~(START OP CONDITION)~
+Do OP on START color until CONDITION is met or op has no effect - return all intermediate parts.
+#+BEGIN_src elisp
+(ct-iterations "#40a5e8" 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c "#40a5e8") 10))) ;; => ("#40a5e8" "#40a5e9" "#40a5ea" "#40a5eb" "#40a5ec" "#40a5ed" "#40a5ee" "#40a5ef" "#40a5f0" "#40a5f1" "#40a5f2" "#40a5f3" "#40a5f4" "#40a5f5" "#40a5f6" "#40a5f7" "#40a5f8" "#40a5f9" "#40a5fa" "#40a5fb" "#40a5fc" "#40a5fd" "#40a5fe" "#40a5ff" "#40a4ff" "#40a3ff")
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/40a5e9/000000.png?text=+]],[[https://via.placeholder.com/16/40a5ea/000000.png?text=+]],[[https://via.placeholder.com/16/40a5eb/000000.png?text=+]],[[https://via.placeholder.com/16/40a5ec/000000.png?text=+]],[[https://via.placeholder.com/16/40a5ed/000000.png?text=+]],[[https://via.placeholder.com/16/40a5ee/000000.png?text=+]],[[https://via.placeholder.com/16/40a5ef/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f0/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f1/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f2/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f3/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f4/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f5/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f6/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f7/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f8/000000.png?text=+]],[[https://via.placeholder.com/16/40a5f9/000000.png?text=+]],[[https://via.placeholder.com/16/40a5fa/000000.png?text=+]],[[https://via.placeholder.com/16/40a5fb/000000.png?text=+]],[[https://via.placeholder.com/16/40a5fc/000000.png?text=+]],[[https://via.placeholder.com/16/40a5fd/000000.png?text=+]],[[https://via.placeholder.com/16/40a5fe/000000.png?text=+]],[[https://via.placeholder.com/16/40a5ff/000000.png?text=+]],[[https://via.placeholder.com/16/40a4ff/000000.png?text=+]],[[https://via.placeholder.com/16/40a3ff/000000.png?text=+]]
+#+END_quote
+**** ct-lab-change-whitepoint ~(C W1 W2)~
+Convert a color C wrt white points W1 and W2 through the lab colorspace.
+#+BEGIN_src elisp
+(ct-lab-change-whitepoint "#40a5e8" color-d50-xyz color-d55-xyz) ;; => "#00a6f4"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00a6f4/000000.png?text=+]]
+#+END_quote
+**** ct-mix ~(C1 C2 &optional SPACE)~
+Mix colors C1 and C2 in SPACE.
+#+BEGIN_src elisp
+(ct-mix "#40a5e8" "#bf9736") ;; => "#7fa4e8"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → [[https://via.placeholder.com/16/7fa4e8/000000.png?text=+]]
+#+END_quote
+**** ct-mix-opacity ~(TOP BOTTOM OPACITY)~
+Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0.
+#+BEGIN_src elisp
+(ct-mix-opacity "#40a5e8" "#bbbbbb" 0.8) ;; => "#58a9df"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/58a9df/000000.png?text=+]]
+#+END_quote
 **** ct-pastel ~(C &optional SMOD VMOD)~
 Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD.
 #+BEGIN_src elisp
@@ -117,482 +293,809 @@ Make a color C more 'pastel' in the hsluv space -- optionally change the rate of
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/70a1c1/000000.png?text=+]]
 #+END_quote
+**** ct-rotation-hpluv ~(C INTERVAL)~
+Perform a hue rotation in HPLUV space starting with color C by INTERVAL degrees.
+#+BEGIN_src elisp
+(ct-rotation-hpluv "#40a5e8" 60) ;; => ("#6ea2d0" "#c189ca" "#d68695" "#b8995a" "#75aa65" "#06b0a4")
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/6ea2d0/000000.png?text=+]],[[https://via.placeholder.com/16/c189ca/000000.png?text=+]],[[https://via.placeholder.com/16/d68695/000000.png?text=+]],[[https://via.placeholder.com/16/b8995a/000000.png?text=+]],[[https://via.placeholder.com/16/75aa65/000000.png?text=+]],[[https://via.placeholder.com/16/06b0a4/000000.png?text=+]]
+#+END_quote
+**** ct-rotation-hsl ~(C INTERVAL)~
+Perform a hue rotation in HSL space starting with color C by INTERVAL degrees.
+#+BEGIN_src elisp
+(ct-rotation-hsl "#40a5e8" 60) ;; => ("#40a4e7" "#8340e7" "#e740a4" "#e78340" "#a4e740" "#40e783")
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/40a4e7/000000.png?text=+]],[[https://via.placeholder.com/16/8340e7/000000.png?text=+]],[[https://via.placeholder.com/16/e740a4/000000.png?text=+]],[[https://via.placeholder.com/16/e78340/000000.png?text=+]],[[https://via.placeholder.com/16/a4e740/000000.png?text=+]],[[https://via.placeholder.com/16/40e783/000000.png?text=+]]
+#+END_quote
+**** ct-rotation-hsluv ~(C INTERVAL)~
+Perform a hue rotation in HSLuv space starting with color C by INTERVAL degrees.
+#+BEGIN_src elisp
+(ct-rotation-hsluv "#40a5e8" 60) ;; => ("#3fa5e7" "#e26df2" "#f57390" "#bf9736" "#5cb035" "#3aada3")
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/3fa5e7/000000.png?text=+]],[[https://via.placeholder.com/16/e26df2/000000.png?text=+]],[[https://via.placeholder.com/16/f57390/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]],[[https://via.placeholder.com/16/5cb035/000000.png?text=+]],[[https://via.placeholder.com/16/3aada3/000000.png?text=+]]
+#+END_quote
+**** ct-rotation-hsv ~(C INTERVAL)~
+Perform a hue rotation in HSV space starting with color C by INTERVAL degrees.
+#+BEGIN_src elisp
+(ct-rotation-hsv "#40a5e8" 60) ;; => ("#40a4e8" "#8340e8" "#e840a4" "#e88340" "#a4e840" "#40e883")
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/40a4e8/000000.png?text=+]],[[https://via.placeholder.com/16/8340e8/000000.png?text=+]],[[https://via.placeholder.com/16/e840a4/000000.png?text=+]],[[https://via.placeholder.com/16/e88340/000000.png?text=+]],[[https://via.placeholder.com/16/a4e840/000000.png?text=+]],[[https://via.placeholder.com/16/40e883/000000.png?text=+]]
+#+END_quote
+**** ct-rotation-lch ~(C INTERVAL)~
+Perform a hue rotation in LCH space starting with color C by INTERVAL degrees.
+#+BEGIN_src elisp
+(ct-rotation-lch "#40a5e8" 60) ;; => ("#40a4e8" "#c089ce" "#e67f85" "#c09651" "#6fab6a" "#00b0b6")
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/40a4e8/000000.png?text=+]],[[https://via.placeholder.com/16/c089ce/000000.png?text=+]],[[https://via.placeholder.com/16/e67f85/000000.png?text=+]],[[https://via.placeholder.com/16/c09651/000000.png?text=+]],[[https://via.placeholder.com/16/6fab6a/000000.png?text=+]],[[https://via.placeholder.com/16/00b0b6/000000.png?text=+]]
+#+END_quote
+**** ct-tint-ratio ~(C AGAINST RATIO)~
+Tint a foreground color C against background color AGAINST until contrast RATIO minimum is reached.
+#+BEGIN_src elisp
+(ct-tint-ratio "#40a5e8" "#bf9736" 3) ;; => "#fbffff"
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bf9736/000000.png?text=+]] → [[https://via.placeholder.com/16/fbffff/000000.png?text=+]]
+#+END_quote
 ** RGB
 https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8
-**** ct-transform-rgb ~(C TRANSFORM)~
+**** ct-make-rgb ~(R G B)~
+Make a color using R*G*B properties.
+#+BEGIN_src elisp
+(ct-make-rgb 25.098039215686274 64.70588235294117 90.98039215686275) ;; => "#40a4e8"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/40a4e8/000000.png?text=+]]
+#+END_quote
+**** ct-get-rgb ~(C)~
+Get rgb representation of color C.
+#+BEGIN_src elisp
+(ct-get-rgb "#40a5e8") ;; => (25.098039215686274 64.70588235294117 90.98039215686275)
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → (25.098039215686274 64.70588235294117 90.98039215686275)
+#+END_quote
+**** ct-get-rgb-r ~(C)~
+Get rgb-r representation of color C.
+#+BEGIN_src elisp
+(ct-get-rgb-r "#40a5e8") ;; => 25.098039215686274
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 25.098039215686274
+#+END_quote
+**** ct-get-rgb-g ~(C)~
+Get rgb-g representation of color C.
+#+BEGIN_src elisp
+(ct-get-rgb-g "#40a5e8") ;; => 64.70588235294117
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 64.70588235294117
+#+END_quote
+**** ct-get-rgb-b ~(C)~
+Get rgb-b representation of color C.
+#+BEGIN_src elisp
+(ct-get-rgb-b "#40a5e8") ;; => 90.98039215686275
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 90.98039215686275
+#+END_quote
+**** ct-edit-rgb ~(C TRANSFORM)~
 Work with a color C in the RGB space using function TRANSFORM. Ranges for RGB are all 0-100.
 #+BEGIN_src elisp
-(ct-transform-rgb "#40a5e8" (lambda (R G B) (list R 0 0))) ;; => "#400000"
+(ct-edit-rgb "#40a5e8" (lambda (R G B) (list R 0 0))) ;; => "#400000"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/400000/000000.png?text=+]]
 #+END_quote
-**** ct-transform-rgb-b ~(C FUNC-OR-VAL)~
+**** ct-edit-rgb-b ~(C FUNC-OR-VAL)~
 Transform property rgb-b of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-rgb-b "#40a5e8" (lambda (b) (+ b 50))) ;; => "#40a4ff"
+(ct-edit-rgb-b "#40a5e8" (lambda (b) (+ b 50))) ;; => "#40a4ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/40a4ff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-rgb-b-dec ~(C &optional V)~
+**** ct-edit-rgb-b-dec ~(C &optional V)~
 Decrease rgb-b value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-rgb-b-dec "#bbbbbb" 10) ;; => "#bbbba1"
+(ct-edit-rgb-b-dec "#bbbbbb" 10) ;; => "#bbbba1"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/bbbba1/000000.png?text=+]]
 #+END_quote
-**** ct-transform-rgb-b-inc ~(C &optional V)~
+**** ct-edit-rgb-b-inc ~(C &optional V)~
 Increase rgb-b value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-rgb-b-inc "#bbbbbb") ;; => "#bbbbbc"
+(ct-edit-rgb-b-inc "#bbbbbb") ;; => "#bbbbbc"
 #+END_src
-**** ct-transform-rgb-g ~(C FUNC-OR-VAL)~
+**** ct-edit-rgb-g ~(C FUNC-OR-VAL)~
 Transform property rgb-g of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-rgb-g "#40a5e8" 100) ;; => "#40ffe8"
+(ct-edit-rgb-g "#40a5e8" 100) ;; => "#40ffe8"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/40ffe8/000000.png?text=+]]
 #+END_quote
-**** ct-transform-rgb-g-dec ~(C &optional V)~
+**** ct-edit-rgb-g-dec ~(C &optional V)~
 Decrease rgb-g value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-rgb-g-dec "#bbbbbb" 10) ;; => "#bba1bb"
+(ct-edit-rgb-g-dec "#bbbbbb" 10) ;; => "#bba1bb"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/bba1bb/000000.png?text=+]]
 #+END_quote
-**** ct-transform-rgb-g-inc ~(C &optional V)~
+**** ct-edit-rgb-g-inc ~(C &optional V)~
 Increase rgb-g value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-rgb-g-inc "#bbbbbb") ;; => "#bbbcbb"
+(ct-edit-rgb-g-inc "#bbbbbb") ;; => "#bbbcbb"
 #+END_src
-**** ct-transform-rgb-r ~(C FUNC-OR-VAL)~
+**** ct-edit-rgb-r ~(C FUNC-OR-VAL)~
 Transform property rgb-r of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-rgb-r "#40a5e8" 100) ;; => "#ffa4e8"
+(ct-edit-rgb-r "#40a5e8" 100) ;; => "#ffa4e8"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/ffa4e8/000000.png?text=+]]
 #+END_quote
-**** ct-transform-rgb-r-dec ~(C &optional V)~
+**** ct-edit-rgb-r-dec ~(C &optional V)~
 Decrease rgb-r value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-rgb-r-dec "#bbbbbb" 10) ;; => "#a1bbbb"
+(ct-edit-rgb-r-dec "#bbbbbb" 10) ;; => "#a1bbbb"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/a1bbbb/000000.png?text=+]]
 #+END_quote
-**** ct-transform-rgb-r-inc ~(C &optional V)~
+**** ct-edit-rgb-r-inc ~(C &optional V)~
 Increase rgb-r value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-rgb-r-inc "#bbbbbb") ;; => "#bcbbbb"
+(ct-edit-rgb-r-inc "#bbbbbb") ;; => "#bcbbbb"
 #+END_src
 ** LAB
 https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e
-**** ct-transform-lab ~(C TRANSFORM)~
+**** ct-make-lab ~(L A B)~
+Make a color using L*A*B properties.
+#+BEGIN_src elisp
+(ct-make-lab 64.82181751343624 -7.447193842862799 -42.0761273730861) ;; => "#40a4e8"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/40a4e8/000000.png?text=+]]
+#+END_quote
+**** ct-get-lab ~(C)~
+Get lab representation of color C.
+#+BEGIN_src elisp
+(ct-get-lab "#40a5e8") ;; => (64.82181751343624 -7.447193842862799 -42.0761273730861)
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → (64.82181751343624 -7.447193842862799 -42.0761273730861)
+#+END_quote
+**** ct-get-lab-l ~(C)~
+Get lab-l representation of color C.
+#+BEGIN_src elisp
+(ct-get-lab-l "#40a5e8") ;; => 64.82181751343624
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 64.82181751343624
+#+END_quote
+**** ct-get-lab-b ~(C)~
+Get lab-b representation of color C.
+#+BEGIN_src elisp
+(ct-get-lab-b "#40a5e8") ;; => -42.0761273730861
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → -42.0761273730861
+#+END_quote
+**** ct-get-lab-a ~(C)~
+Get lab-a representation of color C.
+#+BEGIN_src elisp
+(ct-get-lab-a "#40a5e8") ;; => -7.447193842862799
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → -7.447193842862799
+#+END_quote
+**** ct-edit-lab ~(C TRANSFORM)~
 Work with a color C in the LAB space using function TRANSFORM.
 Ranges for LAB are {0-100,-100-100,-100-100}.
 #+BEGIN_src elisp
-(ct-transform-lab "#40a5e8" (lambda (L A B) (list L -100 -100))) ;; => "#00cbff"
+(ct-edit-lab "#40a5e8" (lambda (L A B) (list L -100 -100))) ;; => "#00cbff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00cbff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-a ~(C FUNC-OR-VAL)~
+**** ct-edit-lab-a ~(C FUNC-OR-VAL)~
 Transform property lab-a of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-lab-a "#40a5e8" (lambda (a) (- a 20))) ;; => "#00aee7"
+(ct-edit-lab-a "#40a5e8" (lambda (a) (- a 20))) ;; => "#00aee7"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00aee7/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-a-dec ~(C &optional V)~
+**** ct-edit-lab-a-dec ~(C &optional V)~
 Decrease lab-a value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lab-a-dec "#40a5e8" 20) ;; => "#00aee7"
+(ct-edit-lab-a-dec "#40a5e8" 20) ;; => "#00aee7"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00aee7/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-a-inc ~(C &optional V)~
+**** ct-edit-lab-a-inc ~(C &optional V)~
 Increase lab-a value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lab-a-inc "#40a5e8" 20) ;; => "#8499e8"
+(ct-edit-lab-a-inc "#40a5e8" 20) ;; => "#8499e8"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/8499e8/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-b ~(C FUNC-OR-VAL)~
+**** ct-edit-lab-b ~(C FUNC-OR-VAL)~
 Transform property lab-b of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-lab-b "#40a5e8" 100) ;; => "#b39e00"
+(ct-edit-lab-b "#40a5e8" 100) ;; => "#b39e00"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/b39e00/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-b-dec ~(C &optional V)~
+**** ct-edit-lab-b-dec ~(C &optional V)~
 Decrease lab-b value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lab-b-dec "#40a5e8" 20) ;; => "#00a7ff"
+(ct-edit-lab-b-dec "#40a5e8" 20) ;; => "#00a7ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00a7ff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-b-inc ~(C &optional V)~
+**** ct-edit-lab-b-inc ~(C &optional V)~
 Increase lab-b value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lab-b-inc "#40a5e8" 20) ;; => "#72a3c4"
+(ct-edit-lab-b-inc "#40a5e8" 20) ;; => "#72a3c4"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/72a3c4/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-l ~(C FUNC-OR-VAL)~
+**** ct-edit-lab-l ~(C FUNC-OR-VAL)~
 Transform property lab-l of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-lab-l "#40a5e8" 0) ;; => "#000b3e"
+(ct-edit-lab-l "#40a5e8" 0) ;; => "#000b3e"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/000b3e/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lab-l-dec ~(C &optional V)~
+**** ct-edit-lab-l-dec ~(C &optional V)~
 Decrease lab-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lab-l-dec "#40a5e8") ;; => "#3fa4e7"
+(ct-edit-lab-l-dec "#40a5e8") ;; => "#3fa4e7"
 #+END_src
-**** ct-transform-lab-l-inc ~(C &optional V)~
+**** ct-edit-lab-l-inc ~(C &optional V)~
 Increase lab-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lab-l-inc "#40a5e8") ;; => "#41a5e8"
+(ct-edit-lab-l-inc "#40a5e8") ;; => "#41a5e8"
 #+END_src
 ** HSL
 https://notes.neeasade.net/color-spaces.html#h-43869bc7-a7d1-410f-9341-521974751dac
-**** ct-transform-hsl ~(C TRANSFORM)~
+**** ct-make-hsl ~(H S L)~
+Make a color using H*S*L properties.
+#+BEGIN_src elisp
+(ct-make-hsl 203.92857142857142 78.50467289719624 58.0392156862745) ;; => "#40a4e7"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/40a4e7/000000.png?text=+]]
+#+END_quote
+**** ct-get-hsl ~(C)~
+Get hsl representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsl "#40a5e8") ;; => (203.92857142857142 78.50467289719624 58.0392156862745)
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → (203.92857142857142 78.50467289719624 58.0392156862745)
+#+END_quote
+**** ct-get-hsl-s ~(C)~
+Get hsl-s representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsl-s "#40a5e8") ;; => 78.50467289719624
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 78.50467289719624
+#+END_quote
+**** ct-get-hsl-l ~(C)~
+Get hsl-l representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsl-l "#40a5e8") ;; => 58.0392156862745
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 58.0392156862745
+#+END_quote
+**** ct-get-hsl-h ~(C)~
+Get hsl-h representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsl-h "#40a5e8") ;; => 203.92857142857142
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 203.92857142857142
+#+END_quote
+**** ct-edit-hsl ~(C TRANSFORM)~
 Work with a color C in the HSL space using function TRANSFORM.
 Ranges for HSL are {0-360,0-100,0-100}.
 #+BEGIN_src elisp
-(ct-transform-hsl "#40a5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#7e28ff"
+(ct-edit-hsl "#40a5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#7e28ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/7e28ff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsl-h ~(C FUNC-OR-VAL)~
+**** ct-edit-hsl-h ~(C FUNC-OR-VAL)~
 Transform property hsl-h of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsl-h "#40a5e8" (lambda (H) (+ H 60))) ;; => "#8340e7"
+(ct-edit-hsl-h "#40a5e8" (lambda (H) (+ H 60))) ;; => "#8340e7"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/8340e7/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsl-h-dec ~(C &optional V)~
+**** ct-edit-hsl-h-dec ~(C &optional V)~
 Decrease hsl-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsl-h-dec "#40a5e8") ;; => "#40a5e7"
+(ct-edit-hsl-h-dec "#40a5e8") ;; => "#40a5e7"
 #+END_src
-**** ct-transform-hsl-h-inc ~(C &optional V)~
+**** ct-edit-hsl-h-inc ~(C &optional V)~
 Increase hsl-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsl-h-inc "#40a5e8") ;; => "#40a4e7"
+(ct-edit-hsl-h-inc "#40a5e8") ;; => "#40a4e7"
 #+END_src
-**** ct-transform-hsl-l ~(C FUNC-OR-VAL)~
+**** ct-edit-hsl-l ~(C FUNC-OR-VAL)~
 Transform property hsl-l of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsl-l "#40a5e8" 0) ;; => "#000000"
+(ct-edit-hsl-l "#40a5e8" 0) ;; => "#000000"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/000000/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsl-l-dec ~(C &optional V)~
+**** ct-edit-hsl-l-dec ~(C &optional V)~
 Decrease hsl-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsl-l-dec "#40a5e8") ;; => "#3fa4e7"
+(ct-edit-hsl-l-dec "#40a5e8") ;; => "#3fa4e7"
 #+END_src
-**** ct-transform-hsl-l-inc ~(C &optional V)~
+**** ct-edit-hsl-l-inc ~(C &optional V)~
 Increase hsl-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsl-l-inc "#40a5e8") ;; => "#41a5e8"
+(ct-edit-hsl-l-inc "#40a5e8") ;; => "#41a5e8"
 #+END_src
-**** ct-transform-hsl-s ~(C FUNC-OR-VAL)~
+**** ct-edit-hsl-s ~(C FUNC-OR-VAL)~
 Transform property hsl-s of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsl-s "#40a5e8" 100) ;; => "#28a9ff"
+(ct-edit-hsl-s "#40a5e8" 100) ;; => "#28a9ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/28a9ff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsl-s-dec ~(C &optional V)~
+**** ct-edit-hsl-s-dec ~(C &optional V)~
 Decrease hsl-s value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsl-s-dec "#40a5e8") ;; => "#40a4e7"
+(ct-edit-hsl-s-dec "#40a5e8") ;; => "#40a4e7"
 #+END_src
-**** ct-transform-hsl-s-inc ~(C &optional V)~
+**** ct-edit-hsl-s-inc ~(C &optional V)~
 Increase hsl-s value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsl-s-inc "#40a5e8") ;; => "#3fa5e8"
+(ct-edit-hsl-s-inc "#40a5e8") ;; => "#3fa5e8"
 #+END_src
 ** HSLuv
 https://notes.neeasade.net/color-spaces.html#h-c147b84d-d95b-4d2d-8426-2f96529a8428
-**** ct-transform-hsluv ~(C TRANSFORM)~
+**** ct-make-hsluv ~(H S L)~
+Make a color using H*S*L*uv properties.
+#+BEGIN_src elisp
+(ct-make-hsluv 241.03332445451844 87.39034787899827 64.82330879773134) ;; => "#3fa5e7"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/3fa5e7/000000.png?text=+]]
+#+END_quote
+**** ct-get-hsluv ~(C)~
+Get hsluv representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsluv "#40a5e8") ;; => (241.03332445451844 87.39034787899827 64.82330879773134)
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → (241.03332445451844 87.39034787899827 64.82330879773134)
+#+END_quote
+**** ct-get-hsluv-s ~(C)~
+Get hsluv-s representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsluv-s "#40a5e8") ;; => 87.39034787899827
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 87.39034787899827
+#+END_quote
+**** ct-get-hsluv-l ~(C)~
+Get hsluv-l representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsluv-l "#40a5e8") ;; => 64.82330879773134
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 64.82330879773134
+#+END_quote
+**** ct-get-hsluv-h ~(C)~
+Get hsluv-h representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsluv-h "#40a5e8") ;; => 241.03332445451844
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 241.03332445451844
+#+END_quote
+**** ct-edit-hsluv ~(C TRANSFORM)~
 Work with a color C in the HSLUV space using function TRANSFORM.
 Ranges for HSLUV are {0-360,0-100,0-100}.
 #+BEGIN_src elisp
-(ct-transform-hsluv "#40a5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#ec61ff"
+(ct-edit-hsluv "#40a5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#ec61ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/ec61ff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsluv-h ~(C FUNC-OR-VAL)~
+**** ct-edit-hsluv-h ~(C FUNC-OR-VAL)~
 Transform property hsluv-h of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsluv-h "#40a5e8" (lambda (H) (+ H 60))) ;; => "#e26df2"
+(ct-edit-hsluv-h "#40a5e8" (lambda (H) (+ H 60))) ;; => "#e26df2"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/e26df2/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsluv-h-dec ~(C &optional V)~
+**** ct-edit-hsluv-h-dec ~(C &optional V)~
 Decrease hsluv-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsluv-h-dec "#40a5e8") ;; => "#3fa5e7"
+(ct-edit-hsluv-h-dec "#40a5e8") ;; => "#3fa5e7"
 #+END_src
-**** ct-transform-hsluv-h-inc ~(C &optional V)~
+**** ct-edit-hsluv-h-inc ~(C &optional V)~
 Increase hsluv-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsluv-h-inc "#40a5e8") ;; => "#40a4e8"
+(ct-edit-hsluv-h-inc "#40a5e8") ;; => "#40a4e8"
 #+END_src
-**** ct-transform-hsluv-l ~(C FUNC-OR-VAL)~
+**** ct-edit-hsluv-l ~(C FUNC-OR-VAL)~
 Transform property hsluv-l of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsluv-l "#40a5e8" 0) ;; => "#000000"
+(ct-edit-hsluv-l "#40a5e8" 0) ;; => "#000000"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/000000/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsluv-l-dec ~(C &optional V)~
+**** ct-edit-hsluv-l-dec ~(C &optional V)~
 Decrease hsluv-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsluv-l-dec "#40a5e8") ;; => "#3fa4e7"
+(ct-edit-hsluv-l-dec "#40a5e8") ;; => "#3fa4e7"
 #+END_src
-**** ct-transform-hsluv-l-inc ~(C &optional V)~
+**** ct-edit-hsluv-l-inc ~(C &optional V)~
 Increase hsluv-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsluv-l-inc "#40a5e8") ;; => "#40a5e9"
+(ct-edit-hsluv-l-inc "#40a5e8") ;; => "#40a5e9"
 #+END_src
-**** ct-transform-hsluv-s ~(C FUNC-OR-VAL)~
+**** ct-edit-hsluv-s ~(C FUNC-OR-VAL)~
 Transform property hsluv-s of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsluv-s "#40a5e8" 100) ;; => "#00a6f2"
+(ct-edit-hsluv-s "#40a5e8" 100) ;; => "#00a6f2"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00a6f2/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsluv-s-dec ~(C &optional V)~
+**** ct-edit-hsluv-s-dec ~(C &optional V)~
 Decrease hsluv-s value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsluv-s-dec "#40a5e8") ;; => "#40a4e7"
+(ct-edit-hsluv-s-dec "#40a5e8") ;; => "#40a4e7"
 #+END_src
-**** ct-transform-hsluv-s-inc ~(C &optional V)~
+**** ct-edit-hsluv-s-inc ~(C &optional V)~
 Increase hsluv-s value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsluv-s-inc "#40a5e8") ;; => "#3fa5e8"
+(ct-edit-hsluv-s-inc "#40a5e8") ;; => "#3fa5e8"
 #+END_src
 ** LCH
 https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413
-**** ct-transform-lch ~(C TRANSFORM)~
+**** ct-make-lch ~(L C H)~
+Make a color using L*C*H properties.
+#+BEGIN_src elisp
+(ct-make-lch 64.82181751343624 42.73009701427483 -100.03702346839925) ;; => "#40a4e8"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/40a4e8/000000.png?text=+]]
+#+END_quote
+**** ct-get-lch ~(C)~
+Get lch representation of color C.
+#+BEGIN_src elisp
+(ct-get-lch "#40a5e8") ;; => (64.82181751343624 42.73009701427483 -100.03702346839925)
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → (64.82181751343624 42.73009701427483 -100.03702346839925)
+#+END_quote
+**** ct-get-lch-l ~(C)~
+Get lch-l representation of color C.
+#+BEGIN_src elisp
+(ct-get-lch-l "#40a5e8") ;; => 64.82181751343624
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 64.82181751343624
+#+END_quote
+**** ct-get-lch-h ~(C)~
+Get lch-h representation of color C.
+#+BEGIN_src elisp
+(ct-get-lch-h "#40a5e8") ;; => -100.03702346839925
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → -100.03702346839925
+#+END_quote
+**** ct-get-lch-c ~(C)~
+Get lch-c representation of color C.
+#+BEGIN_src elisp
+(ct-get-lch-c "#40a5e8") ;; => 42.73009701427483
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 42.73009701427483
+#+END_quote
+**** ct-edit-lch ~(C TRANSFORM)~
 Work with a color C in the LCH space using function TRANSFORM.
 Ranges for LCH are {0-100,0-100,0-360}.
 #+BEGIN_src elisp
-(ct-transform-lch "#40a5e8" (lambda (L C H) (list L 100 (+ H 90)))) ;; => "#ff00bf"
+(ct-edit-lch "#40a5e8" (lambda (L C H) (list L 100 (+ H 90)))) ;; => "#ff00bf"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/ff00bf/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lch-c ~(C FUNC-OR-VAL)~
+**** ct-edit-lch-c ~(C FUNC-OR-VAL)~
 Transform property lch-c of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-lch-c "#40a5e8" 100) ;; => "#00b1ff"
+(ct-edit-lch-c "#40a5e8" 100) ;; => "#00b1ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00b1ff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lch-c-dec ~(C &optional V)~
+**** ct-edit-lch-c-dec ~(C &optional V)~
 Decrease lch-c value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lch-c-dec "#40a5e8") ;; => "#40a4e7"
+(ct-edit-lch-c-dec "#40a5e8") ;; => "#40a4e7"
 #+END_src
-**** ct-transform-lch-c-inc ~(C &optional V)~
+**** ct-edit-lch-c-inc ~(C &optional V)~
 Increase lch-c value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lch-c-inc "#40a5e8") ;; => "#3fa5e8"
+(ct-edit-lch-c-inc "#40a5e8") ;; => "#3fa5e8"
 #+END_src
-**** ct-transform-lch-h ~(C FUNC-OR-VAL)~
+**** ct-edit-lch-h ~(C FUNC-OR-VAL)~
 Transform property lch-h of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-lch-h "#40a5e8" (lambda (H) (+ H 90))) ;; => "#de7fab"
+(ct-edit-lch-h "#40a5e8" (lambda (H) (+ H 90))) ;; => "#de7fab"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/de7fab/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lch-h-dec ~(C &optional V)~
+**** ct-edit-lch-h-dec ~(C &optional V)~
 Decrease lch-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lch-h-dec "#40a5e8") ;; => "#3fa5e7"
+(ct-edit-lch-h-dec "#40a5e8") ;; => "#3fa5e7"
 #+END_src
-**** ct-transform-lch-h-inc ~(C &optional V)~
+**** ct-edit-lch-h-inc ~(C &optional V)~
 Increase lch-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lch-h-inc "#40a5e8") ;; => "#40a4e8"
+(ct-edit-lch-h-inc "#40a5e8") ;; => "#40a4e8"
 #+END_src
-**** ct-transform-lch-l ~(C FUNC-OR-VAL)~
+**** ct-edit-lch-l ~(C FUNC-OR-VAL)~
 Transform property lch-l of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-lch-l "#40a5e8" 100) ;; => "#b1ffff"
+(ct-edit-lch-l "#40a5e8" 100) ;; => "#b1ffff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/b1ffff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-lch-l-dec ~(C &optional V)~
+**** ct-edit-lch-l-dec ~(C &optional V)~
 Decrease lch-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lch-l-dec "#40a5e8") ;; => "#3fa4e7"
+(ct-edit-lch-l-dec "#40a5e8") ;; => "#3fa4e7"
 #+END_src
-**** ct-transform-lch-l-inc ~(C &optional V)~
+**** ct-edit-lch-l-inc ~(C &optional V)~
 Increase lch-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-lch-l-inc "#40a5e8") ;; => "#41a5e8"
+(ct-edit-lch-l-inc "#40a5e8") ;; => "#41a5e8"
 #+END_src
 ** HSV
 https://en.wikipedia.org/wiki/HSL_and_HSV
-**** ct-transform-hsv ~(C TRANSFORM)~
+**** ct-make-hsv ~(H S V)~
+Make a color using H*S*V properties.
+#+BEGIN_src elisp
+(ct-make-hsv 203.92857142857144 72.41379310344827 90.98039215686275) ;; => "#40a4e8"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/40a4e8/000000.png?text=+]]
+#+END_quote
+**** ct-get-hsv ~(C)~
+Get hsv representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsv "#40a5e8") ;; => (203.92857142857144 72.41379310344827 90.98039215686275)
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → (203.92857142857144 72.41379310344827 90.98039215686275)
+#+END_quote
+**** ct-get-hsv-v ~(C)~
+Get hsv-v representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsv-v "#40a5e8") ;; => 90.98039215686275
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 90.98039215686275
+#+END_quote
+**** ct-get-hsv-s ~(C)~
+Get hsv-s representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsv-s "#40a5e8") ;; => 72.41379310344827
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 72.41379310344827
+#+END_quote
+**** ct-get-hsv-h ~(C)~
+Get hsv-h representation of color C.
+#+BEGIN_src elisp
+(ct-get-hsv-h "#40a5e8") ;; => 203.92857142857144
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 203.92857142857144
+#+END_quote
+**** ct-edit-hsv ~(C TRANSFORM)~
 Work with a color C in the HSV space using function TRANSFORM.
 Ranges for HSV are {0-360,0-100,0-100}.
 #+BEGIN_src elisp
-(ct-transform-hsv "#40a5e8" (lambda (H S V) (list H 20 100))) ;; => "#cceaff"
+(ct-edit-hsv "#40a5e8" (lambda (H S V) (list H 20 100))) ;; => "#cceaff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/cceaff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsv-h ~(C FUNC-OR-VAL)~
+**** ct-edit-hsv-h ~(C FUNC-OR-VAL)~
 Transform property hsv-h of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsv-h "#40a5e8" (-partial #'+ 30)) ;; => "#4050e8"
+(ct-edit-hsv-h "#40a5e8" (-partial #'+ 30)) ;; => "#4050e8"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4050e8/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsv-h-dec ~(C &optional V)~
+**** ct-edit-hsv-h-dec ~(C &optional V)~
 Decrease hsv-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsv-h-dec "#40a5e8") ;; => "#40a6e8"
+(ct-edit-hsv-h-dec "#40a5e8") ;; => "#40a6e8"
 #+END_src
-**** ct-transform-hsv-h-inc ~(C &optional V)~
+**** ct-edit-hsv-h-inc ~(C &optional V)~
 Increase hsv-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsv-h-inc "#40a5e8") ;; => "#40a4e8"
+(ct-edit-hsv-h-inc "#40a5e8") ;; => "#40a4e8"
 #+END_src
-**** ct-transform-hsv-s ~(C FUNC-OR-VAL)~
+**** ct-edit-hsv-s ~(C FUNC-OR-VAL)~
 Transform property hsv-s of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsv-s "#40a5e8" 20) ;; => "#b9d5e8"
+(ct-edit-hsv-s "#40a5e8" 20) ;; => "#b9d5e8"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/b9d5e8/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsv-s-dec ~(C &optional V)~
+**** ct-edit-hsv-s-dec ~(C &optional V)~
 Decrease hsv-s value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsv-s-dec "#40a5e8") ;; => "#41a5e8"
+(ct-edit-hsv-s-dec "#40a5e8") ;; => "#41a5e8"
 #+END_src
-**** ct-transform-hsv-s-inc ~(C &optional V)~
+**** ct-edit-hsv-s-inc ~(C &optional V)~
 Increase hsv-s value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsv-s-inc "#40a5e8") ;; => "#3fa4e8"
+(ct-edit-hsv-s-inc "#40a5e8") ;; => "#3fa4e8"
 #+END_src
-**** ct-transform-hsv-v ~(C FUNC-OR-VAL)~
+**** ct-edit-hsv-v ~(C FUNC-OR-VAL)~
 Transform property hsv-v of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hsv-v "#40a5e8" 100) ;; => "#46b5ff"
+(ct-edit-hsv-v "#40a5e8" 100) ;; => "#46b5ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/46b5ff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hsv-v-dec ~(C &optional V)~
+**** ct-edit-hsv-v-dec ~(C &optional V)~
 Decrease hsv-v value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsv-v-dec "#40a5e8") ;; => "#3fa4e7"
+(ct-edit-hsv-v-dec "#40a5e8") ;; => "#3fa4e7"
 #+END_src
-**** ct-transform-hsv-v-inc ~(C &optional V)~
+**** ct-edit-hsv-v-inc ~(C &optional V)~
 Increase hsv-v value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hsv-v-inc "#40a5e8") ;; => "#40a5e9"
+(ct-edit-hsv-v-inc "#40a5e8") ;; => "#40a5e9"
 #+END_src
 ** HPLUV
 https://ajalt.github.io/colormath/api/colormath/com.github.ajalt.colormath.model/-h-p-luv/index.html
-**** ct-transform-hpluv ~(C TRANSFORM)~
+**** ct-make-hpluv ~(H P L)~
+Make a color using H*P*L*uv properties.
+#+BEGIN_src elisp
+(ct-make-hpluv 241.03332445451844 148.4186825546083 64.82330879773134) ;; => "#6ea2d0"
+#+END_src
+#+BEGIN_quote
+ → [[https://via.placeholder.com/16/6ea2d0/000000.png?text=+]]
+#+END_quote
+**** ct-get-hpluv ~(C)~
+Get hpluv representation of color C.
+#+BEGIN_src elisp
+(ct-get-hpluv "#40a5e8") ;; => (241.03332445451844 148.4186825546083 64.82330879773134)
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → (241.03332445451844 148.4186825546083 64.82330879773134)
+#+END_quote
+**** ct-get-hpluv-p ~(C)~
+Get hpluv-p representation of color C.
+#+BEGIN_src elisp
+(ct-get-hpluv-p "#40a5e8") ;; => 148.4186825546083
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 148.4186825546083
+#+END_quote
+**** ct-get-hpluv-l ~(C)~
+Get hpluv-l representation of color C.
+#+BEGIN_src elisp
+(ct-get-hpluv-l "#40a5e8") ;; => 64.82330879773134
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 64.82330879773134
+#+END_quote
+**** ct-get-hpluv-h ~(C)~
+Get hpluv-h representation of color C.
+#+BEGIN_src elisp
+(ct-get-hpluv-h "#40a5e8") ;; => 241.03332445451844
+#+END_src
+#+BEGIN_quote
+[[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → 241.03332445451844
+#+END_quote
+**** ct-edit-hpluv ~(C TRANSFORM)~
 Work with a color C in the HPLUV space using function TRANSFORM.
 Ranges for HPLUV are {0-360,0-100,0-100}.
 #+BEGIN_src elisp
-(ct-transform-hpluv "#40a5e8" (lambda (H P L) (list H 100 L))) ;; => "#6ea2d0"
+(ct-edit-hpluv "#40a5e8" (lambda (H P L) (list H 100 L))) ;; => "#6ea2d0"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/6ea2d0/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hpluv-h ~(C FUNC-OR-VAL)~
+**** ct-edit-hpluv-h ~(C FUNC-OR-VAL)~
 Transform property hpluv-h of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hpluv-h "#40a5e8" 0) ;; => "#d68696"
+(ct-edit-hpluv-h "#40a5e8" 0) ;; => "#d68696"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/d68696/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hpluv-h-dec ~(C &optional V)~
+**** ct-edit-hpluv-h-dec ~(C &optional V)~
 Decrease hpluv-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hpluv-h-dec "#40a5e8") ;; => "#6ea2d0"
+(ct-edit-hpluv-h-dec "#40a5e8") ;; => "#6ea2d0"
 #+END_src
-**** ct-transform-hpluv-h-inc ~(C &optional V)~
+**** ct-edit-hpluv-h-inc ~(C &optional V)~
 Increase hpluv-h value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hpluv-h-inc "#40a5e8") ;; => "#6ea2d0"
+(ct-edit-hpluv-h-inc "#40a5e8") ;; => "#6ea2d0"
 #+END_src
-**** ct-transform-hpluv-l ~(C FUNC-OR-VAL)~
+**** ct-edit-hpluv-l ~(C FUNC-OR-VAL)~
 Transform property hpluv-l of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hpluv-l "#40a5e8" 100) ;; => "#feffff"
+(ct-edit-hpluv-l "#40a5e8" 100) ;; => "#feffff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/feffff/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hpluv-l-dec ~(C &optional V)~
+**** ct-edit-hpluv-l-dec ~(C &optional V)~
 Decrease hpluv-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hpluv-l-dec "#40a5e8") ;; => "#6ea1d0"
+(ct-edit-hpluv-l-dec "#40a5e8") ;; => "#6ea1d0"
 #+END_src
-**** ct-transform-hpluv-l-inc ~(C &optional V)~
+**** ct-edit-hpluv-l-inc ~(C &optional V)~
 Increase hpluv-l value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hpluv-l-inc "#40a5e8") ;; => "#6ea2d0"
+(ct-edit-hpluv-l-inc "#40a5e8") ;; => "#6ea2d0"
 #+END_src
-**** ct-transform-hpluv-p ~(C FUNC-OR-VAL)~
+**** ct-edit-hpluv-p ~(C FUNC-OR-VAL)~
 Transform property hpluv-p of C using FUNC-OR-VAL.
 #+BEGIN_src elisp
-(ct-transform-hpluv-p "#40a5e8" 100) ;; => "#6ea2d0"
+(ct-edit-hpluv-p "#40a5e8" 100) ;; => "#6ea2d0"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/40a5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/6ea2d0/000000.png?text=+]]
 #+END_quote
-**** ct-transform-hpluv-p-dec ~(C &optional V)~
+**** ct-edit-hpluv-p-dec ~(C &optional V)~
 Decrease hpluv-p value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hpluv-p-dec "#40a5e8") ;; => "#6ea2d0"
+(ct-edit-hpluv-p-dec "#40a5e8") ;; => "#6ea2d0"
 #+END_src
-**** ct-transform-hpluv-p-inc ~(C &optional V)~
+**** ct-edit-hpluv-p-inc ~(C &optional V)~
 Increase hpluv-p value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
-(ct-transform-hpluv-p-inc "#40a5e8") ;; => "#6ea2d0"
+(ct-edit-hpluv-p-inc "#40a5e8") ;; => "#6ea2d0"
 #+END_src
-
 ** Related links
 
 Emacs color libraries:
