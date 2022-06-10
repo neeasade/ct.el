@@ -328,7 +328,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 
             (funcall collect
               `(defun ,(intern (format "ct-point-%s-inc" prop-name)) ()
-                 ,(format "Interactively change color at point by invoking (%s-dec `ct-interactive-step-interval)" transform-prop-fn)
+                 ,(format "Interactively change color at point by invoking (%s-inc `ct-interactive-step-interval)" transform-prop-fn)
                  (interactive)
                  (ct--replace-current ',(intern (format "%s-inc" transform-prop-fn)) ct-interactive-step-interval)))
 

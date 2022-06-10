@@ -12,6 +12,8 @@ See: https://keepachangelog.com
 Not using any form of semantic versioning, just bumping the number.
 
 ** 0.x
+*** Added
+- ~ct-point~ functions for editing the color at point interactively
 
 ** 0.2 <2022-06-09>
 *** Added
