@@ -1,9 +1,13 @@
 ;;; ct-doc.el --- ct doc generation -*- coding: utf-8; lexical-binding: t -*-
 
-;; used when generating documentation for the readme (eval this, then re-run the results blocks)
+
+;;; Commentary:
+;; used when generating documentation for the readme
+
+;;; Code:
 
 ;; (insert (s-join "\n" (list (ct--generate-toc) (ct--generate-contents))))
-(when nil
+(when t
   (defun ct--get-functions ()
     (let (funcs)
       (mapatoms
@@ -14,28 +18,6 @@
               (prin1-to-string sym)
               funcs))))
       funcs))
-
-  ;; TODO: for the data parts below:
-  (defun ct--insert-fn (colorspace)
-    (->> (ct--get-functions)
-      (-filter (fn
-                 (or
-                   (s-starts-with-p (format "ct-make-%s" colorspace) <>)
-                   (s-starts-with-p (format "ct-get-%s-" colorspace) <>))))
-      (-sort 'string>)
-      (-map 'intern)
-      (-map (lambda (p) (list p 'color)))
-      (pr-string)
-      (s-replace ") (" ")\n(")
-      (insert)))
-
-  ;; (ct--insert-fn "rgb")
-  ;; ((ct-make-rgb color)
-  ;;   (ct-get-rgb-r color)
-  ;;   (ct-get-rgb-g color)
-  ;;   (ct-get-rgb-b color))
-
-  ;; todo: create/get inclusion
 
   ;; todo: consider these translation functions (maybe these should be internal/ct--?)
   ;; (ct-clamp 10 0 1)
@@ -49,23 +31,22 @@
   ;; (ct-luminance-srgb color)
 
   (let* ((ct-funcs (ct--get-functions))
-          (color "#40a5e8")
+          (color "#4fa5e8")
           (color-complement (ct-complement color))
           (plain-color "#bbbbbb"))
     (setq ct--docs
       `(
-         ("TODO Color Properties"
+         ("Color Properties"
            "Functions for seeing properties of colors not necessarily related to a particular color space.")
          ((ct-contrast-ratio ,plain-color ,color)
            (ct-distance ,color ,color-complement)
-           (ct-format-argb ,color 0.8 t)
-           (ct-format-rbga ,color 0.8)
+           (ct-format-argb ,color 80 t)
+           (ct-format-rbga ,color 80)
            (ct-light-p ,color))
-         ("TODO Color Modification" "Functions for modifying colors in some way potentially unrelated to a specific colorspace")
+         ("Color Modification" "Functions for modifying colors in some way potentially unrelated to a specific colorspace")
          (
-           (ct-average ,(list 'list color plain-color color-complement))
            (ct-complement ,color)
-           (ct-gradient 5 ,color ,color-complement)
+           (ct-gradient 5 ,color ,color-complement t)
            (ct-greaten ,color 20)
            (ct-lessen ,color 20)
 
@@ -74,15 +55,16 @@
 
            (ct-lab-change-whitepoint ,color color-d50-xyz color-d55-xyz)
 
-           (ct-mix ,color ,color-complement)
-           (ct-mix-opacity ,color ,plain-color 0.8)
+           (ct-mix ,(list 'list color plain-color color-complement))
+           (ct-mix-opacity ,color ,plain-color 80)
            (ct-pastel ,color)
+           (ct-tint-ratio ,color ,plain-color 3)
+
            (ct-rotation-hpluv ,color 60)
            (ct-rotation-hsl ,color 60)
            (ct-rotation-hsluv ,color 60)
            (ct-rotation-hsv ,color 60)
            (ct-rotation-lch ,color 60)
-           (ct-tint-ratio ,color ,color-complement 3)
            )
 
          ("RGB" "https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8")
@@ -258,7 +240,7 @@
                             (prin1-to-string result)
                             (s-join "," match-colors)
                             (if result-colors
-                              (s-join "," (or result-colors ))
+                              (s-join "," result-colors)
                               result)
                             )))
                       )
@@ -290,9 +272,7 @@
           (s-replace ")" "")
           (s-replace " " "-"))
         ;; name
-        name args)))
-
-  )
+        name args))))
 
 (provide 'ct-doc)
 ;;; ct-doc.el ends here
