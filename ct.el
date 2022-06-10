@@ -225,19 +225,20 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
               (ct-clamp (-second-item result) 0 100)
               (ct-clamp (-third-item result) 0 100))))))))
 
-(defun ct--colorspace-map (label)
-  "Map a LABEL to plist'd utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv."
-  (->>
-    `(:transform "ct-edit-%s"
-       :make "ct-make-%s"
-       :get "ct-get-%s"
-       :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
-       :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
-       :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
-    (-partition 2)
-    (-map (-lambda ((key name))
-            (list key (intern (format name label)))))
-    (-flatten)))
+(defun ct--colorspace-map (&optional label)
+  "Map a quoted colorspace LABEL to a plist with utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv. Defaults to \"rgb\"."
+  (let ((label (or label "rgb")))
+    (->>
+      `(:transform "ct-edit-%s"
+         :make "ct-make-%s"
+         :get "ct-get-%s"
+         :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
+         :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
+         :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
+      (-partition 2)
+      (-map (-lambda ((key name))
+              (list key (intern (format name label)))))
+      (-flatten))))
 
 (defmacro ct--make-transform-property-functions (colorspace)
   "Build the functions for tweaking individual properties of colors in COLORSPACE."
@@ -257,7 +258,8 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
     (->> '(0 1 2)
       (-map
         (lambda (index)
-          (let* ((prop-name (format "%s-%s" colorspace (substring colorspace index (+ index 1))))
+          (let* ((prop-single (substring colorspace index (+ index 1)))
+                  (prop-name (format "%s-%s" colorspace prop-single))
                   (transform-prop-fn (format "ct-edit-%s" prop-name)))
             (funcall collect
               `(defun ,(intern transform-prop-fn) (c func-or-val)
@@ -295,8 +297,16 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
                        (,(intern transform-prop-fn) color (-partial #'+ amount)))
                      -0.1 (-rpartial #'- 0.1)
                      ;; nb: 30% limit is arbitrary
-                     (lambda (arg) (ct--within arg 30 0.1))))))))))
-    result))
+                     (lambda (arg) (ct--within arg 30 0.1))))))
+
+            (when (string= prop-single "h")
+              (funcall collect
+                `(defun ,(intern (format "ct-rotation-%s" colorspace)) (c interval)
+                   ,(format "Perform a hue rotation in %s space starting with color C by INTERVAL degrees." colorspace)
+                   (-map (-partial #',(intern (format "%s-inc" transform-prop-fn)) c)
+                     (-iota (abs (/ 360 interval))
+                       0 interval)))))
+            )))) result))
 
 (ct--make-transform-property-functions "rgb")
 (ct--make-transform-property-functions "hsl")
@@ -307,30 +317,17 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 (ct--make-transform-property-functions "hsluv")
 
 ;; make colors within our normalized transform functions:
-(defun ct--make-color-meta (transform properties)
-  "Internal function for creating a color using TRANSFORM function forcing PROPERTIES."
-  (funcall transform "#cccccc" (lambda (&rest _) properties)))
+(defmacro ct--make-color-meta (transform properties)
+  "Internal macro for creating a color using TRANSFORM function forcing PROPERTIES."
+  `(,transform "#cccccc" (lambda (&rest _) ,properties)))
 
-(defun ct-make-rgb (R G B) "Make a color using R*G*B properties." (ct--make-color-meta 'ct-edit-rgb (list R G B)))
-(defun ct-make-hsl (H S L) "Make a color using H*S*L properties." (ct--make-color-meta 'ct-edit-hsl (list H S L)))
-(defun ct-make-hsv (H S V) "Make a color using H*S*V properties." (ct--make-color-meta 'ct-edit-hsv (list H S V)))
-(defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta 'ct-edit-hsluv (list H S L)))
-(defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta 'ct-edit-hpluv (list H P L)))
-(defun ct-make-lab (L A B) "Make a color using L*A*B properties." (ct--make-color-meta 'ct-edit-lab (list L A B)))
-(defun ct-make-lch (L C H) "Make a color using L*C*H properties." (ct--make-color-meta 'ct-edit-lch (list L C H)))
-
-(defun ct--rotation-meta (transform c interval)
-  "Internal function for managing hue rotation in TRANSFORM starting at C by degree count INTERVAL."
-  (-map (lambda (offset) (funcall transform c (-partial '+ offset)))
-    (if (< 0 interval)
-      (number-sequence 0 359 interval)
-      (number-sequence 360 1 interval))))
-
-(defun ct-rotation-hsl (c interval) "Perform a hue rotation in HSL space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hsl-h c interval))
-(defun ct-rotation-hsv (c interval) "Perform a hue rotation in HSV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hsv-h c interval))
-(defun ct-rotation-hsluv (c interval) "Perform a hue rotation in HSLuv space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hsluv-h c interval))
-(defun ct-rotation-hpluv (c interval) "Perform a hue rotation in HPLUV space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-hpluv-h c interval))
-(defun ct-rotation-lch (c interval) "Perform a hue rotation in LCH space starting with color C by INTERVAL degrees." (ct--rotation-meta 'ct-edit-lch-h c interval))
+(defun ct-make-rgb (R G B) "Make a color using R*G*B properties." (ct--make-color-meta ct-edit-rgb (list R G B)))
+(defun ct-make-hsl (H S L) "Make a color using H*S*L properties." (ct--make-color-meta ct-edit-hsl (list H S L)))
+(defun ct-make-hsv (H S V) "Make a color using H*S*V properties." (ct--make-color-meta ct-edit-hsv (list H S V)))
+(defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta ct-edit-hsluv (list H S L)))
+(defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta ct-edit-hpluv (list H P L)))
+(defun ct-make-lab (L A B) "Make a color using L*A*B properties." (ct--make-color-meta ct-edit-lab (list L A B)))
+(defun ct-make-lch (L C H) "Make a color using L*C*H properties." (ct--make-color-meta ct-edit-lch (list L C H)))
 
 ;;;
 ;;; other color functions
@@ -488,13 +485,13 @@ Optionally override SCALE comparison value."
         color (funcall op color)))
     color))
 
-(defun ct-tint-ratio (c against ratio)
-  "Tint a foreground color C against background color AGAINST until contrast RATIO minimum is reached."
-  (ct-iterate c
-    (if (ct-light-p against)
-      #'ct-lab-darken
-      #'ct-lab-lighten)
-    (lambda (step) (> (ct-contrast-ratio step against) ratio))))
+(defun ct-tint-ratio (foreground background ratio)
+  "Tint a FOREGROUND against BACKGROUND until contrast RATIO minimum is reached."
+  (ct-iterate foreground
+    (if (ct-light-p background)
+      #'ct-edit-lab-l-dec
+      #'ct-edit-lab-l-inc)
+    (lambda (step) (> (ct-contrast-ratio step background) ratio))))
 
 (defun ct-mix-opacity (top bottom opacity)
   "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
@@ -513,10 +510,9 @@ WITH-ENDS. Optionally choose a colorspace with SPACE (see
 'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
 results."
   ;; todo: consider hue
-  (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map (or space "rgb")))
+  (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map space))
            (step (if with-ends (- step 2) step))
            (get-step-vals (lambda (start end)
-                            ;; (-iota end start end)
                             (let ((step-amount (if (> end start)
                                                  (/ (- end start) (float (+ 1 step)))
                                                  (- (/ (- start end) (float (+ 1 step)))))))
@@ -534,14 +530,10 @@ results."
                    `(,start ,@result ,end)
                    result))))))
 
-(defun ct-mix (c1 c2 &optional space)
-  "Mix colors C1 and C2 in SPACE."
-  (-second-item (ct-gradient 3 c1 c2 t space)))
-
-(defun ct-average (colors &optional space)
-  "Compute the average color from COLORS in space SPACE. See also: 'ct--colorspace-map'."
+(defun ct-mix (colors &optional space)
+  "Mix COLORS in space SPACE. See also: 'ct--colorspace-map'."
   (-reduce (lambda (color new)
-             (ct-mix color new space))
+             (-second-item (ct-gradient 3 color new t space)))
     colors))
 
 (defun ct-complement (c)
