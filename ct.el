@@ -252,20 +252,21 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
               (ct-clamp (-second-item result) 0 100)
               (ct-clamp (-third-item result) 0 100))))))))
 
-(defun ct--colorspace-map (&optional label)
-  "Map a quoted colorspace LABEL to a plist with utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv. Defaults to \"rgb\"."
-  (let ((label (or label "rgb")))
-    (->>
-      `(:transform "ct-edit-%s"
-         :make "ct-make-%s"
-         :get "ct-get-%s"
-         :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
-         :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
-         :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
-      (-partition 2)
-      (-map (-lambda ((key name))
-              (list key (intern (format name label)))))
-      (-flatten))))
+(eval-and-compile
+  (defun ct--colorspace-map (&optional label)
+    "Map a quoted colorspace LABEL to a plist with utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv. Defaults to \"rgb\"."
+    (let ((label (or label "rgb")))
+      (->>
+        `(:transform "ct-edit-%s"
+           :make "ct-make-%s"
+           :get "ct-get-%s"
+           :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
+           :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
+           :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
+        (-partition 2)
+        (-map (-lambda ((key name))
+                (list key (intern (format name label)))))
+        (-flatten)))))
 
 (defmacro ct--make-transform-property-functions (colorspace)
   "Build the functions for tweaking individual properties of colors in COLORSPACE."
