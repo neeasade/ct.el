@@ -1,0 +1,45 @@
+
+# heading references
+# Added for new features.
+# Changed for changes in existing functionality.
+# Deprecated for soon-to-be removed features.
+# Removed for now removed features.
+# Fixed for any bug fixes.
+# Security in case of vulnerabilities.
+
+See: https://keepachangelog.com
+
+Not using any form of semantic versioning, just bumping the number.
+
+** 0.x
+
+** 0.2 <2022-06-09>
+*** Added
+- Colorspace property inc, dec functions for editing a function by a minimum amount needed to affect change
+    - Example: ~ct-edit-lab-l-inc~
+    - Note: this allows for *much* greater precision in iteration contexts
+- Generated documentation and examples in the readme, inspired by the dash.el style
+- ~ct-complement~, a function for returning a complement function
+- ~ct-average~, a function for mixing colors in a selected colorspace
+
+*** Changed
+- Most colorspace functions are now generated with a big macro
+- Change ~ct-transform~ prefix -> ~ct-edit~
+- ~ct-tint-ratio~ is now more precise, thanks fo the ~l-inc~ functions
+- Don't make ~ct-iteration~ derive from ~ct-iterations~ (performance improvement)
+- Replace instances of ~ct-range~ and ~number-sequence~ with ~-iota~
+
+*** Fixed
+- Fixed ~ct-gradient~ (negative steps would result in repeated colors or off-by-one errors)
+
+*** Deprecated
+The following renames happened (compat layer is present)
+
+- ~ct-name-distance~ -> ~ct-distance~
+- ~ct-lab-lighten~ -> ~ct-edit-lab-l-inc~
+- ~ct-lab-darken~ -> ~ct-edit-lab-l-dec~
+- ~ct-is-light-p~ -> ~ct-light-p~
+
+** 0.1 <2021-02-19>
+
+/No changelog existed here/
