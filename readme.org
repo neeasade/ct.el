@@ -2,7 +2,7 @@
 
 ct.el (color tools) is a color library for Emacs meant for making changes to individual colors in various color spaces. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/tarps][tarps]]. Shouted out by [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][prot]] (of modus themes fame).
 
-Supported color spaces: [[#rgb][rgb]] [[#hsl][hsl]] [[#hsv][hsv]] [[#hsluv][hsluv]] [[#hpluv][hpluv]] [[#lab][lab]] [[#lch][lch]]
+Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • [[#lab][lab]] • [[#lch][lch]]
 
 ** Installation
 

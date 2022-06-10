@@ -7,7 +7,7 @@
 ;;; Code:
 
 ;; (insert (s-join "\n" (list (ct--generate-toc) (ct--generate-contents))))
-(when t
+(when nil
   (defun ct--get-functions ()
     (let (funcs)
       (mapatoms
