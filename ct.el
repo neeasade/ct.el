@@ -19,9 +19,6 @@
 ;; - color space functions
 ;; - other color functions
 
-;; conventions:
-;; setting the wrap convention for docstrings at ~100 chars.
-
 (require 'color)
 (require 'dash)
 (require 'hsluv)
@@ -372,36 +369,31 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 ;;; other color functions
 ;;;
 
-(defun ct-format-rbga (C &optional opacity)
-  "RGBA formatting:
-Pass in C and OPACITY 0-100, get a string
-representation of C as follows: 'rgba(R, G, B, OPACITY)', where
-values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
-  (->>
-    (ct-get-rgb C)
+(defun ct-format-rbga (color &optional opacity)
+  "Return COLOR as a css rgba() call.
+OPACITY may be an integer from 0-100.
+For format documentation, see https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/rgba"
+  (->> (ct-get-rgb color)
     (-map (-partial '* (/ 255.0 100)))
     (-map #'round)
     (funcall (lambda (coll) (-snoc coll
-                              (/
-                                (ct-clamp (or opacity 100) 0 100)
+                              (/ (ct-clamp (or opacity 100) 0 100)
                                 100.0))))
-    (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
+    (apply 'format "rgba(%s, %s, %s, %s)")))
 
-(defun ct-format-argb (C &optional opacity end)
-  "Argb formatting:
-Pass in C and OPACITY 0-100, get a string representation of C
-as follows: '#AAFFFFFF', where AA is a hex pair for the alpha,
-followed by FF times 3 hex pairs for red, green, blue. If END is
-truthy, then format will be '#FFFFFFAA'."
-  (->>
-    (ct-clamp (or opacity 100) 0 100)
+(defun ct-format-argb (color &optional opacity end)
+  "Return COLOR as a hex RGB string including an alpha section.
+OPACITY may be an integer from 0-100.  If END is non-nil,
+append the alpha digits to the end of the color; otherwise,
+prepend them to the beginning."
+  (->> (ct-clamp (or opacity 100) 0 100)
     (* (/ 255.0 100))
     (round)
     (format "%02x")
     (funcall (lambda (A)
                (if end
-                 (format "#%s%s" (-> C ct-shorten (substring 1)) A)
-                 (format "#%s%s" A (-> C ct-shorten (substring 1))))))))
+                 (format "#%s%s" (-> color ct-shorten (substring 1)) A)
+                 (format "#%s%s" A (-> color ct-shorten (substring 1))))))))
 
 ;; sRGB <-> linear RGB conversion
 ;; https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_(CIE_XYZ_to_sRGB)
@@ -532,51 +524,49 @@ Optionally override SCALE comparison value."
       #'ct-edit-lab-l-inc)
     (lambda (step) (> (ct-contrast-ratio step background) ratio))))
 
-(defun ct-mix-opacity (top bottom opacity)
-  "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
+(defun ct-mix-opacity (top-color bottom-color &optional opacity)
+  "Get resulting color of TOP-color with OPACITY overlayed against BOTTOM-color.
+OPACITY may be an integer from 0-100."
   ;; ref https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
-  (seq-let (r1 g1 b1 r2 g2 b2)
-    (append (ct-get-rgb top) (ct-get-rgb bottom))
+  (-let ((opacity (/ (or opacity 100) 100.0))
+          ((r1 g1 b1 r2 g2 b2) (-mapcat 'ct-get-rgb (list top-color bottom-color))))
     (ct-make-rgb
       (+ r2 (* (- r1 r2) opacity))
       (+ g2 (* (- g1 g2) opacity))
       (+ b2 (* (- b1 b2) opacity)))))
 
-(defun ct-gradient (step start end &optional with-ends space)
-  "Create a gradient from color START to color END in STEP parts.
-Optionally include START and END in results using
-WITH-ENDS. Optionally choose a colorspace with SPACE (see
-'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
-results."
-  ;; todo: consider hue
-  (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map space))
-           (step (if with-ends (- step 2) step))
-           (get-step-vals (lambda (start end)
+(defun ct-gradient (length start-color end-color &optional with-ends colorspace)
+  "Create a list of gradient colors from START-COLOR to END-COLOR of length LENGTH.
+If WITH-ENDS is non-nil, include START-COLOR and END-COLOR in the result.
+If COLORSPACE is non-nil, use selected colorspace to generate the colors."
+  ;; todo: consider hue further here.
+  (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map colorspace))
+           (length (if with-ends (- length 2) length))
+           (get-step-vals (-lambda ((start end))
                             (let ((step-amount (if (> end start)
-                                                 (/ (- end start) (float (+ 1 step)))
-                                                 (- (/ (- start end) (float (+ 1 step)))))))
-                              (-iota step (+ start step-amount)
+                                                 (/ (- end start) (float (+ 1 length)))
+                                                 (- (/ (- start end) (float (+ 1 length)))))))
+                              (-iota length (+ start step-amount)
                                 step-amount)))))
     (->> (-zip-lists
-           (funcall get-color start)
-           (funcall get-color end))
-      (-map (-lambda ((start end))
-              (funcall get-step-vals start end)))
+           (funcall get-color start-color)
+           (funcall get-color end-color))
+      (-map (-partial get-step-vals))
       (apply #'-zip-lists)
       (-map (-applify make-color))
       (funcall (lambda (result)
                  (if with-ends
-                   `(,start ,@result ,end)
+                   `(,start-color ,@result ,end-color)
                    result))))))
 
 (defun ct-mix (colors &optional space)
-  "Mix COLORS in space SPACE. See also: 'ct--colorspace-map'."
+  "Mix COLORS together in colorspace SPACE. See also: 'ct--colorspace-map'."
   (-reduce (lambda (color new)
              (-second-item (ct-gradient 3 color new t space)))
     colors))
 
-(defun ct-complement (c)
-  "Return a complement color of C in the HSLUV space."
+(defun ct-complement (color)
+  "Return the complement of COLOR in the HSLUV space."
   (ct-edit-hsluv-h-inc c 180))
 
 (define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
