@@ -567,7 +567,7 @@ If COLORSPACE is non-nil, use selected colorspace to generate the colors."
 
 (defun ct-complement (color)
   "Return the complement of COLOR in the HSLUV space."
-  (ct-edit-hsluv-h-inc c 180))
+  (ct-edit-hsluv-h-inc color 180))
 
 (define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
 (define-obsolete-function-alias 'ct-lab-lighten 'ct-edit-lab-l-inc "2022-06-03")
