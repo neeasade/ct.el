@@ -1,0 +1,65 @@
+🔵 🟣 🟢 🟤 🟡 🔴 🟠
+
+ct.el (color tools) is a color library for Emacs meant for making changes to individual colors in various color spaces. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/tarps][tarps]]. Shouted out by [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][prot]] (of modus themes fame).
+
+Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • [[#lab][lab]] • [[#lch][lch]]
+
+** Installation
+
+ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https://github.com/raxod502/straight.el][straight.el]]:
+
+#+begin_src emacs-lisp
+(straight-use-package '(ct :host github :repo "neeasade/ct.el" :branch "master"))
+#+end_src
+
+** Conventions
+
+- Colorspace number range values are 0-100
+    - Exception: Hue (0-360 degrees)
+    - Exception: L*AB* (-100-100)
+- Values are clamped to valid ranges coming out of the ~ct-edit~ functions
+    - Hue is clamped via modulo 360
+
+** Functions
+
+{{docs-replace-target}}
+
+** Gotchas
+
+Some colors as defined in color spaces may not be represented in the RGB space (and vice versa). The edit functions clamp values going out. One example is the narrowly scoped ~hpluv~ space:
+
+#+begin_src emacs-lisp
+(ct-get-hpluv "#dd00cc")
+
+;; That p value is way out of range!
+;; => (314.3830496716472 282.01497572464575 51.53528501195089)
+
+;; notice we ask for the same color back, but the transform functions clamp the output to maximum HPL values:
+(ct-edit-hpluv "#dd00cc" 'list)
+
+;; => "#9f6898"
+#+end_src
+
+** Testing
+
+Right now testing happens by using the `ct-make-*` functions(these use the transform functions, which make up the basis for all the color space functions) against:
+
+- https://css.land/lch/
+- http://colorizer.org/
+
+
+** Related links
+
+Emacs color libraries:
+
+- https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el
+- https://github.com/emacsfodder/kurecolor
+- https://github.com/yurikhan/yk-color
+- https://github.com/hsluv/hsluv-emacs
+
+General color knowledge:
+
+- http://colorizer.org/
+- https://peteroupc.github.io/colorgen.html
+- https://www.w3.org/TR/WCAG20/#relativeluminancedef
+- https://en.wikipedia.org/wiki/CIELAB_color_space

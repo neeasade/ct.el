@@ -1,13 +1,11 @@
 ;;; ct-doc.el --- ct doc generation -*- coding: utf-8; lexical-binding: t -*-
 
-
 ;;; Commentary:
 ;; used when generating documentation for the readme
 
 ;;; Code:
 
-;; (insert (s-join "\n" (list (ct--generate-toc) (ct--generate-contents))))
-(when nil
+(when t
   (defun ct--get-functions ()
     (let (funcs)
       (mapatoms
@@ -56,6 +54,8 @@
            (ct-lab-change-whitepoint ,color color-d50-xyz color-d55-xyz)
 
            (ct-mix ,(list 'list color plain-color color-complement))
+           (ct-mix-opacity "#4fa5e8" "#bbbbbb" 80) ;; => "#0000ff"
+
            (ct-mix-opacity ,color ,plain-color 80)
            (ct-pastel ,color)
            (ct-tint-ratio ,color ,plain-color 3)
@@ -272,7 +272,14 @@
           (s-replace ")" "")
           (s-replace " " "-"))
         ;; name
-        name args))))
+        name args)))
+
+  (let ((source (f-join default-directory "readme-pre.org"))
+         (destination (f-join default-directory "../readme.org"))
+         (doc-result (s-join "\n" (list (ct--generate-toc) (ct--generate-contents)))))
+    (--> (f-read source)
+      (s-replace "{{docs-replace-target}}" doc-result it)
+      (f-write-text it 'utf-8 destination))))
 
 (provide 'ct-doc)
 ;;; ct-doc.el ends here
