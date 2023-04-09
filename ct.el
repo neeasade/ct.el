@@ -524,13 +524,25 @@ Optionally override SCALE comparison value."
         color (funcall op color)))
     color))
 
-(defun ct-tint-ratio (foreground background ratio)
-  "Tint a FOREGROUND against BACKGROUND until contrast RATIO minimum is reached."
+
+(defun ct-tint-ratio> (foreground background ratio)
+  "Increase contrast of FOREGROUND against BACKGROUND until minimum contrast RATIO is reached."
   (ct-iterate foreground
     (if (ct-light-p background)
       #'ct-edit-lab-l-dec
       #'ct-edit-lab-l-inc)
     (lambda (step) (> (ct-contrast-ratio step background) ratio))))
+
+(defalias 'ct-tint-ratio 'ct-tint-ratio>)
+
+(defun ct-tint-ratio< (foreground background ratio)
+  ;; this is a test of the next-buffer thing
+  "Decrease contrast of FOREGROUND against BACKGROUND until within contrast RATIO threshold."
+  (ct-iterate foreground
+    (if (ct-light-p background)
+      #'ct-edit-lab-l-inc
+      #'ct-edit-lab-l-dec)
+    (lambda (step) (< (ct-contrast-ratio step background) ratio))))
 
 (defun ct-mix-opacity (top bottom opacity)
   "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
