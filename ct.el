@@ -256,17 +256,12 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
   (defun ct--colorspace-map (&optional label)
     "Map a quoted colorspace LABEL to a plist with utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv. Defaults to \"rgb\"."
     (let ((label (or label "rgb")))
-      (->>
-        `(:transform "ct-edit-%s"
-           :make "ct-make-%s"
-           :get "ct-get-%s"
-           :get-1 ,(concat "ct-get-%s-" (string (elt label 0)))
-           :get-2 ,(concat  "ct-get-%s-" (string (elt label 1)))
-           :get-3 ,(concat "ct-get-%s-" (string (elt label 2))))
+      (->> '(:transform "ct-edit-%s"
+              :make "ct-make-%s"
+              :get "ct-get-%s")
         (-partition 2)
-        (-map (-lambda ((key name))
-                (list key (intern (format name label)))))
-        (-flatten)))))
+        (-mapcat (-lambda ((key name))
+                   (list key (intern (format name label)))))))))
 
 (defmacro ct--make-transform-property-functions (colorspace)
   "Build the functions for tweaking individual properties of colors in COLORSPACE."
@@ -329,13 +324,13 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 
             (funcall collect
               `(defun ,(intern (format "ct-point-%s-inc" prop-name)) ()
-                 ,(format "Interactively change color at point by invoking (%s-inc `ct-interactive-step-interval)" transform-prop-fn)
+                 ,(format "Change color at point by invoking (%s-inc ct-interactive-step-interval)" transform-prop-fn)
                  (interactive)
                  (ct--replace-current ',(intern (format "%s-inc" transform-prop-fn)) ct-interactive-step-interval)))
 
             (funcall collect
               `(defun ,(intern (format "ct-point-%s-dec" prop-name)) ()
-                 ,(format "Interactively change color at point by invoking (%s-dec `ct-interactive-step-interval)" transform-prop-fn)
+                 ,(format "Change color at point by invoking (%s-dec ct-interactive-step-interval)" transform-prop-fn)
                  (interactive)
                  (ct--replace-current ',(intern (format "%s-dec" transform-prop-fn)) ct-interactive-step-interval)))
 
@@ -490,17 +485,8 @@ Ranges for RGB color are all 0-100."
 (defun ct-light-p (c &optional scale)
   "Determine if C is a light color with lightness in the LAB space.
 Optionally override SCALE comparison value."
-  (> (-first-item (ct-name-to-lab c)) (or scale 65)))
-
-(defun ct-greaten (c &optional percent)
-  "Make a light color C lighter, a dark color C darker (by PERCENT)."
-  (ct-edit-lab-l-inc c
-    (* percent (if (ct-light-p c) 1 -1))))
-
-(defun ct-lessen (c &optional percent)
-  "Make a light color C darker, a dark color C lighter (by PERCENT)."
-  (ct-edit-lab-l-inc c
-    (* percent (if (ct-light-p c) -1 1))))
+  ;; nb: 65 here is arbitrary
+  (> (ct-get-lab-l c) (or scale 65)))
 
 (defun ct-iterations (start op condition)
   "Do OP on START color until CONDITION is met or op has no effect - return all intermediate parts."
@@ -524,25 +510,28 @@ Optionally override SCALE comparison value."
         color (funcall op color)))
     color))
 
-
-(defun ct-tint-ratio> (foreground background ratio)
+(defun ct-contrast-min (foreground background ratio &optional light)
   "Increase contrast of FOREGROUND against BACKGROUND until minimum contrast RATIO is reached."
   (ct-iterate foreground
     (if (ct-light-p background)
       #'ct-edit-lab-l-dec
       #'ct-edit-lab-l-inc)
-    (lambda (step) (> (ct-contrast-ratio step background) ratio))))
+    (lambda (step)
+      (> (ct-contrast-ratio step background) ratio))))
 
-(defalias 'ct-tint-ratio 'ct-tint-ratio>)
-
-(defun ct-tint-ratio< (foreground background ratio)
-  ;; this is a test of the next-buffer thing
+(defun ct-contrast-max (foreground background ratio)
   "Decrease contrast of FOREGROUND against BACKGROUND until within contrast RATIO threshold."
   (ct-iterate foreground
     (if (ct-light-p background)
       #'ct-edit-lab-l-inc
       #'ct-edit-lab-l-dec)
     (lambda (step) (< (ct-contrast-ratio step background) ratio))))
+
+(defun ct-contrast-clamp (foreground background ratio)
+  "Conform FOREGROUND to be contrast RATIO against BACKGROUND."
+  (if (< ratio (ct-contrast-ratio foreground background))
+    (ct-contrast-min foreground background ratio)
+    (ct-contrast-max foreground background ratio)))
 
 (defun ct-mix-opacity (top bottom opacity)
   "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
@@ -595,6 +584,7 @@ results."
 (define-obsolete-function-alias 'ct-lab-lighten 'ct-edit-lab-l-inc "2022-06-03")
 (define-obsolete-function-alias 'ct-lab-darken 'ct-edit-lab-l-dec "2022-06-03")
 (define-obsolete-function-alias 'ct-is-light-p 'ct-light-p "2022-06-03")
+(defalias 'ct-tint-ratio 'ct-contrast-min)
 
 (provide 'ct)
 ;;; ct.el ends here

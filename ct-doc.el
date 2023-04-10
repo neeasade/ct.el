@@ -58,7 +58,7 @@
            (ct-mix ,(list 'list color plain-color color-complement))
            (ct-mix-opacity ,color ,plain-color 80)
            (ct-pastel ,color)
-           (ct-tint-ratio ,color ,plain-color 3)
+           (ct-contrast-min ,color ,plain-color 3)
 
            (ct-rotation-hpluv ,color 60)
            (ct-rotation-hsl ,color 60)
