@@ -510,28 +510,28 @@ Optionally override SCALE comparison value."
         color (funcall op color)))
     color))
 
-(defun ct-contrast-min (foreground background ratio &optional light)
+(defun ct-contrast-min (foreground background ratio &optional darken-fn lighten-fn)
   "Increase contrast of FOREGROUND against BACKGROUND until minimum contrast RATIO is reached."
   (ct-iterate foreground
     (if (ct-light-p background)
-      #'ct-edit-lab-l-dec
-      #'ct-edit-lab-l-inc)
+      (or darken-fn #'ct-edit-lab-l-dec)
+      (or lighten-fn #'ct-edit-lab-l-inc))
     (lambda (step)
       (> (ct-contrast-ratio step background) ratio))))
 
-(defun ct-contrast-max (foreground background ratio)
+(defun ct-contrast-max (foreground background ratio &optional darken-fn lighten-fn)
   "Decrease contrast of FOREGROUND against BACKGROUND until within contrast RATIO threshold."
   (ct-iterate foreground
     (if (ct-light-p background)
-      #'ct-edit-lab-l-inc
-      #'ct-edit-lab-l-dec)
+      (or lighten-fn #'ct-edit-lab-l-inc)
+      (or darken-fn #'ct-edit-lab-l-dec))
     (lambda (step) (< (ct-contrast-ratio step background) ratio))))
 
-(defun ct-contrast-clamp (foreground background ratio)
+(defun ct-contrast-clamp (foreground background ratio &optional darken-fn lighten-fn)
   "Conform FOREGROUND to be contrast RATIO against BACKGROUND."
   (if (< ratio (ct-contrast-ratio foreground background))
-    (ct-contrast-min foreground background ratio)
-    (ct-contrast-max foreground background ratio)))
+    (ct-contrast-max foreground background ratio darken-fn lighten-fn)
+    (ct-contrast-min foreground background ratio darken-fn lighten-fn)))
 
 (defun ct-mix-opacity (top bottom opacity)
   "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
