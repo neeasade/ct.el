@@ -580,6 +580,16 @@ results."
   "Return a complement color of C in the HSLUV space."
   (ct-edit-hsluv-h-inc c 180))
 
+(defun ct-greaten (c &optional percent)
+  "Make a light color C lighter, a dark color C darker (by PERCENT)."
+  (ct-edit-lab-l-inc c
+    (* percent (if (ct-light-p c) 1 -1))))
+
+(defun ct-lessen (c &optional percent)
+  "Make a light color C darker, a dark color C lighter (by PERCENT)."
+  (ct-edit-lab-l-inc c
+    (* percent (if (ct-light-p c) -1 1))))
+
 (define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
 (define-obsolete-function-alias 'ct-lab-lighten 'ct-edit-lab-l-inc "2022-06-03")
 (define-obsolete-function-alias 'ct-lab-darken 'ct-edit-lab-l-dec "2022-06-03")
