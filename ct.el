@@ -42,6 +42,7 @@
 (defcustom ct-interactive-step-interval 3
   "Interval to use for the ct-point-* interactive functions.
 If set to nil the smallest amount needed to affect a change is used."
+  :type '(restricted-sexp :match-alternatives (integerp 'nil))
   :group 'ct)
 
 ;;;
@@ -71,7 +72,7 @@ If set to nil the smallest amount needed to affect a change is used."
 (defun ct--replace-current (fn &rest args)
   "Get the current unspaced string at point.
 Replace with the return value of the function FN with ARGS"
-  (let (pos1 pos2 len replacement excerpt change)
+  (let (pos1 pos2 replacement excerpt change)
     (if (and transient-mark-mode mark-active)
       (setq pos1 (region-beginning) pos2 (region-end))
       (progn

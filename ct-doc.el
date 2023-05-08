@@ -7,6 +7,7 @@
 ;;; Code:
 
 ;; (insert (s-join "\n" (list (ct--generate-toc) (ct--generate-contents))))
+;; delete between "Functions" and "Gotchas"
 (when nil
   (defun ct--get-functions ()
     (let (funcs)
