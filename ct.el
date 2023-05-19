@@ -501,7 +501,9 @@ Optionally override SCALE comparison value."
     colors))
 
 (defun ct-iterate (start op condition)
-  "Do OP on START color until CONDITION is met or op has no effect."
+  "Do OP on START color until CONDITION is met or op has no effect.
+
+CONDITION is a function that takes the current color value being iterated."
   (let ((color start)
          (iterations 0))
     (while (and (not (funcall condition color))
@@ -511,6 +513,22 @@ Optionally override SCALE comparison value."
         color (funcall op color)))
     color))
 
+(defmacro ct-aiterate (start op condition)
+  "Do OP on START color until CONDITION is met or op has no effect.
+
+This is an anaphoric version of ct-iterations - the current color value is bound
+to 'C', and the START color is bound to C_."
+  `(ct-iterate ,start ,op
+     (lambda (C) (let ((C_ ,start)) ,condition))))
+
+(defmacro ct-aiterations (start op condition)
+  "Do OP on START color until CONDITION is met or op has no effect - return all intermediate parts.
+
+This is an anaphoric version of ct-iterations - the current color value is bound
+to 'C', and the START color is bound to C_."
+  `(ct-iterations ,start ,op
+     (lambda (C) (let ((C_ ,start)) ,condition))))
+
 (defun ct-contrast-min (foreground background contrast-ratio &optional color-property)
   "Edit FOREGROUND to have a minimum CONTRAST-RATIO on BACKGROUND.
 
@@ -518,9 +536,9 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
   (-let* ((color-property (or color-property 'lab-l))
            (darken-fn (intern (format "ct-edit-%s-dec" color-property)))
            (lighten-fn (intern (format "ct-edit-%s-inc" color-property))))
-    (ct-iterate foreground
+    (ct-aiterate foreground
       (if (ct-light-p background) darken-fn lighten-fn)
-      (lambda (step) (> (ct-contrast-ratio step background) contrast-ratio)))))
+      (> (ct-contrast-ratio C background) contrast-ratio))))
 
 (defun ct-contrast-max (foreground background contrast-ratio &optional color-property)
   "Edit FOREGROUND to have a maximum CONTRAST-RATIO on BACKGROUND.
@@ -529,9 +547,9 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
   (-let* ((color-property (or color-property 'lab-l))
            (darken-fn (intern (format "ct-edit-%s-dec" color-property)))
            (lighten-fn (intern (format "ct-edit-%s-inc" color-property))))
-    (ct-iterate foreground
+    (ct-aiterate foreground
       (if (ct-light-p background) lighten-fn darken-fn)
-      (lambda (step) (< (ct-contrast-ratio step background) contrast-ratio)))))
+      (< (ct-contrast-ratio C background) contrast-ratio))))
 
 (defun ct-contrast-clamp (foreground background contrast-ratio &optional color-property)
   "Conform FOREGROUND to be CONTRAST-RATIO against BACKGROUND.
@@ -602,7 +620,7 @@ results."
 (define-obsolete-function-alias 'ct-lab-lighten 'ct-edit-lab-l-inc "2022-06-03")
 (define-obsolete-function-alias 'ct-lab-darken 'ct-edit-lab-l-dec "2022-06-03")
 (define-obsolete-function-alias 'ct-is-light-p 'ct-light-p "2022-06-03")
-(defalias 'ct-tint-ratio 'ct-contrast-min)
+(define-obsolete-function-alias 'ct-tint-ratio 'ct-contrast-min "2023-05-18")
 
 (provide 'ct)
 ;;; ct.el ends here

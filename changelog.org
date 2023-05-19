@@ -12,8 +12,17 @@ See: https://keepachangelog.com
 Not using any form of semantic versioning, just bumping the number.
 
 ** 0.x
+
+*** Changed
+- Changed the arguments names to have more clarity
+- ~ct-tint-contrast~ renamed to ~ct-contrast-min~
+
 *** Added
-- ~ct-point~ functions for editing the color at point interactively
+- ~ct-point-*~ functions for editing the color at point interactively
+- ~ct-aiterate~ an anaphoric macro for ct-iterate
+- ~ct-aiterations~ an anaphoric macro for ct-iterations
+- ~ct-contrast-max~ function to ensure a maximum contrast ratio
+- ~ct-contrast-clamp~ function to clamp to a specified contrast ratio
 
 ** 0.2 <2022-06-09>
 *** Added
