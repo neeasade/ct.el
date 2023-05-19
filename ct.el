@@ -517,17 +517,17 @@ CONDITION is a function that takes the current color value being iterated."
   "Do OP on START color until CONDITION is met or op has no effect.
 
 This is an anaphoric version of ct-iterations - the current color value is bound
-to 'C', and the START color is bound to C_."
+to 'C', and the START color is bound to C0."
   `(ct-iterate ,start ,op
-     (lambda (C) (let ((C_ ,start)) ,condition))))
+     (lambda (C) (let ((C0 ,start)) ,condition))))
 
 (defmacro ct-aiterations (start op condition)
   "Do OP on START color until CONDITION is met or op has no effect - return all intermediate parts.
 
 This is an anaphoric version of ct-iterations - the current color value is bound
-to 'C', and the START color is bound to C_."
+to 'C', and the START color is bound to C0."
   `(ct-iterations ,start ,op
-     (lambda (C) (let ((C_ ,start)) ,condition))))
+     (lambda (C) (let ((C0 ,start)) ,condition))))
 
 (defun ct-contrast-min (foreground background contrast-ratio &optional color-property)
   "Edit FOREGROUND to have a minimum CONTRAST-RATIO on BACKGROUND.
