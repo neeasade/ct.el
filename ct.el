@@ -1,6 +1,6 @@
 ;;; ct.el --- Color Tools - a color api -*- coding: utf-8; lexical-binding: t -*-
 
-;; Copyright (c) 2022 neeasade
+;; Copyright (c) 2024 neeasade
 ;; SPDX-License-Identifier: MIT
 ;;
 ;; Version: 0.2
