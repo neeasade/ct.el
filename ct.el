@@ -59,29 +59,18 @@ If set to nil the smallest amount needed to affect a change is used."
 
 MIN and MAX default to 0 and 100."
   ;; will there be any issues here with amp function?
-  (let ((min (or min 0.0))
-         (max (or max 100.0))
-         (result (min max (max min value))))
+  (let* ((min (or min 0.0))
+          (max (or max 100.0))
+          (result (min max (max min value))))
     (when (and ct-verbose-p
             (not (= result value))
             (< 0.001 (abs (- result value))))
       (message "ct: ct-clamped %s -> %s" value result))
     result))
 
-(defun ct-shorten (c)
-  "Optionally shorten C #HHHHHHHHHHHH to #HHHHHH."
-  (if (= (length c) 7)
-    c
-    (--> c
-      (color-name-to-rgb it)
-      `(color-rgb-to-hex ,@ it 2)
-      (eval it))))
-
-(defun ct-maybe-shorten (c)
-  "Internal function for optionally shortening color C -- see variable 'ct-always-shorten'."
-  (if ct-always-shorten
-    (ct-shorten c)
-    c))
+(defun ct--rgb-to-name (r g b)
+  (color-rgb-to-hex r g b
+    (if ct-always-shorten 2 4)))
 
 ;; utility function from: https://github.com/emacsfodder/kurecolor/blob/d17a77d9210b3e7b8141d03c04d1898bcab2b876/kurecolor.el#L201-L220
 (defun ct--replace-current (fn &rest args)
@@ -143,8 +132,7 @@ Use TOLERANCE-FN to check if ARG1 can be updated further."
     (apply #'color-xyz-to-srgb)
     ;; when pulling it out we might die (srgb is not big enough to hold all possible values)
     (-map #'color-clamp)
-    (apply #'color-rgb-to-hex)
-    (ct-maybe-shorten)))
+    (apply #'ct--rgb-to-name)))
 
 (defun ct-hsv-to-rgb (H S V)
   "Convert HSV to RGB. Expected values: H: radian, S,V: 0 to 1."
@@ -180,8 +168,7 @@ Use TOLERANCE-FN to check if ARG1 can be updated further."
     (apply transform)
     (-map #'ct-clamp)
     (--map (/ it 100.0))
-    (apply #'color-rgb-to-hex)
-    (ct-maybe-shorten)))
+    (apply #'ct--rgb-to-name)))
 
 (defun ct-edit-cielab (c transform)
   "Work with a color C in the LAB space using function TRANSFORM.
@@ -219,8 +206,7 @@ Ranges for HSL are {0-360,0-100,0-100}."
     (apply (lambda (H S L) (list (/ (mod H 360) 360.0) (/ S 100.0) (/ L 100.0))))
     (apply #'color-hsl-to-rgb)
     (-map #'color-clamp)
-    (apply #'color-rgb-to-hex)
-    (ct-maybe-shorten)))
+    (apply #'ct--rgb-to-name)))
 
 (defun ct-edit-hsv (c transform)
   "Work with a color C in the HSV space using function TRANSFORM.
@@ -240,34 +226,31 @@ Ranges for HSV are {0-360,0-100,0-100}."
                  (color-clamp (/ S 100.0))
                  (color-clamp (/ V 100.0)))))
     (apply #'ct-hsv-to-rgb)
-    (apply #'color-rgb-to-hex)
-    (ct-maybe-shorten)))
+    (apply #'ct--rgb-to-name)))
 
 (defun ct-edit-hpluv (c transform)
   "Work with a color C in the HPLUV space using function TRANSFORM.
 Ranges for HPLUV are {0-360,0-100,0-100}."
-  (ct-maybe-shorten
-    (apply #'color-rgb-to-hex
-      (-map #'color-clamp
-        (hsluv-hpluv-to-rgb
-          (-let (((H P L) (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
-            (list
-              (mod H 360.0)
-              (ct-clamp P)
-              (ct-clamp L))))))))
+  (apply #'ct--rgb-to-name
+    (-map #'color-clamp
+      (hsluv-hpluv-to-rgb
+        (-let (((H P L) (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
+          (list
+            (mod H 360.0)
+            (ct-clamp P)
+            (ct-clamp L)))))))
 
 (defun ct-edit-hsluv (c transform)
   "Work with a color C in the HSLUV space using function TRANSFORM.
 Ranges for HSLUV are {0-360,0-100,0-100}."
-  (ct-maybe-shorten
-    (apply #'color-rgb-to-hex
-      (-map #'color-clamp
-        (hsluv-hsluv-to-rgb
-          (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
-            (list
-              (mod (-first-item result) 360.0)
-              (ct-clamp (-second-item result))
-              (ct-clamp (-third-item result)))))))))
+  (apply #'ct--rgb-to-name
+    (-map #'color-clamp
+      (hsluv-hsluv-to-rgb
+        (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
+          (list
+            (mod (-first-item result) 360.0)
+            (ct-clamp (-second-item result))
+            (ct-clamp (-third-item result))))))))
 
 (eval-and-compile
   (defun ct--colorspace-map (&optional label)
