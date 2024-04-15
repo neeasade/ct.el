@@ -202,11 +202,11 @@ Ranges for LCH are {0-100,0-100,0-360}."
   (ct-edit-cielab c
     (lambda (&rest lab)
       (->> lab
-        (apply #'color-cielab-to-lch)
+        (apply #'color-lab-to-lch)
         (apply (lambda (L C H) (list L C (radians-to-degrees H))))
         (apply transform)
         (apply (lambda (L C H) (list L C (degrees-to-radians (mod H 360)))))
-        (apply #'color-lch-to-cielab)))))
+        (apply #'color-lch-to-lab)))))
 
 (defun ct-edit-hsl (c transform)
   "Work with a color C in the HSL space using function TRANSFORM.
