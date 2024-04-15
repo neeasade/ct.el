@@ -39,6 +39,11 @@
   :type 'boolean
   :group 'ct)
 
+(defcustom ct-verbose-p nil
+  "Enable logs. Logs will be prefixed with 'ct: '."
+  :type 'boolean
+  :group 'ct)
+
 (defcustom ct-interactive-step-interval 3
   "Interval to use for the ct-point-* interactive functions.
 If set to nil the smallest amount needed to affect a change is used."
@@ -49,9 +54,19 @@ If set to nil the smallest amount needed to affect a change is used."
 ;;; helpers to build color space functions
 ;;;
 
-(defun ct-clamp (value min max)
-  "Make sure VALUE is a number between MIN and MAX inclusive."
-  (min max (max min value)))
+(defun ct-clamp (value &optional min max)
+  "Make sure VALUE is a number between MIN and MAX inclusive.
+
+MIN and MAX default to 0 and 100."
+  ;; will there be any issues here with amp function?
+  (let ((min (or min 0.0))
+         (max (or max 100.0))
+         (result (min max (max min value))))
+    (when (and ct-verbose-p
+            (not (= result value))
+            (< 0.001 (abs (- result value))))
+      (message "ct: ct-clamped %s -> %s" value result))
+    result))
 
 (defun ct-shorten (c)
   "Optionally shorten C #HHHHHHHHHHHH to #HHHHHH."
@@ -161,10 +176,10 @@ Use TOLERANCE-FN to check if ARG1 can be updated further."
   "Work with a color C in the RGB space using function TRANSFORM. Ranges for RGB are all 0-100."
   (->> c
     (color-name-to-rgb)
-    (-map (-partial #'* 100.0))
+    (--map (* it 100.0))
     (apply transform)
-    (-map (-rpartial #'/ 100.0))
-    (-map #'color-clamp)
+    (-map #'ct-clamp)
+    (--map (/ it 100.0))
     (apply #'color-rgb-to-hex)
     (ct-maybe-shorten)))
 
@@ -176,7 +191,7 @@ Ranges for LAB are {0-100,-100-100,-100-100}."
     (apply transform)
     (apply (lambda (L A B)
              (list
-               (ct-clamp L 0 100)
+               (ct-clamp L)
                (ct-clamp A -100 100)
                (ct-clamp B -100 100))))
     (ct-cielab-to-name)))
@@ -238,8 +253,8 @@ Ranges for HPLUV are {0-360,0-100,0-100}."
           (-let (((H P L) (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
             (list
               (mod H 360.0)
-              (ct-clamp P 0 100)
-              (ct-clamp L 0 100))))))))
+              (ct-clamp P)
+              (ct-clamp L))))))))
 
 (defun ct-edit-hsluv (c transform)
   "Work with a color C in the HSLUV space using function TRANSFORM.
@@ -251,8 +266,8 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
           (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
             (list
               (mod (-first-item result) 360.0)
-              (ct-clamp (-second-item result) 0 100)
-              (ct-clamp (-third-item result) 0 100))))))))
+              (ct-clamp (-second-item result))
+              (ct-clamp (-third-item result)))))))))
 
 (eval-and-compile
   (defun ct--colorspace-map (&optional label)
@@ -383,7 +398,7 @@ values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
     (-map #'round)
     (funcall (lambda (coll) (-snoc coll
                               (/
-                                (ct-clamp (or opacity 100) 0 100)
+                                (ct-clamp (or opacity 100))
                                 100.0))))
     (apply (-partial 'format "rgba(%s, %s, %s, %s)"))))
 
@@ -393,7 +408,7 @@ Pass in C and OPACITY 0-100, get a string representation of C
 as follows: '#AAFFFFFF', where AA is a hex pair for the alpha,
 followed by FF times 3 hex pairs for red, green, blue. If END is
 truthy, then format will be '#FFFFFFAA'."
-  (->> (ct-clamp (or opacity 100) 0 100)
+  (->> (ct-clamp (or opacity 100))
     (* (/ 255.0 100))
     (round)
     (format "%02x")
