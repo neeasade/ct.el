@@ -116,18 +116,16 @@ Use TOLERANCE-FN to check if ARG1 can be updated further."
     next))
 
 (defun ct-name-to-cielab (name &optional white-point)
-  "Transform NAME into LAB colorspace with optional lighting assumption WHITE-POINT."
+  "Transform NAME into cieLAB colorspace with optional lighting assumption WHITE-POINT."
   (--> name
     (color-name-to-rgb it)
     (apply #'color-srgb-to-xyz it)
     (append it (list (or white-point color-d65-xyz)))
     (apply #'color-xyz-to-lab it)))
 
-
 (defun ct-cielab-to-name (lab &optional white-point)
   "Convert LAB color to #HHHHHH with optional lighting assumption WHITE-POINT."
-  (->>
-    (-snoc lab (or white-point color-d65-xyz))
+  (->> (-snoc lab (or white-point color-d65-xyz))
     (apply #'color-lab-to-xyz)
     (apply #'color-xyz-to-srgb)
     ;; when pulling it out we might die (srgb is not big enough to hold all possible values)
@@ -183,6 +181,19 @@ Ranges for LAB are {0-100,-100-100,-100-100}."
                (ct-clamp B -100 100))))
     (ct-cielab-to-name)))
 
+(defun ct-edit-oklab (c transform)
+  "Transform NAME into okLAB colorspace with optional lighting assumption WHITE-POINT."
+  ;; cf
+  (--> name
+    (color-name-to-rgb it)
+    (apply #'color-srgb-to-xyz it)
+    ;; todo: xyz to oklab
+    (funcall transform)
+    ;; todo: oklab to xyz
+    (apply #'color-xyz-to-srgb)
+    (-map #'color-clamp)
+    (apply #'ct--rgb-to-name)))
+
 (defun ct-edit-lch (c transform)
   "Work with a color C in the LCH space using function TRANSFORM.
 Ranges for LCH are {0-100,0-100,0-360}."
@@ -234,7 +245,7 @@ Ranges for HPLUV are {0-360,0-100,0-100}."
   (apply #'ct--rgb-to-name
     (-map #'color-clamp
       (hsluv-hpluv-to-rgb
-        (-let (((H P L) (apply transform (-> c ct-shorten hsluv-hex-to-hpluv))))
+        (-let (((H P L) (apply transform (-> c hsluv-hex-to-hpluv))))
           (list
             (mod H 360.0)
             (ct-clamp P)
@@ -246,7 +257,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
   (apply #'ct--rgb-to-name
     (-map #'color-clamp
       (hsluv-hsluv-to-rgb
-        (let ((result (apply transform (-> c ct-shorten hsluv-hex-to-hsluv))))
+        (let ((result (apply transform (-> c hsluv-hex-to-hsluv))))
           (list
             (mod (-first-item result) 360.0)
             (ct-clamp (-second-item result))
@@ -397,8 +408,8 @@ truthy, then format will be '#FFFFFFAA'."
     (format "%02x")
     (funcall (lambda (A)
                (if end
-                 (format "#%s%s" (-> C ct-shorten (substring 1)) A)
-                 (format "#%s%s" A (-> C ct-shorten (substring 1))))))))
+                 (format "#%s%s" (-> C (substring 1)) A)
+                 (format "#%s%s" A (-> C (substring 1))))))))
 
 ;; sRGB <-> linear RGB conversion
 ;; https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_(CIE_XYZ_to_sRGB)
