@@ -1,8 +1,10 @@
+# NOTE: this file is generated, see the docs branch to make edits
+
 🔵 🟣 🟢 🟤 🟡 🔴 🟠
 
 ct.el (color tools) is a color library for Emacs meant for making changes to individual colors in various color spaces. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/myron-themes][myron-themes]]. Shouted out by [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][prot]] (of modus themes fame).
 
-Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • [[#lab][lab]] • [[#lch][lch]]
+Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • (cie)[[#lab][lab]] • (cie)[[#lch][lch]]
 
 ** Installation
 
@@ -20,7 +22,9 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - Values are clamped to valid ranges coming out of the ~ct-edit~ functions
     - Hue is clamped via modulo 360
 
+
 ** Functions
+
 *** Color Properties
 - [[#ct-contrast-ratio-c1-c2][ct-contrast-ratio]] ~(C1 C2)~
 - [[#ct-distance-c1-c2][ct-distance]] ~(C1 C2)~
@@ -38,7 +42,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-mix-colors-optional-space][ct-mix]] ~(COLORS &optional SPACE)~
 - [[#ct-mix-opacity-top-bottom-opacity][ct-mix-opacity]] ~(TOP BOTTOM OPACITY)~
 - [[#ct-pastel-c-optional-smod-vmod][ct-pastel]] ~(C &optional SMOD VMOD)~
-- [[#ct-tint-ratio-foreground-background-ratio][ct-tint-ratio]] ~(FOREGROUND BACKGROUND RATIO)~
+- [[#ct-contrast-min-foreground-background-contrast-ratio-optional-color-property][ct-contrast-min]] ~(FOREGROUND BACKGROUND CONTRAST-RATIO &optional COLOR-PROPERTY)~
 - [[#ct-rotation-hpluv-c-interval][ct-rotation-hpluv]] ~(C INTERVAL)~
 - [[#ct-rotation-hsl-c-interval][ct-rotation-hsl]] ~(C INTERVAL)~
 - [[#ct-rotation-hsluv-c-interval][ct-rotation-hsluv]] ~(C INTERVAL)~
@@ -246,6 +250,8 @@ Make a light color C darker, a dark color C lighter (by PERCENT).
 #+END_quote
 **** ct-iterate ~(START OP CONDITION)~
 Do OP on START color until CONDITION is met or op has no effect.
+
+CONDITION is a function that takes the current color value being iterated.
 #+BEGIN_src elisp
 (ct-iterate "#4fa5e8" 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c "#4fa5e8") 10))) ;; => "#4f98ff"
 #+END_src
@@ -292,10 +298,12 @@ Make a color C more 'pastel' in the hsluv space -- optionally change the rate of
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/77a2c4/000000.png?text=+]]
 #+END_quote
-**** ct-tint-ratio ~(FOREGROUND BACKGROUND RATIO)~
-Tint a FOREGROUND against BACKGROUND until contrast RATIO minimum is reached.
+**** ct-contrast-min ~(FOREGROUND BACKGROUND CONTRAST-RATIO &optional COLOR-PROPERTY)~
+Edit FOREGROUND to have a minimum CONTRAST-RATIO on BACKGROUND.
+
+Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)
 #+BEGIN_src elisp
-(ct-tint-ratio "#4fa5e8" "#bbbbbb" 3) ;; => "#1369ac"
+(ct-contrast-min "#4fa5e8" "#bbbbbb" 3) ;; => "#1369ac"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/1369ac/000000.png?text=+]]
@@ -343,7 +351,7 @@ Perform a hue rotation in lch space starting with color C by INTERVAL degrees.
 ** RGB
 https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8
 **** ct-make-rgb ~(R G B)~
-Make a color using R*G*B properties.
+Make a color using R*G*B* properties.
 #+BEGIN_src elisp
 (ct-make-rgb 30.980392156862745 64.70588235294117 90.98039215686275) ;; => "#4fa4e8"
 #+END_src
@@ -456,7 +464,7 @@ Increase rgb-r value of C by V (defaults to the minimum amount needed to change 
 ** LAB
 https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e
 **** ct-make-lab ~(L A B)~
-Make a color using L*A*B properties.
+Make a color using cieL*A*B* properties.
 #+BEGIN_src elisp
 (ct-make-lab 65.27524119433272 -5.264411618969234 -41.33308089969405) ;; => "#4fa4e8"
 #+END_src
@@ -573,7 +581,7 @@ Increase lab-l value of C by V (defaults to the minimum amount needed to change 
 ** HSL
 https://notes.neeasade.net/color-spaces.html#h-43869bc7-a7d1-410f-9341-521974751dac
 **** ct-make-hsl ~(H S L)~
-Make a color using H*S*L properties.
+Make a color using H*S*L* properties.
 #+BEGIN_src elisp
 (ct-make-hsl 206.27450980392157 76.88442211055275 60.98039215686275) ;; => "#4fa4e8"
 #+END_src
@@ -783,7 +791,7 @@ Increase hsluv-s value of C by V (defaults to the minimum amount needed to chang
 ** LCH
 https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413
 **** ct-make-lch ~(L C H)~
-Make a color using L*C*H properties.
+Make a color using cieL*C*H* properties.
 #+BEGIN_src elisp
 (ct-make-lch 65.27524119433272 41.666984608375394 -97.25842954163491) ;; => "#4fa4e8"
 #+END_src
@@ -888,7 +896,7 @@ Increase lch-l value of C by V (defaults to the minimum amount needed to change 
 ** HSV
 https://en.wikipedia.org/wiki/HSL_and_HSV
 **** ct-make-hsv ~(H S V)~
-Make a color using H*S*V properties.
+Make a color using H*S*V* properties.
 #+BEGIN_src elisp
 (ct-make-hsv 206.27450980392157 65.94827586206897 90.98039215686275) ;; => "#4ea5e8"
 #+END_src
