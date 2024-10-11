@@ -5,7 +5,7 @@
 ;;
 ;; Version: 0.2
 ;; Author: neeasade
-;; Keywords: convenience color theming rgb hsv hsl cielab background
+;; Keywords: convenience color theming rgb hsv hsl lab oklab background
 ;; URL: https://github.com/neeasade/ct.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.18.0") (hsluv "1.0.0"))
 
@@ -118,7 +118,7 @@ Use TOLERANCE-FN to check if ARG1 can be updated further."
         arg1 (funcall arg1-amp-fn arg1)))
     next))
 
-(defun ct-name-to-cielab (name &optional white-point)
+(defun ct-name-to-lab (name &optional white-point)
   "Transform NAME into cieLAB colorspace with optional lighting assumption WHITE-POINT."
   (--> name
     (color-name-to-rgb it)
@@ -126,7 +126,7 @@ Use TOLERANCE-FN to check if ARG1 can be updated further."
     (append it (list (or white-point color-d65-xyz)))
     (apply #'color-xyz-to-lab it)))
 
-(defun ct-cielab-to-name (lab &optional white-point)
+(defun ct-lab-to-name (lab &optional white-point)
   "Convert LAB color to #HHHHHH with optional lighting assumption WHITE-POINT."
   (->> (-snoc lab (or white-point color-d65-xyz))
     (apply #'color-lab-to-xyz)
@@ -171,18 +171,18 @@ Use TOLERANCE-FN to check if ARG1 can be updated further."
     (--map (/ it 100.0))
     (apply #'ct--rgb-to-name)))
 
-(defun ct-edit-cielab (c transform)
+(defun ct-edit-lab (c transform)
   "Work with a color C in the LAB space using function TRANSFORM.
 Ranges for LAB are {0-100,-100-100,-100-100}."
   (->> c
-    (ct-name-to-cielab)
+    (ct-name-to-lab)
     (apply transform)
     (apply (lambda (L A B)
              (list
                (ct-clamp L)
                (ct-clamp A -100 100)
                (ct-clamp B -100 100))))
-    (ct-cielab-to-name)))
+    (ct-lab-to-name)))
 
 (defun ct-edit-oklab (c transform)
   "Transform NAME into okLAB colorspace with optional lighting assumption WHITE-POINT."
@@ -213,10 +213,10 @@ Ranges for LAB are {0-100,-100-100,-100-100}."
 
 ;;   )
 
-(defun ct-edit-cielch (c transform)
+(defun ct-edit-lch (c transform)
   "Work with a color C in the LCH space using function TRANSFORM.
 Ranges for LCH are {0-100,0-100,0-360}."
-  (ct-edit-cielab c
+  (ct-edit-lab c
     (lambda (&rest lab)
       (->> lab
         (apply #'color-lab-to-lch)
@@ -286,7 +286,7 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 
 (eval-and-compile
   (defun ct--colorspace-map (&optional label)
-    "Map a quoted colorspace LABEL to a plist with utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv cielch cielab hsv. Defaults to \"rgb\"."
+    "Map a quoted colorspace LABEL to a plist with utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv. Defaults to \"rgb\"."
     (let ((label (or label "rgb")))
       (->> '(:transform "ct-edit-%s"
               :make "ct-make-%s"
@@ -315,7 +315,6 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
         (lambda (index)
           (let* ((prop-single (let ((from (cond
                                             ((string= colorspace "oklab") (+ 2 index))
-                                            ;; ((string= colorspace "cielab") (+ 3 index))
                                             (t index))))
                                 (substring colorspace from (1+ from))))
                   (prop-name (format "%s-%s" colorspace prop-single))
@@ -381,8 +380,9 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 (ct--make-transform-property-functions "rgb")
 (ct--make-transform-property-functions "hsl")
 (ct--make-transform-property-functions "hsv")
-(ct--make-transform-property-functions "cielch")
-(ct--make-transform-property-functions "cielab")
+(ct--make-transform-property-functions "lch")
+(ct--make-transform-property-functions "lab")
+
 ;; (ct--make-transform-property-functions "oklab")
 
 (ct--make-transform-property-functions "hpluv")
@@ -395,14 +395,12 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 
 (defun ct-make-rgb (R G B) "Make a color using R*G*B* properties." (ct--make-color-meta 'ct-edit-rgb (list R G B)))
 
-(ct-make-rgb 100 0 0)
-
-(defun ct-make-hsl (H S L) "Make a color using H*S*L* properties." (ct--make-color-meta ct-edit-hsl (list H S L)))
-(defun ct-make-hsv (H S V) "Make a color using H*S*V* properties." (ct--make-color-meta ct-edit-hsv (list H S V)))
-(defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta ct-edit-hsluv (list H S L)))
-(defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta ct-edit-hpluv (list H P L)))
-(defun ct-make-cielab (L A B) "Make a color using cieL*A*B* properties." (ct--make-color-meta ct-edit-cielab (list L A B)))
-(defun ct-make-cielch (L C H) "Make a color using cieL*C*H* properties." (ct--make-color-meta ct-edit-cielch (list L C H)))
+(defun ct-make-hsl (H S L) "Make a color using H*S*L* properties." (ct--make-color-meta 'ct-edit-hsl (list H S L)))
+(defun ct-make-hsv (H S V) "Make a color using H*S*V* properties." (ct--make-color-meta 'ct-edit-hsv (list H S V)))
+(defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta 'ct-edit-hsluv (list H S L)))
+(defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta 'ct-edit-hpluv (list H P L)))
+(defun ct-make-lab (L A B) "Make a color using cieL*A*B* properties." (ct--make-color-meta 'ct-edit-lab (list L A B)))
+(defun ct-make-lch (L C H) "Make a color using cieL*C*H* properties." (ct--make-color-meta 'ct-edit-lch (list L C H)))
 ;; (defun ct-make-oklab (L A B) "Make a color using okL*A*B*" (ct--make-color-meta ct-edit-oklab (list L A b)))
 
 ;;;
@@ -511,22 +509,22 @@ Ranges for RGB color are all 0-100."
     (/ (+ 0.05 (max rl1 rl2))
       (+ 0.05 (min rl1 rl2)))))
 
-(defun ct-cielab-change-whitepoint (c w1 w2)
+(defun ct-lab-change-whitepoint (c w1 w2)
   "Convert a color C wrt white points W1 and W2 through the lab colorspace."
-  (ct-cielab-to-name (ct-name-to-cielab c w1) w2))
+  (ct-lab-to-name (ct-name-to-lab c w1) w2))
 
 (defun ct-distance (c1 c2)
   "Get cie-DE2000 distance between C1 and C2 -- value is 0-100."
   ;; note: there are 3 additional optional params to cie-de2000: compensation for
   ;; {lightness,chroma,hue} (all 0.0-1.0)
   ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-  (apply #'color-cie-de2000 (-map 'ct-name-to-cielab (list c1 c2))))
+  (apply #'color-cie-de2000 (-map 'ct-name-to-lab (list c1 c2))))
 
 (defun ct-light-p (c &optional scale)
   "Determine if C is a light color with lightness in the LAB space.
 Optionally override SCALE comparison value."
   ;; nb: 65 here is arbitrary
-  (> (ct-get-cielab-l c) (or scale 65)))
+  (> (ct-get-lab-l c) (or scale 65)))
 
 (defun ct-iterations (start op condition)
   "Do OP on START color until CONDITION is met or op has no effect - return all intermediate parts."
@@ -647,57 +645,17 @@ results."
 
 (defun ct-greaten (c &optional percent)
   "Make a light color C lighter, a dark color C darker (by PERCENT)."
-  (ct-edit-cielab-l-inc c
+  (ct-edit-lab-l-inc c
     (* percent (if (ct-light-p c) 1 -1))))
 
 (defun ct-lessen (c &optional percent)
   "Make a light color C darker, a dark color C lighter (by PERCENT)."
-  (ct-edit-cielab-l-inc c
+  (ct-edit-lab-l-inc c
     (* percent (if (ct-light-p c) -1 1))))
 
 (define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
-(define-obsolete-function-alias 'ct-lab-lighten 'ct-edit-cielab-l-inc "2022-06-03")
-(define-obsolete-function-alias 'ct-lab-darken 'ct-edit-cielab-l-dec "2022-06-03")
 (define-obsolete-function-alias 'ct-is-light-p 'ct-light-p "2022-06-03")
 (define-obsolete-function-alias 'ct-tint-ratio 'ct-contrast-min "2023-05-18")
-
-
-(define-obsolete-function-alias 'ct-lab-to-name 'ct-cielab-to-name "2024-04-13")
-(define-obsolete-function-alias 'ct-name-to-lab 'ct-name-to-cielab "2024-04-13")
-(define-obsolete-function-alias 'ct-make-lab 'ct-make-cielab "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lab 'ct-get-cielab "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lab-l 'ct-get-cielab-l "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lab-b 'ct-get-cielab-b "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lab-a 'ct-get-cielab-a "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab 'ct-edit-cielab "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-a 'ct-edit-cielab-a "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-a-dec 'ct-edit-cielab-a-dec "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-a-inc 'ct-edit-cielab-a-inc "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-b 'ct-edit-cielab-b "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-b-dec 'ct-edit-cielab-b-dec "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-b-inc 'ct-edit-cielab-b-inc "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-l 'ct-edit-cielab-l "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-l-dec 'ct-edit-cielab-l-dec "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lab-l-inc 'ct-edit-cielab-l-inc "2024-04-13")
-(define-obsolete-function-alias 'ct-lab-change-whitepoint 'ct-cielab-change-whitepoint "2024-04-13")
-
-(define-obsolete-function-alias 'ct-lch-to-name 'ct-cielch-to-name "2024-04-13")
-(define-obsolete-function-alias 'ct-name-to-lch 'ct-name-to-cielch "2024-04-13")
-(define-obsolete-function-alias 'ct-make-lch 'ct-make-cielch "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lch 'ct-get-cielch "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lch-l 'ct-get-cielch-l "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lch-b 'ct-get-cielch-b "2024-04-13")
-(define-obsolete-function-alias 'ct-get-lch-a 'ct-get-cielch-a "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch 'ct-edit-cielch "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-a 'ct-edit-cielch-a "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-a-dec 'ct-edit-cielch-a-dec "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-a-inc 'ct-edit-cielch-a-inc "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-b 'ct-edit-cielch-b "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-b-dec 'ct-edit-cielch-b-dec "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-b-inc 'ct-edit-cielch-b-inc "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-l 'ct-edit-cielch-l "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-l-dec 'ct-edit-cielch-l-dec "2024-04-13")
-(define-obsolete-function-alias 'ct-edit-lch-l-inc 'ct-edit-cielch-l-inc "2024-04-13")
 
 (provide 'ct)
 ;;; ct.el ends here
