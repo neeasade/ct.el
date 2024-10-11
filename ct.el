@@ -51,7 +51,19 @@ If set to nil the smallest amount needed to affect a change is used."
   :group 'ct)
 
 ;; https://git.savannah.gnu.org/cgit/emacs.git/commit/lisp/color.el?id=c5e5940ba40b801270bbe02b92576eac36f73222
-(when (functionp 'color-oklab-to-xyz))
+(when (functionp 'color-oklab-to-xyz)
+  (defun ct-edit-oklab (c transform)
+    "Transform NAME in the okLAB colorspace."
+    ;; todo: review this
+    (--> c
+      (color-name-to-rgb it)
+      (apply #'color-srgb-to-oklab it)
+      (--map (* it 100.0) it)
+      (funcall transform it)
+      (--map (/ it 100.0) it)
+      (apply #'color-oklab-to-srgb it)
+      (-map #'color-clamp it)
+      (apply #'ct--rgb-to-name it))))
 
 ;;;
 ;;; helpers to build color space functions
@@ -183,35 +195,6 @@ Ranges for LAB are {0-100,-100-100,-100-100}."
                (ct-clamp A -100 100)
                (ct-clamp B -100 100))))
     (ct-lab-to-name)))
-
-(defun ct-edit-oklab (c transform)
-  "Transform NAME into okLAB colorspace with optional lighting assumption WHITE-POINT."
-  ;; cf
-  (--> c
-    (color-name-to-rgb it)
-    (apply #'color-srgb-to-oklab it)
-    (--map (* it 100.0) it)
-    (funcall transform it)
-    (--map (/ it 100.0) it)
-    (apply #'color-oklab-to-srgb it)
-    (-map #'color-clamp it)
-    (apply #'ct--rgb-to-name it)))
-
-;; (ns/comment
-;;   (ct-make-oklab 80 11 11)
-
-;;   (ct-get-rgb "#ff9a63")
-;;   (ct-format-rbga
-;;     "#ff9a63"
-;;     )
-
-;;   "rgba(255, 154, 99, 1.0)"
-
-;;   (ct--make-transform-property-functions "oklab")
-
-;;   (defun ct-make-oklab (L A B) "Make a color using okL*A*B*" (ct--make-color-meta ct-edit-oklab (list L A B)))
-
-;;   )
 
 (defun ct-edit-lch (c transform)
   "Work with a color C in the LCH space using function TRANSFORM.
@@ -382,9 +365,6 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 (ct--make-transform-property-functions "hsv")
 (ct--make-transform-property-functions "lch")
 (ct--make-transform-property-functions "lab")
-
-;; (ct--make-transform-property-functions "oklab")
-
 (ct--make-transform-property-functions "hpluv")
 (ct--make-transform-property-functions "hsluv")
 
@@ -401,7 +381,10 @@ Ranges for HSLUV are {0-360,0-100,0-100}."
 (defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta 'ct-edit-hpluv (list H P L)))
 (defun ct-make-lab (L A B) "Make a color using cieL*A*B* properties." (ct--make-color-meta 'ct-edit-lab (list L A B)))
 (defun ct-make-lch (L C H) "Make a color using cieL*C*H* properties." (ct--make-color-meta 'ct-edit-lch (list L C H)))
-;; (defun ct-make-oklab (L A B) "Make a color using okL*A*B*" (ct--make-color-meta ct-edit-oklab (list L A b)))
+
+(when (functionp 'color-oklab-to-xyz)
+  (ct--make-transform-property-functions "oklab")
+  (defun ct-make-oklab (L A B) "Make a color using okL*A*B* properties." (ct--make-color-meta 'ct-edit-oklab (list L A b))))
 
 ;;;
 ;;; other color functions
