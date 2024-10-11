@@ -1,14 +1,14 @@
 ;;; ct-doc.el --- ct doc generation -*- coding: utf-8; lexical-binding: t -*-
 
+;; todo: can we do inline svg instead of a service?
+;;     - <2024-10-11 Fri 11:15> it appears not
 
 ;;; Commentary:
 ;; used when generating documentation for the readme
 
 ;;; Code:
 
-;; (insert (s-join "\n" (list (ct--generate-toc) (ct--generate-contents))))
-;; delete between "Functions" and "Gotchas"
-(when nil
+(when t
   (defun ct--get-functions ()
     (let (funcs)
       (mapatoms
@@ -45,8 +45,7 @@
            (ct-format-rbga ,color 80)
            (ct-light-p ,color))
          ("Color Modification" "Functions for modifying colors in some way potentially unrelated to a specific colorspace")
-         (
-           (ct-complement ,color)
+         ((ct-complement ,color)
            (ct-gradient 5 ,color ,color-complement t)
            (ct-greaten ,color 20)
            (ct-lessen ,color 20)
@@ -215,6 +214,9 @@
                       (-let* ((result (eval example))
                                (match-colors (ct--get-colors example))
                                (result-colors (ct--get-colors result))
+
+                               (helpful--signature 'ct-rotation-lch)
+
                                ((name . args) (read (helpful--signature (first example))))
                                (docstring (helpful--docstring (first example) t))
                                (show-quote-p (not (and (or (s-ends-with-p "-inc" (prin1-to-string (first example)))
@@ -273,7 +275,17 @@
           (s-replace ")" "")
           (s-replace " " "-"))
         ;; name
-        name args))))
+        name args)))
+
+  ;; off the rails
+  (spit "../readme.org"
+    (s-replace "{{replace-me}}"
+      (s-join "\n" (list
+                     (ct--generate-toc)
+                     (ct--generate-contents)))
+      (slurp "readme.org")
+
+      )))
 
 (provide 'ct-doc)
 ;;; ct-doc.el ends here
