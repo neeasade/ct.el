@@ -1,4 +1,5 @@
 # NOTE: this file is generated, see the docs branch to make edits
+# git worktree add docs docs
 
 🔵 🟣 🟢 🟤 🟡 🔴 🟠
 
