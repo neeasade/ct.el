@@ -11,8 +11,9 @@ See: https://keepachangelog.com
 
 Not using any form of semantic versioning, just bumping the number.
 
-** 0.3
+** placeholder
 
+** 0.3 <2024-10-15>
 *** Changed
 - Changed the parameter conventions for clarity
     - ~c~ -> ~color~
