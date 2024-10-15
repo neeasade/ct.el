@@ -1,5 +1,11 @@
 # NOTE: this file is generated, see the docs branch to make edits
-# git worktree add docs docs
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
 
 🔵 🟣 🟢 🟤 🟡 🔴 🟠
 
@@ -19,10 +25,9 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 
 - Colorspace number range values are 0-100
     - Exception: Hue (0-360 degrees)
-    - Exception: L*AB* (-100-100)
-- Values are clamped to valid ranges coming out of the ~ct-edit~ functions
+    - Exception: L(*AB*) (-100-100)
+- Values are clamped to valid ranges coming out of the ~ct-edit-*~ functions
     - Hue is clamped via modulo 360
-
 
 ** Functions
 

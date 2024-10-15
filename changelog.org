@@ -11,15 +11,18 @@ See: https://keepachangelog.com
 
 Not using any form of semantic versioning, just bumping the number.
 
-** 0.x
+** 0.3
 
 *** Changed
-- Changed the arguments names to have more clarity
+- Changed the parameter conventions for clarity
+    - ~c~ -> ~color~
+    - ~transform~ -> ~edit-fn~
 - ~ct-tint-contrast~ renamed to ~ct-contrast-min~
-- All of the ~lab~ colorspace functions now use the more specific ~cielab~
-    - e.g. ~ct-edit-lab-l~ -> ~ct-edit-lab-cielab~
+- Move ~ct-make-*~ functions into the generation macro
+- Make readme generated, moved
 
 *** Added
+- added okLAB support - built on top of color.el, so only enabled if your emacs has [[https://git.savannah.gnu.org/cgit/emacs.git/commit/lisp/color.el?id=c5e5940ba40b801270bbe02b92576eac36f73222][this commit]]
 - ~ct-point-*~ functions for editing the color at point interactively
 - ~ct-aiterate~ an anaphoric macro for ct-iterate
 - ~ct-aiterations~ an anaphoric macro for ct-iterations
