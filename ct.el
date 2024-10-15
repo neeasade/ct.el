@@ -380,24 +380,8 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 (ct--make-transform-property-functions "hpluv")
 (ct--make-transform-property-functions "hsluv")
 
-;; ;; make colors within our normalized transform functions:
-;; (defun ct--make-color-meta (transform properties)
-;;   "Internal macro for creating a color using TRANSFORM function forcing PROPERTIES."
-;;   (funcall transform "#cccccc" (lambda (&rest _) properties)))
-
-;; (defun ct-make-rgb (R G B) "Make a color using R*G*B* properties." (ct--make-color-meta 'ct-edit-rgb (list R G B)))
-
-;; (defun ct-make-hsl (H S L) "Make a color using H*S*L* properties." (ct--make-color-meta 'ct-edit-hsl (list H S L)))
-;; (defun ct-make-hsv (H S V) "Make a color using H*S*V* properties." (ct--make-color-meta 'ct-edit-hsv (list H S V)))
-;; (defun ct-make-hsluv (H S L) "Make a color using H*S*L*uv properties." (ct--make-color-meta 'ct-edit-hsluv (list H S L)))
-;; (defun ct-make-hpluv (H P L) "Make a color using H*P*L*uv properties." (ct--make-color-meta 'ct-edit-hpluv (list H P L)))
-;; (defun ct-make-lab (L A B) "Make a color using cieL*A*B* properties." (ct--make-color-meta 'ct-edit-lab (list L A B)))
-;; (defun ct-make-lch (L C H) "Make a color using cieL*C*H* properties." (ct--make-color-meta 'ct-edit-lch (list L C H)))
-
 (when (functionp 'color-oklab-to-xyz)
-  (ct--make-transform-property-functions "oklab")
-  ;; (defun ct-make-oklab (L A B) "Make a color using okL*A*B* properties." (ct--make-color-meta 'ct-edit-oklab (list L A b)))
-  )
+  (ct--make-transform-property-functions "oklab"))
 
 ;;;
 ;;; other color functions
