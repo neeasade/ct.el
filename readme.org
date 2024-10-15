@@ -6,6 +6,7 @@
 # NOTE: this file is generated, see the docs branch to make edits
 # NOTE: this file is generated, see the docs branch to make edits
 # NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
 
 🔵 🟣 🟢 🟤 🟡 🔴 🟠
 
@@ -34,16 +35,16 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 *** Color Properties
 - [[#ct-contrast-ratio-c1-c2][ct-contrast-ratio]] ~(C1 C2)~
 - [[#ct-distance-c1-c2][ct-distance]] ~(C1 C2)~
-- [[#ct-format-argb-c-optional-opacity-end][ct-format-argb]] ~(C &optional OPACITY END)~
-- [[#ct-format-rbga-c-optional-opacity][ct-format-rbga]] ~(C &optional OPACITY)~
+- [[#ct-format-argb-color-optional-opacity-end][ct-format-argb]] ~(COLOR &optional OPACITY END)~
+- [[#ct-format-rbga-color-optional-opacity][ct-format-rbga]] ~(COLOR &optional OPACITY)~
 - [[#ct-light-p-c-optional-scale][ct-light-p]] ~(C &optional SCALE)~
 *** Color Modification
 - [[#ct-complement-c][ct-complement]] ~(C)~
 - [[#ct-gradient-step-start-end-optional-with-ends-space][ct-gradient]] ~(STEP START END &optional WITH-ENDS SPACE)~
 - [[#ct-greaten-c-optional-percent][ct-greaten]] ~(C &optional PERCENT)~
 - [[#ct-lessen-c-optional-percent][ct-lessen]] ~(C &optional PERCENT)~
-- [[#ct-iterate-start-op-condition][ct-iterate]] ~(START OP CONDITION)~
-- [[#ct-iterations-start-op-condition][ct-iterations]] ~(START OP CONDITION)~
+- [[#ct-iterate-color-transform-fn-condition][ct-iterate]] ~(COLOR TRANSFORM-FN CONDITION)~
+- [[#ct-iterations-color-transform-fn-condition][ct-iterations]] ~(COLOR TRANSFORM-FN CONDITION)~
 - [[#ct-lab-change-whitepoint-c-w1-w2][ct-lab-change-whitepoint]] ~(C W1 W2)~
 - [[#ct-mix-colors-optional-space][ct-mix]] ~(COLORS &optional SPACE)~
 - [[#ct-mix-opacity-top-bottom-opacity][ct-mix-opacity]] ~(TOP BOTTOM OPACITY)~
@@ -60,7 +61,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-get-rgb-r-c][ct-get-rgb-r]] ~(C)~
 - [[#ct-get-rgb-g-c][ct-get-rgb-g]] ~(C)~
 - [[#ct-get-rgb-b-c][ct-get-rgb-b]] ~(C)~
-- [[#ct-edit-rgb-c-transform][ct-edit-rgb]] ~(C TRANSFORM)~
+- [[#ct-edit-rgb-color-edit-fn][ct-edit-rgb]] ~(COLOR EDIT-FN)~
 - [[#ct-edit-rgb-b-c-func-or-val][ct-edit-rgb-b]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-rgb-b-dec-c-optional-v][ct-edit-rgb-b-dec]] ~(C &optional V)~
 - [[#ct-edit-rgb-b-inc-c-optional-v][ct-edit-rgb-b-inc]] ~(C &optional V)~
@@ -76,7 +77,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-get-lab-l-c][ct-get-lab-l]] ~(C)~
 - [[#ct-get-lab-b-c][ct-get-lab-b]] ~(C)~
 - [[#ct-get-lab-a-c][ct-get-lab-a]] ~(C)~
-- [[#ct-edit-lab-c-transform][ct-edit-lab]] ~(C TRANSFORM)~
+- [[#ct-edit-lab-color-edit-fn][ct-edit-lab]] ~(COLOR EDIT-FN)~
 - [[#ct-edit-lab-a-c-func-or-val][ct-edit-lab-a]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-lab-a-dec-c-optional-v][ct-edit-lab-a-dec]] ~(C &optional V)~
 - [[#ct-edit-lab-a-inc-c-optional-v][ct-edit-lab-a-inc]] ~(C &optional V)~
@@ -92,7 +93,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-get-hsl-s-c][ct-get-hsl-s]] ~(C)~
 - [[#ct-get-hsl-l-c][ct-get-hsl-l]] ~(C)~
 - [[#ct-get-hsl-h-c][ct-get-hsl-h]] ~(C)~
-- [[#ct-edit-hsl-c-transform][ct-edit-hsl]] ~(C TRANSFORM)~
+- [[#ct-edit-hsl-color-edit-fn][ct-edit-hsl]] ~(COLOR EDIT-FN)~
 - [[#ct-edit-hsl-h-c-func-or-val][ct-edit-hsl-h]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-hsl-h-dec-c-optional-v][ct-edit-hsl-h-dec]] ~(C &optional V)~
 - [[#ct-edit-hsl-h-inc-c-optional-v][ct-edit-hsl-h-inc]] ~(C &optional V)~
@@ -108,7 +109,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-get-hsluv-s-c][ct-get-hsluv-s]] ~(C)~
 - [[#ct-get-hsluv-l-c][ct-get-hsluv-l]] ~(C)~
 - [[#ct-get-hsluv-h-c][ct-get-hsluv-h]] ~(C)~
-- [[#ct-edit-hsluv-c-transform][ct-edit-hsluv]] ~(C TRANSFORM)~
+- [[#ct-edit-hsluv-color-edit-fn][ct-edit-hsluv]] ~(COLOR EDIT-FN)~
 - [[#ct-edit-hsluv-h-c-func-or-val][ct-edit-hsluv-h]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-hsluv-h-dec-c-optional-v][ct-edit-hsluv-h-dec]] ~(C &optional V)~
 - [[#ct-edit-hsluv-h-inc-c-optional-v][ct-edit-hsluv-h-inc]] ~(C &optional V)~
@@ -124,7 +125,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-get-lch-l-c][ct-get-lch-l]] ~(C)~
 - [[#ct-get-lch-h-c][ct-get-lch-h]] ~(C)~
 - [[#ct-get-lch-c-c][ct-get-lch-c]] ~(C)~
-- [[#ct-edit-lch-c-transform][ct-edit-lch]] ~(C TRANSFORM)~
+- [[#ct-edit-lch-color-edit-fn][ct-edit-lch]] ~(COLOR EDIT-FN)~
 - [[#ct-edit-lch-c-c-func-or-val][ct-edit-lch-c]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-lch-c-dec-c-optional-v][ct-edit-lch-c-dec]] ~(C &optional V)~
 - [[#ct-edit-lch-c-inc-c-optional-v][ct-edit-lch-c-inc]] ~(C &optional V)~
@@ -140,7 +141,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-get-hsv-v-c][ct-get-hsv-v]] ~(C)~
 - [[#ct-get-hsv-s-c][ct-get-hsv-s]] ~(C)~
 - [[#ct-get-hsv-h-c][ct-get-hsv-h]] ~(C)~
-- [[#ct-edit-hsv-c-transform][ct-edit-hsv]] ~(C TRANSFORM)~
+- [[#ct-edit-hsv-color-edit-fn][ct-edit-hsv]] ~(COLOR EDIT-FN)~
 - [[#ct-edit-hsv-h-c-func-or-val][ct-edit-hsv-h]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-hsv-h-dec-c-optional-v][ct-edit-hsv-h-dec]] ~(C &optional V)~
 - [[#ct-edit-hsv-h-inc-c-optional-v][ct-edit-hsv-h-inc]] ~(C &optional V)~
@@ -156,7 +157,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-get-hpluv-p-c][ct-get-hpluv-p]] ~(C)~
 - [[#ct-get-hpluv-l-c][ct-get-hpluv-l]] ~(C)~
 - [[#ct-get-hpluv-h-c][ct-get-hpluv-h]] ~(C)~
-- [[#ct-edit-hpluv-c-transform][ct-edit-hpluv]] ~(C TRANSFORM)~
+- [[#ct-edit-hpluv-color-edit-fn][ct-edit-hpluv]] ~(COLOR EDIT-FN)~
 - [[#ct-edit-hpluv-h-c-func-or-val][ct-edit-hpluv-h]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-hpluv-h-dec-c-optional-v][ct-edit-hpluv-h-dec]] ~(C &optional V)~
 - [[#ct-edit-hpluv-h-inc-c-optional-v][ct-edit-hpluv-h-inc]] ~(C &optional V)~
@@ -184,22 +185,22 @@ Get cie-DE2000 distance between C1 and C2 -- value is 0-100.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bc9a43/000000.png?text=+]] → 53.05461635462344
 #+END_quote
-**** ct-format-argb ~(C &optional OPACITY END)~
+**** ct-format-argb ~(COLOR &optional OPACITY END)~
 Argb formatting:
-Pass in C and OPACITY 0-100, get a string representation of C
-as follows: '#AAFFFFFF', where AA is a hex pair for the alpha,
-followed by FF times 3 hex pairs for red, green, blue. If END is
-truthy, then format will be '#FFFFFFAA'.
+Pass in COLOR and OPACITY 0-100, get a string representation of COLOR as
+follows: '#AAFFFFFF', where AA is a hex pair for the alpha, followed by FF times
+3 hex pairs for red, green, blue. If END is truthy, then format will be
+'#FFFFFFAA'.
 #+BEGIN_src elisp
 (ct-format-argb "#4fa5e8" 80 t) ;; => "#4fa5e8cc"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → #4fa5e8cc
 #+END_quote
-**** ct-format-rbga ~(C &optional OPACITY)~
+**** ct-format-rbga ~(COLOR &optional OPACITY)~
 RGBA formatting:
-Pass in C and OPACITY 0-100, get a string
-representation of C as follows: 'rgba(R, G, B, OPACITY)', where
+Pass in COLOR and OPACITY 0-100, get a string
+representation of COLOR as follows: 'rgba(R, G, B, OPACITY)', where
 values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0).
 #+BEGIN_src elisp
 (ct-format-rbga "#4fa5e8" 80) ;; => "rgba(79, 165, 232, 0.8)"
@@ -254,18 +255,18 @@ Make a light color C darker, a dark color C lighter (by PERCENT).
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/0071af/000000.png?text=+]]
 #+END_quote
-**** ct-iterate ~(START OP CONDITION)~
-Do OP on START color until CONDITION is met or op has no effect.
-
-CONDITION is a function that takes the current color value being iterated.
+**** ct-iterate ~(COLOR TRANSFORM-FN CONDITION)~
+Transform COLOR using TRANSFORM-FN until CONDITION is met.
+Will return early if calling TRANSFORM-FN results in no change.
 #+BEGIN_src elisp
 (ct-iterate "#4fa5e8" 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c "#4fa5e8") 10))) ;; => "#4f98ff"
 #+END_src
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4f98ff/000000.png?text=+]]
 #+END_quote
-**** ct-iterations ~(START OP CONDITION)~
-Do OP on START color until CONDITION is met or op has no effect - return all intermediate parts.
+**** ct-iterations ~(COLOR TRANSFORM-FN CONDITION)~
+Transform COLOR using TRANSFORM-FN until CONDITION is met, returning each step.
+Will return early if calling TRANSFORM-FN results in no change.
 #+BEGIN_src elisp
 (ct-iterations "#4fa5e8" 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c "#4fa5e8") 10))) ;; => ("#4fa5e8" "#4fa5e9" "#4fa5ea" "#4fa5eb" "#4fa5ec" "#4fa5ed" "#4fa5ee" "#4fa5ef" "#4fa5f0" "#4fa5f1" "#4fa5f2" "#4fa5f3" "#4fa5f4" "#4fa5f5" "#4fa5f6" "#4fa5f7" "#4fa5f8" "#4fa5f9" "#4fa5fa" "#4fa5fb" "#4fa5fc" "#4fa5fd" "#4fa5fe" "#4fa5ff" "#4fa4ff" "#4fa3ff" "#4fa2ff" "#4fa1ff" "#4fa0ff" "#4f9fff" "#4f9eff" "#4f9dff" "#4f9cff" "#4f9bff" "#4f9aff" "#4f99ff" "#4f98ff")
 #+END_src
@@ -357,7 +358,7 @@ Perform a hue rotation in lch space starting with color C by INTERVAL degrees.
 ** RGB
 https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8
 **** ct-make-rgb ~(R G B)~
-Make a color using R*G*B* properties.
+Make a color using (R G B) properties
 #+BEGIN_src elisp
 (ct-make-rgb 30.980392156862745 64.70588235294117 90.98039215686275) ;; => "#4fa4e8"
 #+END_src
@@ -396,8 +397,8 @@ Get rgb-b representation of color C.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 90.98039215686275
 #+END_quote
-**** ct-edit-rgb ~(C TRANSFORM)~
-Work with a color C in the RGB space using function TRANSFORM. Ranges for RGB are all 0-100.
+**** ct-edit-rgb ~(COLOR EDIT-FN)~
+Edit COLOR in the RGB colorspace by calling EDIT-FN with it's RGB properties.
 #+BEGIN_src elisp
 (ct-edit-rgb "#4fa5e8" (lambda (R G B) (list R 0 0))) ;; => "#4f0000"
 #+END_src
@@ -470,7 +471,7 @@ Increase rgb-r value of C by V (defaults to the minimum amount needed to change 
 ** LAB
 https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e
 **** ct-make-lab ~(L A B)~
-Make a color using cieL*A*B* properties.
+Make a color using (L A B) properties
 #+BEGIN_src elisp
 (ct-make-lab 65.27524119433272 -5.264411618969234 -41.33308089969405) ;; => "#4fa4e8"
 #+END_src
@@ -509,9 +510,8 @@ Get lab-a representation of color C.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → -5.264411618969234
 #+END_quote
-**** ct-edit-lab ~(C TRANSFORM)~
-Work with a color C in the LAB space using function TRANSFORM.
-Ranges for LAB are {0-100,-100-100,-100-100}.
+**** ct-edit-lab ~(COLOR EDIT-FN)~
+Edit COLOR in the cieLAB colorspace by calling EDIT-FN with it's LAB properties.
 #+BEGIN_src elisp
 (ct-edit-lab "#4fa5e8" (lambda (L A B) (list L -100 -100))) ;; => "#00ccff"
 #+END_src
@@ -587,7 +587,7 @@ Increase lab-l value of C by V (defaults to the minimum amount needed to change 
 ** HSL
 https://notes.neeasade.net/color-spaces.html#h-43869bc7-a7d1-410f-9341-521974751dac
 **** ct-make-hsl ~(H S L)~
-Make a color using H*S*L* properties.
+Make a color using (H S L) properties
 #+BEGIN_src elisp
 (ct-make-hsl 206.27450980392157 76.88442211055275 60.98039215686275) ;; => "#4fa4e8"
 #+END_src
@@ -626,9 +626,9 @@ Get hsl-h representation of color C.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 206.27450980392157
 #+END_quote
-**** ct-edit-hsl ~(C TRANSFORM)~
-Work with a color C in the HSL space using function TRANSFORM.
-Ranges for HSL are {0-360,0-100,0-100}.
+**** ct-edit-hsl ~(COLOR EDIT-FN)~
+Edit COLOR in the HSL colorspace by calling EDIT-FN with it's HSL properties.
+EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_src elisp
 (ct-edit-hsl "#4fa5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#8f38ff"
 #+END_src
@@ -692,7 +692,7 @@ Increase hsl-s value of C by V (defaults to the minimum amount needed to change 
 ** HSLuv
 https://notes.neeasade.net/color-spaces.html#h-c147b84d-d95b-4d2d-8426-2f96529a8428
 **** ct-make-hsluv ~(H S L)~
-Make a color using H*S*L*uv properties.
+Make a color using (H S L) properties
 #+BEGIN_src elisp
 (ct-make-hsluv 242.63535329133538 81.00935604214261 65.27665592005344) ;; => "#4ea5e7"
 #+END_src
@@ -731,9 +731,9 @@ Get hsluv-h representation of color C.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 242.63535329133538
 #+END_quote
-**** ct-edit-hsluv ~(C TRANSFORM)~
-Work with a color C in the HSLUV space using function TRANSFORM.
-Ranges for HSLUV are {0-360,0-100,0-100}.
+**** ct-edit-hsluv ~(COLOR EDIT-FN)~
+Edit COLOR in the HSLuv colorspace by calling EDIT-FN with it's HSL properties.
+EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_src elisp
 (ct-edit-hsluv "#4fa5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#f160ff"
 #+END_src
@@ -797,7 +797,7 @@ Increase hsluv-s value of C by V (defaults to the minimum amount needed to chang
 ** LCH
 https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413
 **** ct-make-lch ~(L C H)~
-Make a color using cieL*C*H* properties.
+Make a color using (L C H) properties
 #+BEGIN_src elisp
 (ct-make-lch 65.27524119433272 41.666984608375394 -97.25842954163491) ;; => "#4fa4e8"
 #+END_src
@@ -836,9 +836,9 @@ Get lch-c representation of color C.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 41.666984608375394
 #+END_quote
-**** ct-edit-lch ~(C TRANSFORM)~
-Work with a color C in the LCH space using function TRANSFORM.
-Ranges for LCH are {0-100,0-100,0-360}.
+**** ct-edit-lch ~(COLOR EDIT-FN)~
+Edit COLOR in the cieLCH colorspace by calling EDIT-FN with it's LCH properties.
+EDIT-FN is called with values in ranges: {0-100, 0-100, 0-360}.
 #+BEGIN_src elisp
 (ct-edit-lch "#4fa5e8" (lambda (L C H) (list L 100 (+ H 90)))) ;; => "#ff00b8"
 #+END_src
@@ -902,7 +902,7 @@ Increase lch-l value of C by V (defaults to the minimum amount needed to change 
 ** HSV
 https://en.wikipedia.org/wiki/HSL_and_HSV
 **** ct-make-hsv ~(H S V)~
-Make a color using H*S*V* properties.
+Make a color using (H S V) properties
 #+BEGIN_src elisp
 (ct-make-hsv 206.27450980392157 65.94827586206897 90.98039215686275) ;; => "#4ea5e8"
 #+END_src
@@ -941,9 +941,9 @@ Get hsv-h representation of color C.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 206.27450980392157
 #+END_quote
-**** ct-edit-hsv ~(C TRANSFORM)~
-Work with a color C in the HSV space using function TRANSFORM.
-Ranges for HSV are {0-360,0-100,0-100}.
+**** ct-edit-hsv ~(COLOR EDIT-FN)~
+Edit COLOR in the HSV colorspace by calling EDIT-FN with it's HSV properties.
+EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_src elisp
 (ct-edit-hsv "#4fa5e8" (lambda (H S V) (list H 20 100))) ;; => "#cce8ff"
 #+END_src
@@ -1007,7 +1007,7 @@ Increase hsv-v value of C by V (defaults to the minimum amount needed to change 
 ** HPLUV
 https://ajalt.github.io/colormath/api/colormath/com.github.ajalt.colormath.model/-h-p-luv/index.html
 **** ct-make-hpluv ~(H P L)~
-Make a color using H*P*L*uv properties.
+Make a color using (H P L) properties
 #+BEGIN_src elisp
 (ct-make-hpluv 242.63535329133538 143.13047428079187 65.27665592005344) ;; => "#72a2d2"
 #+END_src
@@ -1046,9 +1046,9 @@ Get hpluv-h representation of color C.
 #+BEGIN_quote
 [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 242.63535329133538
 #+END_quote
-**** ct-edit-hpluv ~(C TRANSFORM)~
-Work with a color C in the HPLUV space using function TRANSFORM.
-Ranges for HPLUV are {0-360,0-100,0-100}.
+**** ct-edit-hpluv ~(COLOR EDIT-FN)~
+Edit COLOR in the HPLuv colorspace by calling EDIT-FN with it's HPL properties.
+EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_src elisp
 (ct-edit-hpluv "#4fa5e8" (lambda (H P L) (list H 100 L))) ;; => "#72a2d2"
 #+END_src
@@ -1120,7 +1120,7 @@ Some colors as defined in color spaces may not be represented in the RGB space (
 ;; That p value is way out of range!
 ;; => (314.3830496716472 282.01497572464575 51.53528501195089)
 
-;; notice we ask for the same color back, but the transform functions clamp the output to maximum HPL values:
+;; notice we ask for the same color back, but the edit functions clamp the output to maximum HPL values:
 (ct-edit-hpluv "#dd00cc" 'list)
 
 ;; => "#9f6898"
@@ -1128,11 +1128,10 @@ Some colors as defined in color spaces may not be represented in the RGB space (
 
 ** Testing
 
-Right now testing happens by using the `ct-make-*` functions(these use the transform functions, which make up the basis for all the color space functions) against:
+Right now testing happens by using the `ct-make-*` functions(these use the edit functions, which make up the basis for all the color space functions) against:
 
 - https://css.land/lch/
 - http://colorizer.org/
-
 
 ** Related links
 
