@@ -29,6 +29,7 @@ Not using any form of semantic versioning, just bumping the number.
 - ~ct-aiterations~ an anaphoric macro for ct-iterations
 - ~ct-contrast-max~ function to ensure a maximum contrast ratio
 - ~ct-contrast-clamp~ function to clamp to a specified contrast ratio
+- ~ct-verbose-p~ variable for enabling logs (currently just to the ~*Messages*~ buffer)
 
 ** 0.2 <2022-06-09>
 *** Added
