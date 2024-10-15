@@ -278,14 +278,13 @@
         name args)))
 
   ;; off the rails
-  (spit "../readme.org"
-    (s-replace "{{replace-me}}"
-      (s-join "\n" (list
-                     (ct--generate-toc)
-                     (ct--generate-contents)))
-      (slurp "readme.org")
-
-      )))
+  (f-write (s-replace "{{replace-me}}"
+             (s-join "\n" (list
+                            (ct--generate-toc)
+                            (ct--generate-contents)))
+             (f-read "readme.org"))
+    'utf-8 "../readme.org")
+  )
 
 (provide 'ct-doc)
 ;;; ct-doc.el ends here

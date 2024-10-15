@@ -1,4 +1,12 @@
 # NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
+# NOTE: this file is generated, see the docs branch to make edits
 
 🔵 🟣 🟢 🟤 🟡 🔴 🟠
 
@@ -18,10 +26,9 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 
 - Colorspace number range values are 0-100
     - Exception: Hue (0-360 degrees)
-    - Exception: L*AB* (-100-100)
-- Values are clamped to valid ranges coming out of the ~ct-edit~ functions
+    - Exception: L(*AB*) (-100-100)
+- Values are clamped to valid ranges coming out of the ~ct-edit-*~ functions
     - Hue is clamped via modulo 360
-
 
 ** Functions
 
@@ -37,7 +44,7 @@ Some colors as defined in color spaces may not be represented in the RGB space (
 ;; That p value is way out of range!
 ;; => (314.3830496716472 282.01497572464575 51.53528501195089)
 
-;; notice we ask for the same color back, but the transform functions clamp the output to maximum HPL values:
+;; notice we ask for the same color back, but the edit functions clamp the output to maximum HPL values:
 (ct-edit-hpluv "#dd00cc" 'list)
 
 ;; => "#9f6898"
@@ -45,11 +52,10 @@ Some colors as defined in color spaces may not be represented in the RGB space (
 
 ** Testing
 
-Right now testing happens by using the `ct-make-*` functions(these use the transform functions, which make up the basis for all the color space functions) against:
+Right now testing happens by using the `ct-make-*` functions(these use the edit functions, which make up the basis for all the color space functions) against:
 
 - https://css.land/lch/
 - http://colorizer.org/
-
 
 ** Related links
 
