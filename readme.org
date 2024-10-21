@@ -12,8 +12,7 @@
 
 ct.el (color tools) is a color library for Emacs meant for making changes to individual colors in various color spaces. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/myron-themes][myron-themes]]. Shouted out by [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][prot]] (of modus themes fame).
 
-Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • (cie)[[#lab][lab]] • (cie)[[#lch][lch]]
-
+Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • (cie)[[#lab][lab]] • (cie)[[#lch][lch]] • (ok)lab
 ** Installation
 
 ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https://github.com/raxod502/straight.el][straight.el]]:
@@ -175,7 +174,7 @@ Get the contrast ratio between C1 and C2.
 (ct-contrast-ratio "#bbbbbb" "#4fa5e8") ;; => 1.3881996647056503
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 1.3881996647056503
+[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 1.3881996647056503
 #+END_quote
 **** ct-distance ~(C1 C2)~
 Get cie-DE2000 distance between C1 and C2 -- value is 0-100.
@@ -183,7 +182,7 @@ Get cie-DE2000 distance between C1 and C2 -- value is 0-100.
 (ct-distance "#4fa5e8" "#bc9a43") ;; => 53.05461635462344
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bc9a43/000000.png?text=+]] → 53.05461635462344
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]] → 53.05461635462344
 #+END_quote
 **** ct-format-argb ~(COLOR &optional OPACITY END)~
 Argb formatting:
@@ -195,7 +194,7 @@ follows: '#AAFFFFFF', where AA is a hex pair for the alpha, followed by FF times
 (ct-format-argb "#4fa5e8" 80 t) ;; => "#4fa5e8cc"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → #4fa5e8cc
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → #4fa5e8cc
 #+END_quote
 **** ct-format-rbga ~(COLOR &optional OPACITY)~
 RGBA formatting:
@@ -206,7 +205,7 @@ values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0).
 (ct-format-rbga "#4fa5e8" 80) ;; => "rgba(79, 165, 232, 0.8)"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → rgba(79, 165, 232, 0.8)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → rgba(79, 165, 232, 0.8)
 #+END_quote
 **** ct-light-p ~(C &optional SCALE)~
 Determine if C is a light color with lightness in the LAB space.
@@ -215,7 +214,7 @@ Optionally override SCALE comparison value.
 (ct-light-p "#4fa5e8") ;; => t
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → t
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → t
 #+END_quote
 ** Color Modification
 Functions for modifying colors in some way potentially unrelated to a specific colorspace
@@ -225,7 +224,7 @@ Return a complement color of C in the HSLUV space.
 (ct-complement "#4fa5e8") ;; => "#bc9a43"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/bc9a43/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]]
 #+END_quote
 **** ct-gradient ~(STEP START END &optional WITH-ENDS SPACE)~
 Create a gradient from color START to color END in STEP parts.
@@ -237,7 +236,7 @@ results.
 (ct-gradient 5 "#4fa5e8" "#bc9a43" t) ;; => ("#4fa5e8" "#6aa2be" "#859f95" "#a09c6c" "#bc9a43")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bc9a43/000000.png?text=+]] → [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/6aa2be/000000.png?text=+]],[[https://via.placeholder.com/16/859f95/000000.png?text=+]],[[https://via.placeholder.com/16/a09c6c/000000.png?text=+]],[[https://via.placeholder.com/16/bc9a43/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/6aa2be.svg]],[[http://muffin.app.neeasade.net/colorsquare/859f95.svg]],[[http://muffin.app.neeasade.net/colorsquare/a09c6c.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]]
 #+END_quote
 **** ct-greaten ~(C &optional PERCENT)~
 Make a light color C lighter, a dark color C darker (by PERCENT).
@@ -245,7 +244,7 @@ Make a light color C lighter, a dark color C darker (by PERCENT).
 (ct-greaten "#4fa5e8" 20) ;; => "#8ddbff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/8ddbff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8ddbff.svg]]
 #+END_quote
 **** ct-lessen ~(C &optional PERCENT)~
 Make a light color C darker, a dark color C lighter (by PERCENT).
@@ -253,7 +252,7 @@ Make a light color C darker, a dark color C lighter (by PERCENT).
 (ct-lessen "#4fa5e8" 20) ;; => "#0071af"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/0071af/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/0071af.svg]]
 #+END_quote
 **** ct-iterate ~(COLOR TRANSFORM-FN CONDITION)~
 Transform COLOR using TRANSFORM-FN until CONDITION is met.
@@ -262,7 +261,7 @@ Will return early if calling TRANSFORM-FN results in no change.
 (ct-iterate "#4fa5e8" 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c "#4fa5e8") 10))) ;; => "#4f98ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4f98ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4f98ff.svg]]
 #+END_quote
 **** ct-iterations ~(COLOR TRANSFORM-FN CONDITION)~
 Transform COLOR using TRANSFORM-FN until CONDITION is met, returning each step.
@@ -271,7 +270,7 @@ Will return early if calling TRANSFORM-FN results in no change.
 (ct-iterations "#4fa5e8" 'ct-edit-hsv-v-inc (lambda (c) (> (ct-distance c "#4fa5e8") 10))) ;; => ("#4fa5e8" "#4fa5e9" "#4fa5ea" "#4fa5eb" "#4fa5ec" "#4fa5ed" "#4fa5ee" "#4fa5ef" "#4fa5f0" "#4fa5f1" "#4fa5f2" "#4fa5f3" "#4fa5f4" "#4fa5f5" "#4fa5f6" "#4fa5f7" "#4fa5f8" "#4fa5f9" "#4fa5fa" "#4fa5fb" "#4fa5fc" "#4fa5fd" "#4fa5fe" "#4fa5ff" "#4fa4ff" "#4fa3ff" "#4fa2ff" "#4fa1ff" "#4fa0ff" "#4f9fff" "#4f9eff" "#4f9dff" "#4f9cff" "#4f9bff" "#4f9aff" "#4f99ff" "#4f98ff")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5e9/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5ea/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5eb/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5ec/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5ed/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5ee/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5ef/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f0/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f1/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f2/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f3/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f4/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f5/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f6/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f7/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f8/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5f9/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5fa/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5fb/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5fc/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5fd/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5fe/000000.png?text=+]],[[https://via.placeholder.com/16/4fa5ff/000000.png?text=+]],[[https://via.placeholder.com/16/4fa4ff/000000.png?text=+]],[[https://via.placeholder.com/16/4fa3ff/000000.png?text=+]],[[https://via.placeholder.com/16/4fa2ff/000000.png?text=+]],[[https://via.placeholder.com/16/4fa1ff/000000.png?text=+]],[[https://via.placeholder.com/16/4fa0ff/000000.png?text=+]],[[https://via.placeholder.com/16/4f9fff/000000.png?text=+]],[[https://via.placeholder.com/16/4f9eff/000000.png?text=+]],[[https://via.placeholder.com/16/4f9dff/000000.png?text=+]],[[https://via.placeholder.com/16/4f9cff/000000.png?text=+]],[[https://via.placeholder.com/16/4f9bff/000000.png?text=+]],[[https://via.placeholder.com/16/4f9aff/000000.png?text=+]],[[https://via.placeholder.com/16/4f99ff/000000.png?text=+]],[[https://via.placeholder.com/16/4f98ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5e9.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5ea.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5eb.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5ec.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5ed.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5ee.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5ef.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f0.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f1.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f2.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f3.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f4.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f5.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f6.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f7.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f8.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5f9.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5fa.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5fb.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5fc.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5fd.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5fe.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5ff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa4ff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa3ff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa2ff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa1ff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa0ff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f9fff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f9eff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f9dff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f9cff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f9bff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f9aff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f99ff.svg]],[[http://muffin.app.neeasade.net/colorsquare/4f98ff.svg]]
 #+END_quote
 **** ct-lab-change-whitepoint ~(C W1 W2)~
 Convert a color C wrt white points W1 and W2 through the lab colorspace.
@@ -279,7 +278,7 @@ Convert a color C wrt white points W1 and W2 through the lab colorspace.
 (ct-lab-change-whitepoint "#4fa5e8" color-d50-xyz color-d55-xyz) ;; => "#29a6f4"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/29a6f4/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/29a6f4.svg]]
 #+END_quote
 **** ct-mix ~(COLORS &optional SPACE)~
 Mix COLORS in space SPACE. See also: 'ct--colorspace-map'.
@@ -287,7 +286,7 @@ Mix COLORS in space SPACE. See also: 'ct--colorspace-map'.
 (ct-mix (list "#4fa5e8" "#bbbbbb" "#bc9a43")) ;; => "#a0a48a"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/a0a48a/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/a0a48a.svg]]
 #+END_quote
 **** ct-mix-opacity ~(TOP BOTTOM OPACITY)~
 Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0.
@@ -295,7 +294,7 @@ Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity 
 (ct-mix-opacity "#4fa5e8" "#bbbbbb" 80) ;; => "#0000ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/0000ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/0000ff.svg]]
 #+END_quote
 **** ct-pastel ~(C &optional SMOD VMOD)~
 Make a color C more 'pastel' in the hsluv space -- optionally change the rate of change with SMOD and VMOD.
@@ -303,7 +302,7 @@ Make a color C more 'pastel' in the hsluv space -- optionally change the rate of
 (ct-pastel "#4fa5e8") ;; => "#77a2c4"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/77a2c4/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/77a2c4.svg]]
 #+END_quote
 **** ct-contrast-min ~(FOREGROUND BACKGROUND CONTRAST-RATIO &optional COLOR-PROPERTY)~
 Edit FOREGROUND to have a minimum CONTRAST-RATIO on BACKGROUND.
@@ -313,7 +312,7 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)
 (ct-contrast-min "#4fa5e8" "#bbbbbb" 3) ;; => "#1369ac"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]],[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/1369ac/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/1369ac.svg]]
 #+END_quote
 **** ct-rotation-hpluv ~(C INTERVAL)~
 Perform a hue rotation in hpluv space starting with color C by INTERVAL degrees.
@@ -321,7 +320,7 @@ Perform a hue rotation in hpluv space starting with color C by INTERVAL degrees.
 (ct-rotation-hpluv "#4fa5e8" 60) ;; => ("#72a2d2" "#c48acb" "#d78895" "#b89a59" "#74ac68" "#03b1a7")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/72a2d2/000000.png?text=+]],[[https://via.placeholder.com/16/c48acb/000000.png?text=+]],[[https://via.placeholder.com/16/d78895/000000.png?text=+]],[[https://via.placeholder.com/16/b89a59/000000.png?text=+]],[[https://via.placeholder.com/16/74ac68/000000.png?text=+]],[[https://via.placeholder.com/16/03b1a7/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]],[[http://muffin.app.neeasade.net/colorsquare/c48acb.svg]],[[http://muffin.app.neeasade.net/colorsquare/d78895.svg]],[[http://muffin.app.neeasade.net/colorsquare/b89a59.svg]],[[http://muffin.app.neeasade.net/colorsquare/74ac68.svg]],[[http://muffin.app.neeasade.net/colorsquare/03b1a7.svg]]
 #+END_quote
 **** ct-rotation-hsl ~(C INTERVAL)~
 Perform a hue rotation in hsl space starting with color C by INTERVAL degrees.
@@ -329,7 +328,7 @@ Perform a hue rotation in hsl space starting with color C by INTERVAL degrees.
 (ct-rotation-hsl "#4fa5e8" 60) ;; => ("#4fa4e8" "#914fe8" "#e84fa4" "#e8914f" "#a5e84f" "#4fe892")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4fa4e8/000000.png?text=+]],[[https://via.placeholder.com/16/914fe8/000000.png?text=+]],[[https://via.placeholder.com/16/e84fa4/000000.png?text=+]],[[https://via.placeholder.com/16/e8914f/000000.png?text=+]],[[https://via.placeholder.com/16/a5e84f/000000.png?text=+]],[[https://via.placeholder.com/16/4fe892/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/914fe8.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84fa4.svg]],[[http://muffin.app.neeasade.net/colorsquare/e8914f.svg]],[[http://muffin.app.neeasade.net/colorsquare/a5e84f.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fe892.svg]]
 #+END_quote
 **** ct-rotation-hsluv ~(C INTERVAL)~
 Perform a hue rotation in hsluv space starting with color C by INTERVAL degrees.
@@ -337,7 +336,7 @@ Perform a hue rotation in hsluv space starting with color C by INTERVAL degrees.
 (ct-rotation-hsluv "#4fa5e8" 60) ;; => ("#4ea5e7" "#e173ec" "#f0798f" "#bc9a43" "#5cb143" "#48ada5")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4ea5e7/000000.png?text=+]],[[https://via.placeholder.com/16/e173ec/000000.png?text=+]],[[https://via.placeholder.com/16/f0798f/000000.png?text=+]],[[https://via.placeholder.com/16/bc9a43/000000.png?text=+]],[[https://via.placeholder.com/16/5cb143/000000.png?text=+]],[[https://via.placeholder.com/16/48ada5/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4ea5e7.svg]],[[http://muffin.app.neeasade.net/colorsquare/e173ec.svg]],[[http://muffin.app.neeasade.net/colorsquare/f0798f.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]],[[http://muffin.app.neeasade.net/colorsquare/5cb143.svg]],[[http://muffin.app.neeasade.net/colorsquare/48ada5.svg]]
 #+END_quote
 **** ct-rotation-hsv ~(C INTERVAL)~
 Perform a hue rotation in hsv space starting with color C by INTERVAL degrees.
@@ -345,7 +344,7 @@ Perform a hue rotation in hsv space starting with color C by INTERVAL degrees.
 (ct-rotation-hsv "#4fa5e8" 60) ;; => ("#4ea5e8" "#914ee8" "#e84ea5" "#e8924e" "#a5e84e" "#4ee892")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4ea5e8/000000.png?text=+]],[[https://via.placeholder.com/16/914ee8/000000.png?text=+]],[[https://via.placeholder.com/16/e84ea5/000000.png?text=+]],[[https://via.placeholder.com/16/e8924e/000000.png?text=+]],[[https://via.placeholder.com/16/a5e84e/000000.png?text=+]],[[https://via.placeholder.com/16/4ee892/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/914ee8.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84ea5.svg]],[[http://muffin.app.neeasade.net/colorsquare/e8924e.svg]],[[http://muffin.app.neeasade.net/colorsquare/a5e84e.svg]],[[http://muffin.app.neeasade.net/colorsquare/4ee892.svg]]
 #+END_quote
 **** ct-rotation-lch ~(C INTERVAL)~
 Perform a hue rotation in lch space starting with color C by INTERVAL degrees.
@@ -353,7 +352,7 @@ Perform a hue rotation in lch space starting with color C by INTERVAL degrees.
 (ct-rotation-lch "#4fa5e8" 60) ;; => ("#4fa4e8" "#c48acc" "#e58183" "#bd9953" "#6dad6f" "#00b1ba")
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4fa4e8/000000.png?text=+]],[[https://via.placeholder.com/16/c48acc/000000.png?text=+]],[[https://via.placeholder.com/16/e58183/000000.png?text=+]],[[https://via.placeholder.com/16/bd9953/000000.png?text=+]],[[https://via.placeholder.com/16/6dad6f/000000.png?text=+]],[[https://via.placeholder.com/16/00b1ba/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/c48acc.svg]],[[http://muffin.app.neeasade.net/colorsquare/e58183.svg]],[[http://muffin.app.neeasade.net/colorsquare/bd9953.svg]],[[http://muffin.app.neeasade.net/colorsquare/6dad6f.svg]],[[http://muffin.app.neeasade.net/colorsquare/00b1ba.svg]]
 #+END_quote
 ** RGB
 https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8
@@ -363,7 +362,7 @@ Make a color using (R G B) properties
 (ct-make-rgb 30.980392156862745 64.70588235294117 90.98039215686275) ;; => "#4fa4e8"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/4fa4e8/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
 #+END_quote
 **** ct-get-rgb ~(C)~
 Get rgb representation of color C.
@@ -371,7 +370,7 @@ Get rgb representation of color C.
 (ct-get-rgb "#4fa5e8") ;; => (30.980392156862745 64.70588235294117 90.98039215686275)
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → (30.980392156862745 64.70588235294117 90.98039215686275)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (30.980392156862745 64.70588235294117 90.98039215686275)
 #+END_quote
 **** ct-get-rgb-r ~(C)~
 Get rgb-r representation of color C.
@@ -379,7 +378,7 @@ Get rgb-r representation of color C.
 (ct-get-rgb-r "#4fa5e8") ;; => 30.980392156862745
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 30.980392156862745
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 30.980392156862745
 #+END_quote
 **** ct-get-rgb-g ~(C)~
 Get rgb-g representation of color C.
@@ -387,7 +386,7 @@ Get rgb-g representation of color C.
 (ct-get-rgb-g "#4fa5e8") ;; => 64.70588235294117
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 64.70588235294117
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 64.70588235294117
 #+END_quote
 **** ct-get-rgb-b ~(C)~
 Get rgb-b representation of color C.
@@ -395,7 +394,7 @@ Get rgb-b representation of color C.
 (ct-get-rgb-b "#4fa5e8") ;; => 90.98039215686275
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 90.98039215686275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 90.98039215686275
 #+END_quote
 **** ct-edit-rgb ~(COLOR EDIT-FN)~
 Edit COLOR in the RGB colorspace by calling EDIT-FN with it's RGB properties.
@@ -403,7 +402,7 @@ Edit COLOR in the RGB colorspace by calling EDIT-FN with it's RGB properties.
 (ct-edit-rgb "#4fa5e8" (lambda (R G B) (list R 0 0))) ;; => "#4f0000"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4f0000/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4f0000.svg]]
 #+END_quote
 **** ct-edit-rgb-b ~(C FUNC-OR-VAL)~
 Transform property rgb-b of C using FUNC-OR-VAL.
@@ -411,7 +410,7 @@ Transform property rgb-b of C using FUNC-OR-VAL.
 (ct-edit-rgb-b "#4fa5e8" (lambda (b) (+ b 50))) ;; => "#4fa4ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4fa4ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4ff.svg]]
 #+END_quote
 **** ct-edit-rgb-b-dec ~(C &optional V)~
 Decrease rgb-b value of C by V (defaults to the minimum amount needed to change C).
@@ -419,7 +418,7 @@ Decrease rgb-b value of C by V (defaults to the minimum amount needed to change 
 (ct-edit-rgb-b-dec "#bbbbbb" 10) ;; => "#bbbba1"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/bbbba1/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/bbbba1.svg]]
 #+END_quote
 **** ct-edit-rgb-b-inc ~(C &optional V)~
 Increase rgb-b value of C by V (defaults to the minimum amount needed to change C).
@@ -432,7 +431,7 @@ Transform property rgb-g of C using FUNC-OR-VAL.
 (ct-edit-rgb-g "#4fa5e8" 100) ;; => "#4fffe8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4fffe8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fffe8.svg]]
 #+END_quote
 **** ct-edit-rgb-g-dec ~(C &optional V)~
 Decrease rgb-g value of C by V (defaults to the minimum amount needed to change C).
@@ -440,7 +439,7 @@ Decrease rgb-g value of C by V (defaults to the minimum amount needed to change 
 (ct-edit-rgb-g-dec "#bbbbbb" 10) ;; => "#bba1bb"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/bba1bb/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/bba1bb.svg]]
 #+END_quote
 **** ct-edit-rgb-g-inc ~(C &optional V)~
 Increase rgb-g value of C by V (defaults to the minimum amount needed to change C).
@@ -453,7 +452,7 @@ Transform property rgb-r of C using FUNC-OR-VAL.
 (ct-edit-rgb-r "#4fa5e8" 100) ;; => "#ffa4e8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/ffa4e8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ffa4e8.svg]]
 #+END_quote
 **** ct-edit-rgb-r-dec ~(C &optional V)~
 Decrease rgb-r value of C by V (defaults to the minimum amount needed to change C).
@@ -461,7 +460,7 @@ Decrease rgb-r value of C by V (defaults to the minimum amount needed to change 
 (ct-edit-rgb-r-dec "#bbbbbb" 10) ;; => "#a1bbbb"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/bbbbbb/000000.png?text=+]] → [[https://via.placeholder.com/16/a1bbbb/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/a1bbbb.svg]]
 #+END_quote
 **** ct-edit-rgb-r-inc ~(C &optional V)~
 Increase rgb-r value of C by V (defaults to the minimum amount needed to change C).
@@ -476,7 +475,7 @@ Make a color using (L A B) properties
 (ct-make-lab 65.27524119433272 -5.264411618969234 -41.33308089969405) ;; => "#4fa4e8"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/4fa4e8/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
 #+END_quote
 **** ct-get-lab ~(C)~
 Get lab representation of color C.
@@ -484,7 +483,7 @@ Get lab representation of color C.
 (ct-get-lab "#4fa5e8") ;; => (65.27524119433272 -5.264411618969234 -41.33308089969405)
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → (65.27524119433272 -5.264411618969234 -41.33308089969405)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65.27524119433272 -5.264411618969234 -41.33308089969405)
 #+END_quote
 **** ct-get-lab-l ~(C)~
 Get lab-l representation of color C.
@@ -492,7 +491,7 @@ Get lab-l representation of color C.
 (ct-get-lab-l "#4fa5e8") ;; => 65.27524119433272
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 65.27524119433272
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27524119433272
 #+END_quote
 **** ct-get-lab-b ~(C)~
 Get lab-b representation of color C.
@@ -500,7 +499,7 @@ Get lab-b representation of color C.
 (ct-get-lab-b "#4fa5e8") ;; => -41.33308089969405
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → -41.33308089969405
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -41.33308089969405
 #+END_quote
 **** ct-get-lab-a ~(C)~
 Get lab-a representation of color C.
@@ -508,7 +507,7 @@ Get lab-a representation of color C.
 (ct-get-lab-a "#4fa5e8") ;; => -5.264411618969234
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → -5.264411618969234
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5.264411618969234
 #+END_quote
 **** ct-edit-lab ~(COLOR EDIT-FN)~
 Edit COLOR in the cieLAB colorspace by calling EDIT-FN with it's LAB properties.
@@ -516,7 +515,7 @@ Edit COLOR in the cieLAB colorspace by calling EDIT-FN with it's LAB properties.
 (ct-edit-lab "#4fa5e8" (lambda (L A B) (list L -100 -100))) ;; => "#00ccff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00ccff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00ccff.svg]]
 #+END_quote
 **** ct-edit-lab-a ~(C FUNC-OR-VAL)~
 Transform property lab-a of C using FUNC-OR-VAL.
@@ -524,7 +523,7 @@ Transform property lab-a of C using FUNC-OR-VAL.
 (ct-edit-lab-a "#4fa5e8" (lambda (a) (- a 20))) ;; => "#00aee7"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00aee7/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00aee7.svg]]
 #+END_quote
 **** ct-edit-lab-a-dec ~(C &optional V)~
 Decrease lab-a value of C by V (defaults to the minimum amount needed to change C).
@@ -532,7 +531,7 @@ Decrease lab-a value of C by V (defaults to the minimum amount needed to change 
 (ct-edit-lab-a-dec "#4fa5e8" 20) ;; => "#00aee7"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00aee7/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00aee7.svg]]
 #+END_quote
 **** ct-edit-lab-a-inc ~(C &optional V)~
 Increase lab-a value of C by V (defaults to the minimum amount needed to change C).
@@ -540,7 +539,7 @@ Increase lab-a value of C by V (defaults to the minimum amount needed to change 
 (ct-edit-lab-a-inc "#4fa5e8" 20) ;; => "#8c99e8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/8c99e8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8c99e8.svg]]
 #+END_quote
 **** ct-edit-lab-b ~(C FUNC-OR-VAL)~
 Transform property lab-b of C using FUNC-OR-VAL.
@@ -548,7 +547,7 @@ Transform property lab-b of C using FUNC-OR-VAL.
 (ct-edit-lab-b "#4fa5e8" 100) ;; => "#b79e00"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/b79e00/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/b79e00.svg]]
 #+END_quote
 **** ct-edit-lab-b-dec ~(C &optional V)~
 Decrease lab-b value of C by V (defaults to the minimum amount needed to change C).
@@ -556,7 +555,7 @@ Decrease lab-b value of C by V (defaults to the minimum amount needed to change 
 (ct-edit-lab-b-dec "#4fa5e8" 20) ;; => "#00a7ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00a7ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00a7ff.svg]]
 #+END_quote
 **** ct-edit-lab-b-inc ~(C &optional V)~
 Increase lab-b value of C by V (defaults to the minimum amount needed to change C).
@@ -564,7 +563,7 @@ Increase lab-b value of C by V (defaults to the minimum amount needed to change 
 (ct-edit-lab-b-inc "#4fa5e8" 20) ;; => "#7aa3c4"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/7aa3c4/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/7aa3c4.svg]]
 #+END_quote
 **** ct-edit-lab-l ~(C FUNC-OR-VAL)~
 Transform property lab-l of C using FUNC-OR-VAL.
@@ -572,7 +571,7 @@ Transform property lab-l of C using FUNC-OR-VAL.
 (ct-edit-lab-l "#4fa5e8" 0) ;; => "#000a3d"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/000a3d/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/000a3d.svg]]
 #+END_quote
 **** ct-edit-lab-l-dec ~(C &optional V)~
 Decrease lab-l value of C by V (defaults to the minimum amount needed to change C).
@@ -592,7 +591,7 @@ Make a color using (H S L) properties
 (ct-make-hsl 206.27450980392157 76.88442211055275 60.98039215686275) ;; => "#4fa4e8"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/4fa4e8/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
 #+END_quote
 **** ct-get-hsl ~(C)~
 Get hsl representation of color C.
@@ -600,7 +599,7 @@ Get hsl representation of color C.
 (ct-get-hsl "#4fa5e8") ;; => (206.27450980392157 76.88442211055275 60.98039215686275)
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → (206.27450980392157 76.88442211055275 60.98039215686275)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206.27450980392157 76.88442211055275 60.98039215686275)
 #+END_quote
 **** ct-get-hsl-s ~(C)~
 Get hsl-s representation of color C.
@@ -608,7 +607,7 @@ Get hsl-s representation of color C.
 (ct-get-hsl-s "#4fa5e8") ;; => 76.88442211055275
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 76.88442211055275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 76.88442211055275
 #+END_quote
 **** ct-get-hsl-l ~(C)~
 Get hsl-l representation of color C.
@@ -616,7 +615,7 @@ Get hsl-l representation of color C.
 (ct-get-hsl-l "#4fa5e8") ;; => 60.98039215686275
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 60.98039215686275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 60.98039215686275
 #+END_quote
 **** ct-get-hsl-h ~(C)~
 Get hsl-h representation of color C.
@@ -624,7 +623,7 @@ Get hsl-h representation of color C.
 (ct-get-hsl-h "#4fa5e8") ;; => 206.27450980392157
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 206.27450980392157
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 206.27450980392157
 #+END_quote
 **** ct-edit-hsl ~(COLOR EDIT-FN)~
 Edit COLOR in the HSL colorspace by calling EDIT-FN with it's HSL properties.
@@ -633,7 +632,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 (ct-edit-hsl "#4fa5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#8f38ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/8f38ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8f38ff.svg]]
 #+END_quote
 **** ct-edit-hsl-h ~(C FUNC-OR-VAL)~
 Transform property hsl-h of C using FUNC-OR-VAL.
@@ -641,7 +640,7 @@ Transform property hsl-h of C using FUNC-OR-VAL.
 (ct-edit-hsl-h "#4fa5e8" (lambda (H) (+ H 60))) ;; => "#914fe8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/914fe8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/914fe8.svg]]
 #+END_quote
 **** ct-edit-hsl-h-dec ~(C &optional V)~
 Decrease hsl-h value of C by V (defaults to the minimum amount needed to change C).
@@ -659,7 +658,7 @@ Transform property hsl-l of C using FUNC-OR-VAL.
 (ct-edit-hsl-l "#4fa5e8" 0) ;; => "#000000"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/000000/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/000000.svg]]
 #+END_quote
 **** ct-edit-hsl-l-dec ~(C &optional V)~
 Decrease hsl-l value of C by V (defaults to the minimum amount needed to change C).
@@ -677,7 +676,7 @@ Transform property hsl-s of C using FUNC-OR-VAL.
 (ct-edit-hsl-s "#4fa5e8" 100) ;; => "#38a7ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/38a7ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/38a7ff.svg]]
 #+END_quote
 **** ct-edit-hsl-s-dec ~(C &optional V)~
 Decrease hsl-s value of C by V (defaults to the minimum amount needed to change C).
@@ -697,7 +696,7 @@ Make a color using (H S L) properties
 (ct-make-hsluv 242.63535329133538 81.00935604214261 65.27665592005344) ;; => "#4ea5e7"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/4ea5e7/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4ea5e7.svg]]
 #+END_quote
 **** ct-get-hsluv ~(C)~
 Get hsluv representation of color C.
@@ -705,7 +704,7 @@ Get hsluv representation of color C.
 (ct-get-hsluv "#4fa5e8") ;; => (242.63535329133538 81.00935604214261 65.27665592005344)
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → (242.63535329133538 81.00935604214261 65.27665592005344)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (242.63535329133538 81.00935604214261 65.27665592005344)
 #+END_quote
 **** ct-get-hsluv-s ~(C)~
 Get hsluv-s representation of color C.
@@ -713,7 +712,7 @@ Get hsluv-s representation of color C.
 (ct-get-hsluv-s "#4fa5e8") ;; => 81.00935604214261
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 81.00935604214261
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 81.00935604214261
 #+END_quote
 **** ct-get-hsluv-l ~(C)~
 Get hsluv-l representation of color C.
@@ -721,7 +720,7 @@ Get hsluv-l representation of color C.
 (ct-get-hsluv-l "#4fa5e8") ;; => 65.27665592005344
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 65.27665592005344
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27665592005344
 #+END_quote
 **** ct-get-hsluv-h ~(C)~
 Get hsluv-h representation of color C.
@@ -729,7 +728,7 @@ Get hsluv-h representation of color C.
 (ct-get-hsluv-h "#4fa5e8") ;; => 242.63535329133538
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 242.63535329133538
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 242.63535329133538
 #+END_quote
 **** ct-edit-hsluv ~(COLOR EDIT-FN)~
 Edit COLOR in the HSLuv colorspace by calling EDIT-FN with it's HSL properties.
@@ -738,7 +737,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 (ct-edit-hsluv "#4fa5e8" (lambda (H S L) (list (+ H 60) 100 L))) ;; => "#f160ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/f160ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/f160ff.svg]]
 #+END_quote
 **** ct-edit-hsluv-h ~(C FUNC-OR-VAL)~
 Transform property hsluv-h of C using FUNC-OR-VAL.
@@ -746,7 +745,7 @@ Transform property hsluv-h of C using FUNC-OR-VAL.
 (ct-edit-hsluv-h "#4fa5e8" (lambda (H) (+ H 60))) ;; => "#e173ec"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/e173ec/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/e173ec.svg]]
 #+END_quote
 **** ct-edit-hsluv-h-dec ~(C &optional V)~
 Decrease hsluv-h value of C by V (defaults to the minimum amount needed to change C).
@@ -764,7 +763,7 @@ Transform property hsluv-l of C using FUNC-OR-VAL.
 (ct-edit-hsluv-l "#4fa5e8" 0) ;; => "#000000"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/000000/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/000000.svg]]
 #+END_quote
 **** ct-edit-hsluv-l-dec ~(C &optional V)~
 Decrease hsluv-l value of C by V (defaults to the minimum amount needed to change C).
@@ -782,7 +781,7 @@ Transform property hsluv-s of C using FUNC-OR-VAL.
 (ct-edit-hsluv-s "#4fa5e8" 100) ;; => "#00a6f8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00a6f8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00a6f8.svg]]
 #+END_quote
 **** ct-edit-hsluv-s-dec ~(C &optional V)~
 Decrease hsluv-s value of C by V (defaults to the minimum amount needed to change C).
@@ -802,7 +801,7 @@ Make a color using (L C H) properties
 (ct-make-lch 65.27524119433272 41.666984608375394 -97.25842954163491) ;; => "#4fa4e8"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/4fa4e8/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
 #+END_quote
 **** ct-get-lch ~(C)~
 Get lch representation of color C.
@@ -810,7 +809,7 @@ Get lch representation of color C.
 (ct-get-lch "#4fa5e8") ;; => (65.27524119433272 41.666984608375394 -97.25842954163491)
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → (65.27524119433272 41.666984608375394 -97.25842954163491)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65.27524119433272 41.666984608375394 -97.25842954163491)
 #+END_quote
 **** ct-get-lch-l ~(C)~
 Get lch-l representation of color C.
@@ -818,7 +817,7 @@ Get lch-l representation of color C.
 (ct-get-lch-l "#4fa5e8") ;; => 65.27524119433272
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 65.27524119433272
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27524119433272
 #+END_quote
 **** ct-get-lch-h ~(C)~
 Get lch-h representation of color C.
@@ -826,7 +825,7 @@ Get lch-h representation of color C.
 (ct-get-lch-h "#4fa5e8") ;; => -97.25842954163491
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → -97.25842954163491
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -97.25842954163491
 #+END_quote
 **** ct-get-lch-c ~(C)~
 Get lch-c representation of color C.
@@ -834,7 +833,7 @@ Get lch-c representation of color C.
 (ct-get-lch-c "#4fa5e8") ;; => 41.666984608375394
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 41.666984608375394
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 41.666984608375394
 #+END_quote
 **** ct-edit-lch ~(COLOR EDIT-FN)~
 Edit COLOR in the cieLCH colorspace by calling EDIT-FN with it's LCH properties.
@@ -843,7 +842,7 @@ EDIT-FN is called with values in ranges: {0-100, 0-100, 0-360}.
 (ct-edit-lch "#4fa5e8" (lambda (L C H) (list L 100 (+ H 90)))) ;; => "#ff00b8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/ff00b8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff00b8.svg]]
 #+END_quote
 **** ct-edit-lch-c ~(C FUNC-OR-VAL)~
 Transform property lch-c of C using FUNC-OR-VAL.
@@ -851,7 +850,7 @@ Transform property lch-c of C using FUNC-OR-VAL.
 (ct-edit-lch-c "#4fa5e8" 100) ;; => "#00b0ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/00b0ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00b0ff.svg]]
 #+END_quote
 **** ct-edit-lch-c-dec ~(C &optional V)~
 Decrease lch-c value of C by V (defaults to the minimum amount needed to change C).
@@ -869,7 +868,7 @@ Transform property lch-h of C using FUNC-OR-VAL.
 (ct-edit-lch-h "#4fa5e8" (lambda (H) (+ H 90))) ;; => "#df81a9"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/df81a9/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/df81a9.svg]]
 #+END_quote
 **** ct-edit-lch-h-dec ~(C &optional V)~
 Decrease lch-h value of C by V (defaults to the minimum amount needed to change C).
@@ -887,7 +886,7 @@ Transform property lch-l of C using FUNC-OR-VAL.
 (ct-edit-lch-l "#4fa5e8" 100) ;; => "#baffff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/baffff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/baffff.svg]]
 #+END_quote
 **** ct-edit-lch-l-dec ~(C &optional V)~
 Decrease lch-l value of C by V (defaults to the minimum amount needed to change C).
@@ -907,7 +906,7 @@ Make a color using (H S V) properties
 (ct-make-hsv 206.27450980392157 65.94827586206897 90.98039215686275) ;; => "#4ea5e8"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/4ea5e8/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]]
 #+END_quote
 **** ct-get-hsv ~(C)~
 Get hsv representation of color C.
@@ -915,7 +914,7 @@ Get hsv representation of color C.
 (ct-get-hsv "#4fa5e8") ;; => (206.27450980392157 65.94827586206897 90.98039215686275)
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → (206.27450980392157 65.94827586206897 90.98039215686275)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206.27450980392157 65.94827586206897 90.98039215686275)
 #+END_quote
 **** ct-get-hsv-v ~(C)~
 Get hsv-v representation of color C.
@@ -923,7 +922,7 @@ Get hsv-v representation of color C.
 (ct-get-hsv-v "#4fa5e8") ;; => 90.98039215686275
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 90.98039215686275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 90.98039215686275
 #+END_quote
 **** ct-get-hsv-s ~(C)~
 Get hsv-s representation of color C.
@@ -931,7 +930,7 @@ Get hsv-s representation of color C.
 (ct-get-hsv-s "#4fa5e8") ;; => 65.94827586206897
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 65.94827586206897
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.94827586206897
 #+END_quote
 **** ct-get-hsv-h ~(C)~
 Get hsv-h representation of color C.
@@ -939,7 +938,7 @@ Get hsv-h representation of color C.
 (ct-get-hsv-h "#4fa5e8") ;; => 206.27450980392157
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 206.27450980392157
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 206.27450980392157
 #+END_quote
 **** ct-edit-hsv ~(COLOR EDIT-FN)~
 Edit COLOR in the HSV colorspace by calling EDIT-FN with it's HSV properties.
@@ -948,7 +947,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 (ct-edit-hsv "#4fa5e8" (lambda (H S V) (list H 20 100))) ;; => "#cce8ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/cce8ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/cce8ff.svg]]
 #+END_quote
 **** ct-edit-hsv-h ~(C FUNC-OR-VAL)~
 Transform property hsv-h of C using FUNC-OR-VAL.
@@ -956,7 +955,7 @@ Transform property hsv-h of C using FUNC-OR-VAL.
 (ct-edit-hsv-h "#4fa5e8" (-partial #'+ 30)) ;; => "#4e58e8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/4e58e8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4e58e8.svg]]
 #+END_quote
 **** ct-edit-hsv-h-dec ~(C &optional V)~
 Decrease hsv-h value of C by V (defaults to the minimum amount needed to change C).
@@ -974,7 +973,7 @@ Transform property hsv-s of C using FUNC-OR-VAL.
 (ct-edit-hsv-s "#4fa5e8" 20) ;; => "#b9d3e8"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/b9d3e8/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/b9d3e8.svg]]
 #+END_quote
 **** ct-edit-hsv-s-dec ~(C &optional V)~
 Decrease hsv-s value of C by V (defaults to the minimum amount needed to change C).
@@ -992,7 +991,7 @@ Transform property hsv-v of C using FUNC-OR-VAL.
 (ct-edit-hsv-v "#4fa5e8" 100) ;; => "#56b5ff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/56b5ff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/56b5ff.svg]]
 #+END_quote
 **** ct-edit-hsv-v-dec ~(C &optional V)~
 Decrease hsv-v value of C by V (defaults to the minimum amount needed to change C).
@@ -1012,7 +1011,7 @@ Make a color using (H P L) properties
 (ct-make-hpluv 242.63535329133538 143.13047428079187 65.27665592005344) ;; => "#72a2d2"
 #+END_src
 #+BEGIN_quote
- → [[https://via.placeholder.com/16/72a2d2/000000.png?text=+]]
+ → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]]
 #+END_quote
 **** ct-get-hpluv ~(C)~
 Get hpluv representation of color C.
@@ -1020,7 +1019,7 @@ Get hpluv representation of color C.
 (ct-get-hpluv "#4fa5e8") ;; => (242.63535329133538 143.13047428079187 65.27665592005344)
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → (242.63535329133538 143.13047428079187 65.27665592005344)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (242.63535329133538 143.13047428079187 65.27665592005344)
 #+END_quote
 **** ct-get-hpluv-p ~(C)~
 Get hpluv-p representation of color C.
@@ -1028,7 +1027,7 @@ Get hpluv-p representation of color C.
 (ct-get-hpluv-p "#4fa5e8") ;; => 143.13047428079187
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 143.13047428079187
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 143.13047428079187
 #+END_quote
 **** ct-get-hpluv-l ~(C)~
 Get hpluv-l representation of color C.
@@ -1036,7 +1035,7 @@ Get hpluv-l representation of color C.
 (ct-get-hpluv-l "#4fa5e8") ;; => 65.27665592005344
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 65.27665592005344
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27665592005344
 #+END_quote
 **** ct-get-hpluv-h ~(C)~
 Get hpluv-h representation of color C.
@@ -1044,7 +1043,7 @@ Get hpluv-h representation of color C.
 (ct-get-hpluv-h "#4fa5e8") ;; => 242.63535329133538
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → 242.63535329133538
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 242.63535329133538
 #+END_quote
 **** ct-edit-hpluv ~(COLOR EDIT-FN)~
 Edit COLOR in the HPLuv colorspace by calling EDIT-FN with it's HPL properties.
@@ -1053,7 +1052,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 (ct-edit-hpluv "#4fa5e8" (lambda (H P L) (list H 100 L))) ;; => "#72a2d2"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/72a2d2/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]]
 #+END_quote
 **** ct-edit-hpluv-h ~(C FUNC-OR-VAL)~
 Transform property hpluv-h of C using FUNC-OR-VAL.
@@ -1061,7 +1060,7 @@ Transform property hpluv-h of C using FUNC-OR-VAL.
 (ct-edit-hpluv-h "#4fa5e8" 0) ;; => "#d78798"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/d78798/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/d78798.svg]]
 #+END_quote
 **** ct-edit-hpluv-h-dec ~(C &optional V)~
 Decrease hpluv-h value of C by V (defaults to the minimum amount needed to change C).
@@ -1079,7 +1078,7 @@ Transform property hpluv-l of C using FUNC-OR-VAL.
 (ct-edit-hpluv-l "#4fa5e8" 100) ;; => "#feffff"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/feffff/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/feffff.svg]]
 #+END_quote
 **** ct-edit-hpluv-l-dec ~(C &optional V)~
 Decrease hpluv-l value of C by V (defaults to the minimum amount needed to change C).
@@ -1097,7 +1096,7 @@ Transform property hpluv-p of C using FUNC-OR-VAL.
 (ct-edit-hpluv-p "#4fa5e8" 100) ;; => "#72a2d2"
 #+END_src
 #+BEGIN_quote
-[[https://via.placeholder.com/16/4fa5e8/000000.png?text=+]] → [[https://via.placeholder.com/16/72a2d2/000000.png?text=+]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]]
 #+END_quote
 **** ct-edit-hpluv-p-dec ~(C &optional V)~
 Decrease hpluv-p value of C by V (defaults to the minimum amount needed to change C).
