@@ -84,7 +84,7 @@
            (ct-edit-rgb-r-dec ,plain-color 10)
            (ct-edit-rgb-r-inc ,plain-color))
 
-         ("LAB" "https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e")
+         ("(cie)LAB" "https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e")
          ((ct-make-lab ,@(ct-get-lab color))
            (ct-get-lab ,color)
            (ct-get-lab-l ,color)
@@ -135,7 +135,7 @@
            (ct-edit-hsluv-s-dec ,color)
            (ct-edit-hsluv-s-inc ,color))
 
-         ("LCH" "https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413")
+         ("(cie)LCH" "https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413")
          ((ct-make-lch ,@(ct-get-lch color))
            (ct-get-lch ,color)
            (ct-get-lch-l ,color)
@@ -184,7 +184,24 @@
            (ct-edit-hpluv-l-inc ,color)
            (ct-edit-hpluv-p ,color 100)
            (ct-edit-hpluv-p-dec ,color)
-           (ct-edit-hpluv-p-inc ,color)))))
+           (ct-edit-hpluv-p-inc ,color))
+
+         ("okLAB" "https://bottosson.github.io/posts/oklab/")
+         ((ct-make-oklab ,@(ct-get-oklab color))
+           (ct-get-oklab ,color)
+           (ct-get-oklab-l ,color)
+           (ct-get-oklab-a ,color)
+           (ct-get-oklab-b ,color)
+           (ct-edit-oklab ,color (lambda (L A B) (list L 100 B)))
+           (ct-edit-oklab-l ,color 100)
+           (ct-edit-oklab-l-dec ,color)
+           (ct-edit-oklab-l-inc ,color)
+           (ct-edit-oklab-a ,color 0)
+           (ct-edit-oklab-a-dec ,color)
+           (ct-edit-oklab-a-inc ,color)
+           (ct-edit-oklab-b ,color 100)
+           (ct-edit-oklab-b-dec ,color)
+           (ct-edit-oklab-b-inc ,color)))))
 
   (defun ct--generate-toc ()
     (->> ct--docs
@@ -255,7 +272,7 @@
   (defun ct--get-preview (n)
     (when (and (stringp n)
             (= (length n) 7))
-      (format "[[https://via.placeholder.com/16/%s/000000.png?text=+]]"
+      (format "[[http://muffin.app.neeasade.net/colorsquare/%s.svg]]"
         (substring n 1))))
 
   (defun ct--get-colors (form)
