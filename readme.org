@@ -70,7 +70,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-edit-rgb-r-c-func-or-val][ct-edit-rgb-r]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-rgb-r-dec-c-optional-v][ct-edit-rgb-r-dec]] ~(C &optional V)~
 - [[#ct-edit-rgb-r-inc-c-optional-v][ct-edit-rgb-r-inc]] ~(C &optional V)~
-*** LAB
+*** (cie)LAB
 - [[#ct-make-lab-l-a-b][ct-make-lab]] ~(L A B)~
 - [[#ct-get-lab-c][ct-get-lab]] ~(C)~
 - [[#ct-get-lab-l-c][ct-get-lab-l]] ~(C)~
@@ -118,7 +118,7 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-edit-hsluv-s-c-func-or-val][ct-edit-hsluv-s]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-hsluv-s-dec-c-optional-v][ct-edit-hsluv-s-dec]] ~(C &optional V)~
 - [[#ct-edit-hsluv-s-inc-c-optional-v][ct-edit-hsluv-s-inc]] ~(C &optional V)~
-*** LCH
+*** (cie)LCH
 - [[#ct-make-lch-l-c-h][ct-make-lch]] ~(L C H)~
 - [[#ct-get-lch-c][ct-get-lch]] ~(C)~
 - [[#ct-get-lch-l-c][ct-get-lch-l]] ~(C)~
@@ -166,6 +166,22 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-edit-hpluv-p-c-func-or-val][ct-edit-hpluv-p]] ~(C FUNC-OR-VAL)~
 - [[#ct-edit-hpluv-p-dec-c-optional-v][ct-edit-hpluv-p-dec]] ~(C &optional V)~
 - [[#ct-edit-hpluv-p-inc-c-optional-v][ct-edit-hpluv-p-inc]] ~(C &optional V)~
+*** okLAB
+- [[#ct-make-oklab-l-a-b][ct-make-oklab]] ~(L A B)~
+- [[#ct-get-oklab-c][ct-get-oklab]] ~(C)~
+- [[#ct-get-oklab-l-c][ct-get-oklab-l]] ~(C)~
+- [[#ct-get-oklab-a-c][ct-get-oklab-a]] ~(C)~
+- [[#ct-get-oklab-b-c][ct-get-oklab-b]] ~(C)~
+- [[#ct-edit-oklab-color-edit-fn][ct-edit-oklab]] ~(COLOR EDIT-FN)~
+- [[#ct-edit-oklab-l-c-func-or-val][ct-edit-oklab-l]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-oklab-l-dec-c-optional-v][ct-edit-oklab-l-dec]] ~(C &optional V)~
+- [[#ct-edit-oklab-l-inc-c-optional-v][ct-edit-oklab-l-inc]] ~(C &optional V)~
+- [[#ct-edit-oklab-a-c-func-or-val][ct-edit-oklab-a]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-oklab-a-dec-c-optional-v][ct-edit-oklab-a-dec]] ~(C &optional V)~
+- [[#ct-edit-oklab-a-inc-c-optional-v][ct-edit-oklab-a-inc]] ~(C &optional V)~
+- [[#ct-edit-oklab-b-c-func-or-val][ct-edit-oklab-b]] ~(C FUNC-OR-VAL)~
+- [[#ct-edit-oklab-b-dec-c-optional-v][ct-edit-oklab-b-dec]] ~(C &optional V)~
+- [[#ct-edit-oklab-b-inc-c-optional-v][ct-edit-oklab-b-inc]] ~(C &optional V)~
 ** Color Properties
 Functions for seeing properties of colors not necessarily related to a particular color space.
 **** ct-contrast-ratio ~(C1 C2)~
@@ -467,7 +483,7 @@ Increase rgb-r value of C by V (defaults to the minimum amount needed to change 
 #+BEGIN_src elisp
 (ct-edit-rgb-r-inc "#bbbbbb") ;; => "#bcbbbb"
 #+END_src
-** LAB
+** (cie)LAB
 https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e
 **** ct-make-lab ~(L A B)~
 Make a color using (L A B) properties
@@ -793,7 +809,7 @@ Increase hsluv-s value of C by V (defaults to the minimum amount needed to chang
 #+BEGIN_src elisp
 (ct-edit-hsluv-s-inc "#4fa5e8") ;; => "#4ea5e8"
 #+END_src
-** LCH
+** (cie)LCH
 https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413
 **** ct-make-lch ~(L C H)~
 Make a color using (L C H) properties
@@ -1107,6 +1123,110 @@ Decrease hpluv-p value of C by V (defaults to the minimum amount needed to chang
 Increase hpluv-p value of C by V (defaults to the minimum amount needed to change C).
 #+BEGIN_src elisp
 (ct-edit-hpluv-p-inc "#4fa5e8") ;; => "#72a2d2"
+#+END_src
+** okLAB
+https://bottosson.github.io/posts/oklab/
+**** ct-make-oklab ~(L A B)~
+Make a color using (L A B) properties
+#+BEGIN_src elisp
+(ct-make-oklab 69.76836582636582 -5.4997306865348765 -11.67315795832785) ;; => "#4fa4e8"
+#+END_src
+#+BEGIN_quote
+ → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
+#+END_quote
+**** ct-get-oklab ~(C)~
+Get oklab representation of color C.
+#+BEGIN_src elisp
+(ct-get-oklab "#4fa5e8") ;; => (69.76836582636582 -5.4997306865348765 -11.67315795832785)
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (69.76836582636582 -5.4997306865348765 -11.67315795832785)
+#+END_quote
+**** ct-get-oklab-l ~(C)~
+Get oklab-l representation of color C.
+#+BEGIN_src elisp
+(ct-get-oklab-l "#4fa5e8") ;; => 69.76836582636582
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 69.76836582636582
+#+END_quote
+**** ct-get-oklab-a ~(C)~
+Get oklab-a representation of color C.
+#+BEGIN_src elisp
+(ct-get-oklab-a "#4fa5e8") ;; => -5.4997306865348765
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5.4997306865348765
+#+END_quote
+**** ct-get-oklab-b ~(C)~
+Get oklab-b representation of color C.
+#+BEGIN_src elisp
+(ct-get-oklab-b "#4fa5e8") ;; => -11.67315795832785
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -11.67315795832785
+#+END_quote
+**** ct-edit-oklab ~(COLOR EDIT-FN)~
+Edit COLOR in by calling edit-fn with it's okLAB properties.
+#+BEGIN_src elisp
+(ct-edit-oklab "#4fa5e8" (lambda (L A B) (list L 100 B))) ;; => "#ff00c9"
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff00c9.svg]]
+#+END_quote
+**** ct-edit-oklab-l ~(C FUNC-OR-VAL)~
+Transform property oklab-l of C using FUNC-OR-VAL.
+#+BEGIN_src elisp
+(ct-edit-oklab-l "#4fa5e8" 100) ;; => "#b1ffff"
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/b1ffff.svg]]
+#+END_quote
+**** ct-edit-oklab-l-dec ~(C &optional V)~
+Decrease oklab-l value of C by V (defaults to the minimum amount needed to change C).
+#+BEGIN_src elisp
+(ct-edit-oklab-l-dec "#4fa5e8") ;; => "#4ea4e7"
+#+END_src
+**** ct-edit-oklab-l-inc ~(C &optional V)~
+Increase oklab-l value of C by V (defaults to the minimum amount needed to change C).
+#+BEGIN_src elisp
+(ct-edit-oklab-l-inc "#4fa5e8") ;; => "#4fa5e9"
+#+END_src
+**** ct-edit-oklab-a ~(C FUNC-OR-VAL)~
+Transform property oklab-a of C using FUNC-OR-VAL.
+#+BEGIN_src elisp
+(ct-edit-oklab-a "#4fa5e8" 0) ;; => "#8199e6"
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8199e6.svg]]
+#+END_quote
+**** ct-edit-oklab-a-dec ~(C &optional V)~
+Decrease oklab-a value of C by V (defaults to the minimum amount needed to change C).
+#+BEGIN_src elisp
+(ct-edit-oklab-a-dec "#4fa5e8") ;; => "#4da5e8"
+#+END_src
+**** ct-edit-oklab-a-inc ~(C &optional V)~
+Increase oklab-a value of C by V (defaults to the minimum amount needed to change C).
+#+BEGIN_src elisp
+(ct-edit-oklab-a-inc "#4fa5e8") ;; => "#50a4e7"
+#+END_src
+**** ct-edit-oklab-b ~(C FUNC-OR-VAL)~
+Transform property oklab-b of C using FUNC-OR-VAL.
+#+BEGIN_src elisp
+(ct-edit-oklab-b "#4fa5e8" 100) ;; => "#ff0000"
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff0000.svg]]
+#+END_quote
+**** ct-edit-oklab-b-dec ~(C &optional V)~
+Decrease oklab-b value of C by V (defaults to the minimum amount needed to change C).
+#+BEGIN_src elisp
+(ct-edit-oklab-b-dec "#4fa5e8") ;; => "#4ea4e8"
+#+END_src
+**** ct-edit-oklab-b-inc ~(C &optional V)~
+Increase oklab-b value of C by V (defaults to the minimum amount needed to change C).
+#+BEGIN_src elisp
+(ct-edit-oklab-b-inc "#4fa5e8") ;; => "#4fa5e7"
 #+END_src
 
 ** Gotchas
