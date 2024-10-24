@@ -12,7 +12,7 @@
 
 ct.el (color tools) is a color library for Emacs meant for making changes to individual colors in various color spaces. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/myron-themes][myron-themes]]. Shouted out by [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][prot]] (of modus themes fame).
 
-Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • (cie)[[#lab][lab]] • (cie)[[#lch][lch]] • (ok)lab
+Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • [[#lab][(cie)lab]] • [[#lch][(cie)lch]] • [[#okLAB][(ok)lab]]
 ** Installation
 
 ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https://github.com/raxod502/straight.el][straight.el]]:
@@ -187,18 +187,18 @@ Functions for seeing properties of colors not necessarily related to a particula
 **** ct-contrast-ratio ~(C1 C2)~
 Get the contrast ratio between C1 and C2.
 #+BEGIN_src elisp
-(ct-contrast-ratio "#bbbbbb" "#4fa5e8") ;; => 1.3881996647056503
+(ct-contrast-ratio "#bbbbbb" "#4fa5e8") ;; => 1
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 1.3881996647056503
+[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 1
 #+END_quote
 **** ct-distance ~(C1 C2)~
 Get cie-DE2000 distance between C1 and C2 -- value is 0-100.
 #+BEGIN_src elisp
-(ct-distance "#4fa5e8" "#bc9a43") ;; => 53.05461635462344
+(ct-distance "#4fa5e8" "#bc9a43") ;; => 53
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]] → 53.05461635462344
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]] → 53
 #+END_quote
 **** ct-format-argb ~(COLOR &optional OPACITY END)~
 Argb formatting:
@@ -375,42 +375,42 @@ https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f4
 **** ct-make-rgb ~(R G B)~
 Make a color using (R G B) properties
 #+BEGIN_src elisp
-(ct-make-rgb 30.980392156862745 64.70588235294117 90.98039215686275) ;; => "#4fa4e8"
+(ct-make-rgb 31 65 91) ;; => "#4fa5e8"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]]
 #+END_quote
 **** ct-get-rgb ~(C)~
 Get rgb representation of color C.
 #+BEGIN_src elisp
-(ct-get-rgb "#4fa5e8") ;; => (30.980392156862745 64.70588235294117 90.98039215686275)
+(ct-get-rgb "#4fa5e8") ;; => (31 65 91)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (30.980392156862745 64.70588235294117 90.98039215686275)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (31 65 91)
 #+END_quote
 **** ct-get-rgb-r ~(C)~
 Get rgb-r representation of color C.
 #+BEGIN_src elisp
-(ct-get-rgb-r "#4fa5e8") ;; => 30.980392156862745
+(ct-get-rgb-r "#4fa5e8") ;; => 31
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 30.980392156862745
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 31
 #+END_quote
 **** ct-get-rgb-g ~(C)~
 Get rgb-g representation of color C.
 #+BEGIN_src elisp
-(ct-get-rgb-g "#4fa5e8") ;; => 64.70588235294117
+(ct-get-rgb-g "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 64.70588235294117
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-rgb-b ~(C)~
 Get rgb-b representation of color C.
 #+BEGIN_src elisp
-(ct-get-rgb-b "#4fa5e8") ;; => 90.98039215686275
+(ct-get-rgb-b "#4fa5e8") ;; => 91
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 90.98039215686275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 91
 #+END_quote
 **** ct-edit-rgb ~(COLOR EDIT-FN)~
 Edit COLOR in the RGB colorspace by calling EDIT-FN with it's RGB properties.
@@ -488,42 +488,42 @@ https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b0
 **** ct-make-lab ~(L A B)~
 Make a color using (L A B) properties
 #+BEGIN_src elisp
-(ct-make-lab 65.27524119433272 -5.264411618969234 -41.33308089969405) ;; => "#4fa4e8"
+(ct-make-lab 65 -5 -41) ;; => "#50a4e6"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/50a4e6.svg]]
 #+END_quote
 **** ct-get-lab ~(C)~
 Get lab representation of color C.
 #+BEGIN_src elisp
-(ct-get-lab "#4fa5e8") ;; => (65.27524119433272 -5.264411618969234 -41.33308089969405)
+(ct-get-lab "#4fa5e8") ;; => (65 -5 -41)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65.27524119433272 -5.264411618969234 -41.33308089969405)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65 -5 -41)
 #+END_quote
 **** ct-get-lab-l ~(C)~
 Get lab-l representation of color C.
 #+BEGIN_src elisp
-(ct-get-lab-l "#4fa5e8") ;; => 65.27524119433272
+(ct-get-lab-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27524119433272
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-lab-b ~(C)~
 Get lab-b representation of color C.
 #+BEGIN_src elisp
-(ct-get-lab-b "#4fa5e8") ;; => -41.33308089969405
+(ct-get-lab-b "#4fa5e8") ;; => -41
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -41.33308089969405
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -41
 #+END_quote
 **** ct-get-lab-a ~(C)~
 Get lab-a representation of color C.
 #+BEGIN_src elisp
-(ct-get-lab-a "#4fa5e8") ;; => -5.264411618969234
+(ct-get-lab-a "#4fa5e8") ;; => -5
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5.264411618969234
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5
 #+END_quote
 **** ct-edit-lab ~(COLOR EDIT-FN)~
 Edit COLOR in the cieLAB colorspace by calling EDIT-FN with it's LAB properties.
@@ -604,42 +604,42 @@ https://notes.neeasade.net/color-spaces.html#h-43869bc7-a7d1-410f-9341-521974751
 **** ct-make-hsl ~(H S L)~
 Make a color using (H S L) properties
 #+BEGIN_src elisp
-(ct-make-hsl 206.27450980392157 76.88442211055275 60.98039215686275) ;; => "#4fa4e8"
+(ct-make-hsl 206 77 61) ;; => "#4ea5e8"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]]
 #+END_quote
 **** ct-get-hsl ~(C)~
 Get hsl representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsl "#4fa5e8") ;; => (206.27450980392157 76.88442211055275 60.98039215686275)
+(ct-get-hsl "#4fa5e8") ;; => (206 77 61)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206.27450980392157 76.88442211055275 60.98039215686275)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206 77 61)
 #+END_quote
 **** ct-get-hsl-s ~(C)~
 Get hsl-s representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsl-s "#4fa5e8") ;; => 76.88442211055275
+(ct-get-hsl-s "#4fa5e8") ;; => 77
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 76.88442211055275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 77
 #+END_quote
 **** ct-get-hsl-l ~(C)~
 Get hsl-l representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsl-l "#4fa5e8") ;; => 60.98039215686275
+(ct-get-hsl-l "#4fa5e8") ;; => 61
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 60.98039215686275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 61
 #+END_quote
 **** ct-get-hsl-h ~(C)~
 Get hsl-h representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsl-h "#4fa5e8") ;; => 206.27450980392157
+(ct-get-hsl-h "#4fa5e8") ;; => 206
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 206.27450980392157
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 206
 #+END_quote
 **** ct-edit-hsl ~(COLOR EDIT-FN)~
 Edit COLOR in the HSL colorspace by calling EDIT-FN with it's HSL properties.
@@ -709,42 +709,42 @@ https://notes.neeasade.net/color-spaces.html#h-c147b84d-d95b-4d2d-8426-2f96529a8
 **** ct-make-hsluv ~(H S L)~
 Make a color using (H S L) properties
 #+BEGIN_src elisp
-(ct-make-hsluv 242.63535329133538 81.00935604214261 65.27665592005344) ;; => "#4ea5e7"
+(ct-make-hsluv 243 81 65) ;; => "#4ea4e7"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/4ea5e7.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4ea4e7.svg]]
 #+END_quote
 **** ct-get-hsluv ~(C)~
 Get hsluv representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsluv "#4fa5e8") ;; => (242.63535329133538 81.00935604214261 65.27665592005344)
+(ct-get-hsluv "#4fa5e8") ;; => (243 81 65)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (242.63535329133538 81.00935604214261 65.27665592005344)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (243 81 65)
 #+END_quote
 **** ct-get-hsluv-s ~(C)~
 Get hsluv-s representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsluv-s "#4fa5e8") ;; => 81.00935604214261
+(ct-get-hsluv-s "#4fa5e8") ;; => 81
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 81.00935604214261
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 81
 #+END_quote
 **** ct-get-hsluv-l ~(C)~
 Get hsluv-l representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsluv-l "#4fa5e8") ;; => 65.27665592005344
+(ct-get-hsluv-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27665592005344
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-hsluv-h ~(C)~
 Get hsluv-h representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsluv-h "#4fa5e8") ;; => 242.63535329133538
+(ct-get-hsluv-h "#4fa5e8") ;; => 243
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 242.63535329133538
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 243
 #+END_quote
 **** ct-edit-hsluv ~(COLOR EDIT-FN)~
 Edit COLOR in the HSLuv colorspace by calling EDIT-FN with it's HSL properties.
@@ -814,42 +814,42 @@ https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef
 **** ct-make-lch ~(L C H)~
 Make a color using (L C H) properties
 #+BEGIN_src elisp
-(ct-make-lch 65.27524119433272 41.666984608375394 -97.25842954163491) ;; => "#4fa4e8"
+(ct-make-lch 65 42 -97) ;; => "#4da4e7"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4da4e7.svg]]
 #+END_quote
 **** ct-get-lch ~(C)~
 Get lch representation of color C.
 #+BEGIN_src elisp
-(ct-get-lch "#4fa5e8") ;; => (65.27524119433272 41.666984608375394 -97.25842954163491)
+(ct-get-lch "#4fa5e8") ;; => (65 42 -97)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65.27524119433272 41.666984608375394 -97.25842954163491)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65 42 -97)
 #+END_quote
 **** ct-get-lch-l ~(C)~
 Get lch-l representation of color C.
 #+BEGIN_src elisp
-(ct-get-lch-l "#4fa5e8") ;; => 65.27524119433272
+(ct-get-lch-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27524119433272
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-lch-h ~(C)~
 Get lch-h representation of color C.
 #+BEGIN_src elisp
-(ct-get-lch-h "#4fa5e8") ;; => -97.25842954163491
+(ct-get-lch-h "#4fa5e8") ;; => -97
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -97.25842954163491
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -97
 #+END_quote
 **** ct-get-lch-c ~(C)~
 Get lch-c representation of color C.
 #+BEGIN_src elisp
-(ct-get-lch-c "#4fa5e8") ;; => 41.666984608375394
+(ct-get-lch-c "#4fa5e8") ;; => 42
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 41.666984608375394
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 42
 #+END_quote
 **** ct-edit-lch ~(COLOR EDIT-FN)~
 Edit COLOR in the cieLCH colorspace by calling EDIT-FN with it's LCH properties.
@@ -919,7 +919,7 @@ https://en.wikipedia.org/wiki/HSL_and_HSV
 **** ct-make-hsv ~(H S V)~
 Make a color using (H S V) properties
 #+BEGIN_src elisp
-(ct-make-hsv 206.27450980392157 65.94827586206897 90.98039215686275) ;; => "#4ea5e8"
+(ct-make-hsv 206 66 91) ;; => "#4ea5e8"
 #+END_src
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]]
@@ -927,34 +927,34 @@ Make a color using (H S V) properties
 **** ct-get-hsv ~(C)~
 Get hsv representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsv "#4fa5e8") ;; => (206.27450980392157 65.94827586206897 90.98039215686275)
+(ct-get-hsv "#4fa5e8") ;; => (206 66 91)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206.27450980392157 65.94827586206897 90.98039215686275)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206 66 91)
 #+END_quote
 **** ct-get-hsv-v ~(C)~
 Get hsv-v representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsv-v "#4fa5e8") ;; => 90.98039215686275
+(ct-get-hsv-v "#4fa5e8") ;; => 91
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 90.98039215686275
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 91
 #+END_quote
 **** ct-get-hsv-s ~(C)~
 Get hsv-s representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsv-s "#4fa5e8") ;; => 65.94827586206897
+(ct-get-hsv-s "#4fa5e8") ;; => 66
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.94827586206897
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 66
 #+END_quote
 **** ct-get-hsv-h ~(C)~
 Get hsv-h representation of color C.
 #+BEGIN_src elisp
-(ct-get-hsv-h "#4fa5e8") ;; => 206.27450980392157
+(ct-get-hsv-h "#4fa5e8") ;; => 206
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 206.27450980392157
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 206
 #+END_quote
 **** ct-edit-hsv ~(COLOR EDIT-FN)~
 Edit COLOR in the HSV colorspace by calling EDIT-FN with it's HSV properties.
@@ -1024,42 +1024,42 @@ https://ajalt.github.io/colormath/api/colormath/com.github.ajalt.colormath.model
 **** ct-make-hpluv ~(H P L)~
 Make a color using (H P L) properties
 #+BEGIN_src elisp
-(ct-make-hpluv 242.63535329133538 143.13047428079187 65.27665592005344) ;; => "#72a2d2"
+(ct-make-hpluv 243 143 65) ;; => "#72a1d1"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/72a1d1.svg]]
 #+END_quote
 **** ct-get-hpluv ~(C)~
 Get hpluv representation of color C.
 #+BEGIN_src elisp
-(ct-get-hpluv "#4fa5e8") ;; => (242.63535329133538 143.13047428079187 65.27665592005344)
+(ct-get-hpluv "#4fa5e8") ;; => (243 143 65)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (242.63535329133538 143.13047428079187 65.27665592005344)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (243 143 65)
 #+END_quote
 **** ct-get-hpluv-p ~(C)~
 Get hpluv-p representation of color C.
 #+BEGIN_src elisp
-(ct-get-hpluv-p "#4fa5e8") ;; => 143.13047428079187
+(ct-get-hpluv-p "#4fa5e8") ;; => 143
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 143.13047428079187
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 143
 #+END_quote
 **** ct-get-hpluv-l ~(C)~
 Get hpluv-l representation of color C.
 #+BEGIN_src elisp
-(ct-get-hpluv-l "#4fa5e8") ;; => 65.27665592005344
+(ct-get-hpluv-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65.27665592005344
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-hpluv-h ~(C)~
 Get hpluv-h representation of color C.
 #+BEGIN_src elisp
-(ct-get-hpluv-h "#4fa5e8") ;; => 242.63535329133538
+(ct-get-hpluv-h "#4fa5e8") ;; => 243
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 242.63535329133538
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 243
 #+END_quote
 **** ct-edit-hpluv ~(COLOR EDIT-FN)~
 Edit COLOR in the HPLuv colorspace by calling EDIT-FN with it's HPL properties.
@@ -1129,42 +1129,42 @@ https://bottosson.github.io/posts/oklab/
 **** ct-make-oklab ~(L A B)~
 Make a color using (L A B) properties
 #+BEGIN_src elisp
-(ct-make-oklab 69.76836582636582 -5.4997306865348765 -11.67315795832785) ;; => "#4fa4e8"
+(ct-make-oklab 70 -5 -12) ;; => "#54a4ea"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/54a4ea.svg]]
 #+END_quote
 **** ct-get-oklab ~(C)~
 Get oklab representation of color C.
 #+BEGIN_src elisp
-(ct-get-oklab "#4fa5e8") ;; => (69.76836582636582 -5.4997306865348765 -11.67315795832785)
+(ct-get-oklab "#4fa5e8") ;; => (70 -5 -12)
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (69.76836582636582 -5.4997306865348765 -11.67315795832785)
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (70 -5 -12)
 #+END_quote
 **** ct-get-oklab-l ~(C)~
 Get oklab-l representation of color C.
 #+BEGIN_src elisp
-(ct-get-oklab-l "#4fa5e8") ;; => 69.76836582636582
+(ct-get-oklab-l "#4fa5e8") ;; => 70
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 69.76836582636582
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 70
 #+END_quote
 **** ct-get-oklab-a ~(C)~
 Get oklab-a representation of color C.
 #+BEGIN_src elisp
-(ct-get-oklab-a "#4fa5e8") ;; => -5.4997306865348765
+(ct-get-oklab-a "#4fa5e8") ;; => -5
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5.4997306865348765
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5
 #+END_quote
 **** ct-get-oklab-b ~(C)~
 Get oklab-b representation of color C.
 #+BEGIN_src elisp
-(ct-get-oklab-b "#4fa5e8") ;; => -11.67315795832785
+(ct-get-oklab-b "#4fa5e8") ;; => -12
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -11.67315795832785
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -12
 #+END_quote
 **** ct-edit-oklab ~(COLOR EDIT-FN)~
 Edit COLOR in by calling edit-fn with it's okLAB properties.
