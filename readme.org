@@ -49,139 +49,139 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-mix-opacity-top-bottom-opacity][ct-mix-opacity]] ~(TOP BOTTOM OPACITY)~
 - [[#ct-pastel-c-optional-smod-vmod][ct-pastel]] ~(C &optional SMOD VMOD)~
 - [[#ct-contrast-min-foreground-background-contrast-ratio-optional-color-property][ct-contrast-min]] ~(FOREGROUND BACKGROUND CONTRAST-RATIO &optional COLOR-PROPERTY)~
-- [[#ct-rotation-hpluv-c-interval][ct-rotation-hpluv]] ~(C INTERVAL)~
-- [[#ct-rotation-hsl-c-interval][ct-rotation-hsl]] ~(C INTERVAL)~
-- [[#ct-rotation-hsluv-c-interval][ct-rotation-hsluv]] ~(C INTERVAL)~
-- [[#ct-rotation-hsv-c-interval][ct-rotation-hsv]] ~(C INTERVAL)~
-- [[#ct-rotation-lch-c-interval][ct-rotation-lch]] ~(C INTERVAL)~
+- [[#ct-rotation-hpluv-color-degrees][ct-rotation-hpluv]] ~(COLOR DEGREES)~
+- [[#ct-rotation-hsl-color-degrees][ct-rotation-hsl]] ~(COLOR DEGREES)~
+- [[#ct-rotation-hsluv-color-degrees][ct-rotation-hsluv]] ~(COLOR DEGREES)~
+- [[#ct-rotation-hsv-color-degrees][ct-rotation-hsv]] ~(COLOR DEGREES)~
+- [[#ct-rotation-lch-color-degrees][ct-rotation-lch]] ~(COLOR DEGREES)~
 *** RGB
 - [[#ct-make-rgb-r-g-b][ct-make-rgb]] ~(R G B)~
-- [[#ct-get-rgb-c][ct-get-rgb]] ~(C)~
-- [[#ct-get-rgb-r-c][ct-get-rgb-r]] ~(C)~
-- [[#ct-get-rgb-g-c][ct-get-rgb-g]] ~(C)~
-- [[#ct-get-rgb-b-c][ct-get-rgb-b]] ~(C)~
+- [[#ct-get-rgb-color][ct-get-rgb]] ~(COLOR)~
+- [[#ct-get-rgb-r-color][ct-get-rgb-r]] ~(COLOR)~
+- [[#ct-get-rgb-g-color][ct-get-rgb-g]] ~(COLOR)~
+- [[#ct-get-rgb-b-color][ct-get-rgb-b]] ~(COLOR)~
 - [[#ct-edit-rgb-color-edit-fn][ct-edit-rgb]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-rgb-b-c-func-or-val][ct-edit-rgb-b]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-rgb-b-dec-c-optional-v][ct-edit-rgb-b-dec]] ~(C &optional V)~
-- [[#ct-edit-rgb-b-inc-c-optional-v][ct-edit-rgb-b-inc]] ~(C &optional V)~
-- [[#ct-edit-rgb-g-c-func-or-val][ct-edit-rgb-g]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-rgb-g-dec-c-optional-v][ct-edit-rgb-g-dec]] ~(C &optional V)~
-- [[#ct-edit-rgb-g-inc-c-optional-v][ct-edit-rgb-g-inc]] ~(C &optional V)~
-- [[#ct-edit-rgb-r-c-func-or-val][ct-edit-rgb-r]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-rgb-r-dec-c-optional-v][ct-edit-rgb-r-dec]] ~(C &optional V)~
-- [[#ct-edit-rgb-r-inc-c-optional-v][ct-edit-rgb-r-inc]] ~(C &optional V)~
+- [[#ct-edit-rgb-b-color-func-or-val][ct-edit-rgb-b]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-rgb-b-dec-color-optional-amount][ct-edit-rgb-b-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-rgb-b-inc-color-optional-amount][ct-edit-rgb-b-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-rgb-g-color-func-or-val][ct-edit-rgb-g]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-rgb-g-dec-color-optional-amount][ct-edit-rgb-g-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-rgb-g-inc-color-optional-amount][ct-edit-rgb-g-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-rgb-r-color-func-or-val][ct-edit-rgb-r]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-rgb-r-dec-color-optional-amount][ct-edit-rgb-r-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-rgb-r-inc-color-optional-amount][ct-edit-rgb-r-inc]] ~(COLOR &optional AMOUNT)~
 *** (cie)LAB
 - [[#ct-make-lab-l-a-b][ct-make-lab]] ~(L A B)~
-- [[#ct-get-lab-c][ct-get-lab]] ~(C)~
-- [[#ct-get-lab-l-c][ct-get-lab-l]] ~(C)~
-- [[#ct-get-lab-b-c][ct-get-lab-b]] ~(C)~
-- [[#ct-get-lab-a-c][ct-get-lab-a]] ~(C)~
+- [[#ct-get-lab-color][ct-get-lab]] ~(COLOR)~
+- [[#ct-get-lab-l-color][ct-get-lab-l]] ~(COLOR)~
+- [[#ct-get-lab-b-color][ct-get-lab-b]] ~(COLOR)~
+- [[#ct-get-lab-a-color][ct-get-lab-a]] ~(COLOR)~
 - [[#ct-edit-lab-color-edit-fn][ct-edit-lab]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-lab-a-c-func-or-val][ct-edit-lab-a]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-lab-a-dec-c-optional-v][ct-edit-lab-a-dec]] ~(C &optional V)~
-- [[#ct-edit-lab-a-inc-c-optional-v][ct-edit-lab-a-inc]] ~(C &optional V)~
-- [[#ct-edit-lab-b-c-func-or-val][ct-edit-lab-b]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-lab-b-dec-c-optional-v][ct-edit-lab-b-dec]] ~(C &optional V)~
-- [[#ct-edit-lab-b-inc-c-optional-v][ct-edit-lab-b-inc]] ~(C &optional V)~
-- [[#ct-edit-lab-l-c-func-or-val][ct-edit-lab-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-lab-l-dec-c-optional-v][ct-edit-lab-l-dec]] ~(C &optional V)~
-- [[#ct-edit-lab-l-inc-c-optional-v][ct-edit-lab-l-inc]] ~(C &optional V)~
+- [[#ct-edit-lab-a-color-func-or-val][ct-edit-lab-a]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-lab-a-dec-color-optional-amount][ct-edit-lab-a-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lab-a-inc-color-optional-amount][ct-edit-lab-a-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lab-b-color-func-or-val][ct-edit-lab-b]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-lab-b-dec-color-optional-amount][ct-edit-lab-b-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lab-b-inc-color-optional-amount][ct-edit-lab-b-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lab-l-color-func-or-val][ct-edit-lab-l]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-lab-l-dec-color-optional-amount][ct-edit-lab-l-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lab-l-inc-color-optional-amount][ct-edit-lab-l-inc]] ~(COLOR &optional AMOUNT)~
 *** HSL
 - [[#ct-make-hsl-h-s-l][ct-make-hsl]] ~(H S L)~
-- [[#ct-get-hsl-c][ct-get-hsl]] ~(C)~
-- [[#ct-get-hsl-s-c][ct-get-hsl-s]] ~(C)~
-- [[#ct-get-hsl-l-c][ct-get-hsl-l]] ~(C)~
-- [[#ct-get-hsl-h-c][ct-get-hsl-h]] ~(C)~
+- [[#ct-get-hsl-color][ct-get-hsl]] ~(COLOR)~
+- [[#ct-get-hsl-s-color][ct-get-hsl-s]] ~(COLOR)~
+- [[#ct-get-hsl-l-color][ct-get-hsl-l]] ~(COLOR)~
+- [[#ct-get-hsl-h-color][ct-get-hsl-h]] ~(COLOR)~
 - [[#ct-edit-hsl-color-edit-fn][ct-edit-hsl]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-hsl-h-c-func-or-val][ct-edit-hsl-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsl-h-dec-c-optional-v][ct-edit-hsl-h-dec]] ~(C &optional V)~
-- [[#ct-edit-hsl-h-inc-c-optional-v][ct-edit-hsl-h-inc]] ~(C &optional V)~
-- [[#ct-edit-hsl-l-c-func-or-val][ct-edit-hsl-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsl-l-dec-c-optional-v][ct-edit-hsl-l-dec]] ~(C &optional V)~
-- [[#ct-edit-hsl-l-inc-c-optional-v][ct-edit-hsl-l-inc]] ~(C &optional V)~
-- [[#ct-edit-hsl-s-c-func-or-val][ct-edit-hsl-s]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsl-s-dec-c-optional-v][ct-edit-hsl-s-dec]] ~(C &optional V)~
-- [[#ct-edit-hsl-s-inc-c-optional-v][ct-edit-hsl-s-inc]] ~(C &optional V)~
+- [[#ct-edit-hsl-h-color-func-or-val][ct-edit-hsl-h]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsl-h-dec-color-optional-amount][ct-edit-hsl-h-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsl-h-inc-color-optional-amount][ct-edit-hsl-h-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsl-l-color-func-or-val][ct-edit-hsl-l]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsl-l-dec-color-optional-amount][ct-edit-hsl-l-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsl-l-inc-color-optional-amount][ct-edit-hsl-l-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsl-s-color-func-or-val][ct-edit-hsl-s]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsl-s-dec-color-optional-amount][ct-edit-hsl-s-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsl-s-inc-color-optional-amount][ct-edit-hsl-s-inc]] ~(COLOR &optional AMOUNT)~
 *** HSLuv
 - [[#ct-make-hsluv-h-s-l][ct-make-hsluv]] ~(H S L)~
-- [[#ct-get-hsluv-c][ct-get-hsluv]] ~(C)~
-- [[#ct-get-hsluv-s-c][ct-get-hsluv-s]] ~(C)~
-- [[#ct-get-hsluv-l-c][ct-get-hsluv-l]] ~(C)~
-- [[#ct-get-hsluv-h-c][ct-get-hsluv-h]] ~(C)~
+- [[#ct-get-hsluv-color][ct-get-hsluv]] ~(COLOR)~
+- [[#ct-get-hsluv-s-color][ct-get-hsluv-s]] ~(COLOR)~
+- [[#ct-get-hsluv-l-color][ct-get-hsluv-l]] ~(COLOR)~
+- [[#ct-get-hsluv-h-color][ct-get-hsluv-h]] ~(COLOR)~
 - [[#ct-edit-hsluv-color-edit-fn][ct-edit-hsluv]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-hsluv-h-c-func-or-val][ct-edit-hsluv-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsluv-h-dec-c-optional-v][ct-edit-hsluv-h-dec]] ~(C &optional V)~
-- [[#ct-edit-hsluv-h-inc-c-optional-v][ct-edit-hsluv-h-inc]] ~(C &optional V)~
-- [[#ct-edit-hsluv-l-c-func-or-val][ct-edit-hsluv-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsluv-l-dec-c-optional-v][ct-edit-hsluv-l-dec]] ~(C &optional V)~
-- [[#ct-edit-hsluv-l-inc-c-optional-v][ct-edit-hsluv-l-inc]] ~(C &optional V)~
-- [[#ct-edit-hsluv-s-c-func-or-val][ct-edit-hsluv-s]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsluv-s-dec-c-optional-v][ct-edit-hsluv-s-dec]] ~(C &optional V)~
-- [[#ct-edit-hsluv-s-inc-c-optional-v][ct-edit-hsluv-s-inc]] ~(C &optional V)~
+- [[#ct-edit-hsluv-h-color-func-or-val][ct-edit-hsluv-h]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsluv-h-dec-color-optional-amount][ct-edit-hsluv-h-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsluv-h-inc-color-optional-amount][ct-edit-hsluv-h-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsluv-l-color-func-or-val][ct-edit-hsluv-l]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsluv-l-dec-color-optional-amount][ct-edit-hsluv-l-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsluv-l-inc-color-optional-amount][ct-edit-hsluv-l-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsluv-s-color-func-or-val][ct-edit-hsluv-s]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsluv-s-dec-color-optional-amount][ct-edit-hsluv-s-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsluv-s-inc-color-optional-amount][ct-edit-hsluv-s-inc]] ~(COLOR &optional AMOUNT)~
 *** (cie)LCH
 - [[#ct-make-lch-l-c-h][ct-make-lch]] ~(L C H)~
-- [[#ct-get-lch-c][ct-get-lch]] ~(C)~
-- [[#ct-get-lch-l-c][ct-get-lch-l]] ~(C)~
-- [[#ct-get-lch-h-c][ct-get-lch-h]] ~(C)~
-- [[#ct-get-lch-c-c][ct-get-lch-c]] ~(C)~
+- [[#ct-get-lch-color][ct-get-lch]] ~(COLOR)~
+- [[#ct-get-lch-l-color][ct-get-lch-l]] ~(COLOR)~
+- [[#ct-get-lch-h-color][ct-get-lch-h]] ~(COLOR)~
+- [[#ct-get-lch-c-color][ct-get-lch-c]] ~(COLOR)~
 - [[#ct-edit-lch-color-edit-fn][ct-edit-lch]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-lch-c-c-func-or-val][ct-edit-lch-c]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-lch-c-dec-c-optional-v][ct-edit-lch-c-dec]] ~(C &optional V)~
-- [[#ct-edit-lch-c-inc-c-optional-v][ct-edit-lch-c-inc]] ~(C &optional V)~
-- [[#ct-edit-lch-h-c-func-or-val][ct-edit-lch-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-lch-h-dec-c-optional-v][ct-edit-lch-h-dec]] ~(C &optional V)~
-- [[#ct-edit-lch-h-inc-c-optional-v][ct-edit-lch-h-inc]] ~(C &optional V)~
-- [[#ct-edit-lch-l-c-func-or-val][ct-edit-lch-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-lch-l-dec-c-optional-v][ct-edit-lch-l-dec]] ~(C &optional V)~
-- [[#ct-edit-lch-l-inc-c-optional-v][ct-edit-lch-l-inc]] ~(C &optional V)~
+- [[#ct-edit-lch-c-color-func-or-val][ct-edit-lch-c]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-lch-c-dec-color-optional-amount][ct-edit-lch-c-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lch-c-inc-color-optional-amount][ct-edit-lch-c-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lch-h-color-func-or-val][ct-edit-lch-h]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-lch-h-dec-color-optional-amount][ct-edit-lch-h-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lch-h-inc-color-optional-amount][ct-edit-lch-h-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lch-l-color-func-or-val][ct-edit-lch-l]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-lch-l-dec-color-optional-amount][ct-edit-lch-l-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-lch-l-inc-color-optional-amount][ct-edit-lch-l-inc]] ~(COLOR &optional AMOUNT)~
 *** HSV
 - [[#ct-make-hsv-h-s-v][ct-make-hsv]] ~(H S V)~
-- [[#ct-get-hsv-c][ct-get-hsv]] ~(C)~
-- [[#ct-get-hsv-v-c][ct-get-hsv-v]] ~(C)~
-- [[#ct-get-hsv-s-c][ct-get-hsv-s]] ~(C)~
-- [[#ct-get-hsv-h-c][ct-get-hsv-h]] ~(C)~
+- [[#ct-get-hsv-color][ct-get-hsv]] ~(COLOR)~
+- [[#ct-get-hsv-v-color][ct-get-hsv-v]] ~(COLOR)~
+- [[#ct-get-hsv-s-color][ct-get-hsv-s]] ~(COLOR)~
+- [[#ct-get-hsv-h-color][ct-get-hsv-h]] ~(COLOR)~
 - [[#ct-edit-hsv-color-edit-fn][ct-edit-hsv]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-hsv-h-c-func-or-val][ct-edit-hsv-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsv-h-dec-c-optional-v][ct-edit-hsv-h-dec]] ~(C &optional V)~
-- [[#ct-edit-hsv-h-inc-c-optional-v][ct-edit-hsv-h-inc]] ~(C &optional V)~
-- [[#ct-edit-hsv-s-c-func-or-val][ct-edit-hsv-s]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsv-s-dec-c-optional-v][ct-edit-hsv-s-dec]] ~(C &optional V)~
-- [[#ct-edit-hsv-s-inc-c-optional-v][ct-edit-hsv-s-inc]] ~(C &optional V)~
-- [[#ct-edit-hsv-v-c-func-or-val][ct-edit-hsv-v]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hsv-v-dec-c-optional-v][ct-edit-hsv-v-dec]] ~(C &optional V)~
-- [[#ct-edit-hsv-v-inc-c-optional-v][ct-edit-hsv-v-inc]] ~(C &optional V)~
+- [[#ct-edit-hsv-h-color-func-or-val][ct-edit-hsv-h]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsv-h-dec-color-optional-amount][ct-edit-hsv-h-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsv-h-inc-color-optional-amount][ct-edit-hsv-h-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsv-s-color-func-or-val][ct-edit-hsv-s]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsv-s-dec-color-optional-amount][ct-edit-hsv-s-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsv-s-inc-color-optional-amount][ct-edit-hsv-s-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsv-v-color-func-or-val][ct-edit-hsv-v]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hsv-v-dec-color-optional-amount][ct-edit-hsv-v-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hsv-v-inc-color-optional-amount][ct-edit-hsv-v-inc]] ~(COLOR &optional AMOUNT)~
 *** HPLUV
 - [[#ct-make-hpluv-h-p-l][ct-make-hpluv]] ~(H P L)~
-- [[#ct-get-hpluv-c][ct-get-hpluv]] ~(C)~
-- [[#ct-get-hpluv-p-c][ct-get-hpluv-p]] ~(C)~
-- [[#ct-get-hpluv-l-c][ct-get-hpluv-l]] ~(C)~
-- [[#ct-get-hpluv-h-c][ct-get-hpluv-h]] ~(C)~
+- [[#ct-get-hpluv-color][ct-get-hpluv]] ~(COLOR)~
+- [[#ct-get-hpluv-p-color][ct-get-hpluv-p]] ~(COLOR)~
+- [[#ct-get-hpluv-l-color][ct-get-hpluv-l]] ~(COLOR)~
+- [[#ct-get-hpluv-h-color][ct-get-hpluv-h]] ~(COLOR)~
 - [[#ct-edit-hpluv-color-edit-fn][ct-edit-hpluv]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-hpluv-h-c-func-or-val][ct-edit-hpluv-h]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hpluv-h-dec-c-optional-v][ct-edit-hpluv-h-dec]] ~(C &optional V)~
-- [[#ct-edit-hpluv-h-inc-c-optional-v][ct-edit-hpluv-h-inc]] ~(C &optional V)~
-- [[#ct-edit-hpluv-l-c-func-or-val][ct-edit-hpluv-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hpluv-l-dec-c-optional-v][ct-edit-hpluv-l-dec]] ~(C &optional V)~
-- [[#ct-edit-hpluv-l-inc-c-optional-v][ct-edit-hpluv-l-inc]] ~(C &optional V)~
-- [[#ct-edit-hpluv-p-c-func-or-val][ct-edit-hpluv-p]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-hpluv-p-dec-c-optional-v][ct-edit-hpluv-p-dec]] ~(C &optional V)~
-- [[#ct-edit-hpluv-p-inc-c-optional-v][ct-edit-hpluv-p-inc]] ~(C &optional V)~
+- [[#ct-edit-hpluv-h-color-func-or-val][ct-edit-hpluv-h]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hpluv-h-dec-color-optional-amount][ct-edit-hpluv-h-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hpluv-h-inc-color-optional-amount][ct-edit-hpluv-h-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hpluv-l-color-func-or-val][ct-edit-hpluv-l]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hpluv-l-dec-color-optional-amount][ct-edit-hpluv-l-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hpluv-l-inc-color-optional-amount][ct-edit-hpluv-l-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hpluv-p-color-func-or-val][ct-edit-hpluv-p]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-hpluv-p-dec-color-optional-amount][ct-edit-hpluv-p-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-hpluv-p-inc-color-optional-amount][ct-edit-hpluv-p-inc]] ~(COLOR &optional AMOUNT)~
 *** okLAB
 - [[#ct-make-oklab-l-a-b][ct-make-oklab]] ~(L A B)~
-- [[#ct-get-oklab-c][ct-get-oklab]] ~(C)~
-- [[#ct-get-oklab-l-c][ct-get-oklab-l]] ~(C)~
-- [[#ct-get-oklab-a-c][ct-get-oklab-a]] ~(C)~
-- [[#ct-get-oklab-b-c][ct-get-oklab-b]] ~(C)~
+- [[#ct-get-oklab-color][ct-get-oklab]] ~(COLOR)~
+- [[#ct-get-oklab-l-color][ct-get-oklab-l]] ~(COLOR)~
+- [[#ct-get-oklab-a-color][ct-get-oklab-a]] ~(COLOR)~
+- [[#ct-get-oklab-b-color][ct-get-oklab-b]] ~(COLOR)~
 - [[#ct-edit-oklab-color-edit-fn][ct-edit-oklab]] ~(COLOR EDIT-FN)~
-- [[#ct-edit-oklab-l-c-func-or-val][ct-edit-oklab-l]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-oklab-l-dec-c-optional-v][ct-edit-oklab-l-dec]] ~(C &optional V)~
-- [[#ct-edit-oklab-l-inc-c-optional-v][ct-edit-oklab-l-inc]] ~(C &optional V)~
-- [[#ct-edit-oklab-a-c-func-or-val][ct-edit-oklab-a]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-oklab-a-dec-c-optional-v][ct-edit-oklab-a-dec]] ~(C &optional V)~
-- [[#ct-edit-oklab-a-inc-c-optional-v][ct-edit-oklab-a-inc]] ~(C &optional V)~
-- [[#ct-edit-oklab-b-c-func-or-val][ct-edit-oklab-b]] ~(C FUNC-OR-VAL)~
-- [[#ct-edit-oklab-b-dec-c-optional-v][ct-edit-oklab-b-dec]] ~(C &optional V)~
-- [[#ct-edit-oklab-b-inc-c-optional-v][ct-edit-oklab-b-inc]] ~(C &optional V)~
+- [[#ct-edit-oklab-l-color-func-or-val][ct-edit-oklab-l]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-oklab-l-dec-color-optional-amount][ct-edit-oklab-l-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-oklab-l-inc-color-optional-amount][ct-edit-oklab-l-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-oklab-a-color-func-or-val][ct-edit-oklab-a]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-oklab-a-dec-color-optional-amount][ct-edit-oklab-a-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-oklab-a-inc-color-optional-amount][ct-edit-oklab-a-inc]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-oklab-b-color-func-or-val][ct-edit-oklab-b]] ~(COLOR FUNC-OR-VAL)~
+- [[#ct-edit-oklab-b-dec-color-optional-amount][ct-edit-oklab-b-dec]] ~(COLOR &optional AMOUNT)~
+- [[#ct-edit-oklab-b-inc-color-optional-amount][ct-edit-oklab-b-inc]] ~(COLOR &optional AMOUNT)~
 ** Color Properties
 Functions for seeing properties of colors not necessarily related to a particular color space.
 **** ct-contrast-ratio ~(C1 C2)~
@@ -330,40 +330,40 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/1369ac.svg]]
 #+END_quote
-**** ct-rotation-hpluv ~(C INTERVAL)~
-Perform a hue rotation in hpluv space starting with color C by INTERVAL degrees.
+**** ct-rotation-hpluv ~(COLOR DEGREES)~
+Perform a hue rotation at every n DEGREES in hpluv space starting with COLOR.
 #+BEGIN_src elisp
 (ct-rotation-hpluv "#4fa5e8" 60) ;; => ("#72a2d2" "#c48acb" "#d78895" "#b89a59" "#74ac68" "#03b1a7")
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]],[[http://muffin.app.neeasade.net/colorsquare/c48acb.svg]],[[http://muffin.app.neeasade.net/colorsquare/d78895.svg]],[[http://muffin.app.neeasade.net/colorsquare/b89a59.svg]],[[http://muffin.app.neeasade.net/colorsquare/74ac68.svg]],[[http://muffin.app.neeasade.net/colorsquare/03b1a7.svg]]
 #+END_quote
-**** ct-rotation-hsl ~(C INTERVAL)~
-Perform a hue rotation in hsl space starting with color C by INTERVAL degrees.
+**** ct-rotation-hsl ~(COLOR DEGREES)~
+Perform a hue rotation at every n DEGREES in hsl space starting with COLOR.
 #+BEGIN_src elisp
 (ct-rotation-hsl "#4fa5e8" 60) ;; => ("#4fa4e8" "#914fe8" "#e84fa4" "#e8914f" "#a5e84f" "#4fe892")
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/914fe8.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84fa4.svg]],[[http://muffin.app.neeasade.net/colorsquare/e8914f.svg]],[[http://muffin.app.neeasade.net/colorsquare/a5e84f.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fe892.svg]]
 #+END_quote
-**** ct-rotation-hsluv ~(C INTERVAL)~
-Perform a hue rotation in hsluv space starting with color C by INTERVAL degrees.
+**** ct-rotation-hsluv ~(COLOR DEGREES)~
+Perform a hue rotation at every n DEGREES in hsluv space starting with COLOR.
 #+BEGIN_src elisp
 (ct-rotation-hsluv "#4fa5e8" 60) ;; => ("#4ea5e7" "#e173ec" "#f0798f" "#bc9a43" "#5cb143" "#48ada5")
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4ea5e7.svg]],[[http://muffin.app.neeasade.net/colorsquare/e173ec.svg]],[[http://muffin.app.neeasade.net/colorsquare/f0798f.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]],[[http://muffin.app.neeasade.net/colorsquare/5cb143.svg]],[[http://muffin.app.neeasade.net/colorsquare/48ada5.svg]]
 #+END_quote
-**** ct-rotation-hsv ~(C INTERVAL)~
-Perform a hue rotation in hsv space starting with color C by INTERVAL degrees.
+**** ct-rotation-hsv ~(COLOR DEGREES)~
+Perform a hue rotation at every n DEGREES in hsv space starting with COLOR.
 #+BEGIN_src elisp
 (ct-rotation-hsv "#4fa5e8" 60) ;; => ("#4ea5e8" "#914ee8" "#e84ea5" "#e8924e" "#a5e84e" "#4ee892")
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/914ee8.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84ea5.svg]],[[http://muffin.app.neeasade.net/colorsquare/e8924e.svg]],[[http://muffin.app.neeasade.net/colorsquare/a5e84e.svg]],[[http://muffin.app.neeasade.net/colorsquare/4ee892.svg]]
 #+END_quote
-**** ct-rotation-lch ~(C INTERVAL)~
-Perform a hue rotation in lch space starting with color C by INTERVAL degrees.
+**** ct-rotation-lch ~(COLOR DEGREES)~
+Perform a hue rotation at every n DEGREES in lch space starting with COLOR.
 #+BEGIN_src elisp
 (ct-rotation-lch "#4fa5e8" 60) ;; => ("#4fa4e8" "#c48acc" "#e58183" "#bd9953" "#6dad6f" "#00b1ba")
 #+END_src
@@ -380,32 +380,32 @@ Make a color using (R G B) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]]
 #+END_quote
-**** ct-get-rgb ~(C)~
-Get rgb representation of color C.
+**** ct-get-rgb ~(COLOR)~
+Get rgb representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-rgb "#4fa5e8") ;; => (31 65 91)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (31 65 91)
 #+END_quote
-**** ct-get-rgb-r ~(C)~
-Get rgb-r representation of color C.
+**** ct-get-rgb-r ~(COLOR)~
+Get rgb-r representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-rgb-r "#4fa5e8") ;; => 31
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 31
 #+END_quote
-**** ct-get-rgb-g ~(C)~
-Get rgb-g representation of color C.
+**** ct-get-rgb-g ~(COLOR)~
+Get rgb-g representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-rgb-g "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
-**** ct-get-rgb-b ~(C)~
-Get rgb-b representation of color C.
+**** ct-get-rgb-b ~(COLOR)~
+Get rgb-b representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-rgb-b "#4fa5e8") ;; => 91
 #+END_src
@@ -420,66 +420,66 @@ Edit COLOR in the RGB colorspace by calling EDIT-FN with it's RGB properties.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4f0000.svg]]
 #+END_quote
-**** ct-edit-rgb-b ~(C FUNC-OR-VAL)~
-Transform property rgb-b of C using FUNC-OR-VAL.
+**** ct-edit-rgb-b ~(COLOR FUNC-OR-VAL)~
+Transform property rgb-b of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-rgb-b "#4fa5e8" (lambda (b) (+ b 50))) ;; => "#4fa4ff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4ff.svg]]
 #+END_quote
-**** ct-edit-rgb-b-dec ~(C &optional V)~
-Decrease rgb-b value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-rgb-b-dec ~(COLOR &optional AMOUNT)~
+Decrease rgb-b property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-rgb-b-dec "#bbbbbb" 10) ;; => "#bbbba1"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/bbbba1.svg]]
 #+END_quote
-**** ct-edit-rgb-b-inc ~(C &optional V)~
-Increase rgb-b value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-rgb-b-inc ~(COLOR &optional AMOUNT)~
+Increase rgb-b property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-rgb-b-inc "#bbbbbb") ;; => "#bbbbbc"
 #+END_src
-**** ct-edit-rgb-g ~(C FUNC-OR-VAL)~
-Transform property rgb-g of C using FUNC-OR-VAL.
+**** ct-edit-rgb-g ~(COLOR FUNC-OR-VAL)~
+Transform property rgb-g of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-rgb-g "#4fa5e8" 100) ;; => "#4fffe8"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fffe8.svg]]
 #+END_quote
-**** ct-edit-rgb-g-dec ~(C &optional V)~
-Decrease rgb-g value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-rgb-g-dec ~(COLOR &optional AMOUNT)~
+Decrease rgb-g property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-rgb-g-dec "#bbbbbb" 10) ;; => "#bba1bb"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/bba1bb.svg]]
 #+END_quote
-**** ct-edit-rgb-g-inc ~(C &optional V)~
-Increase rgb-g value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-rgb-g-inc ~(COLOR &optional AMOUNT)~
+Increase rgb-g property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-rgb-g-inc "#bbbbbb") ;; => "#bbbcbb"
 #+END_src
-**** ct-edit-rgb-r ~(C FUNC-OR-VAL)~
-Transform property rgb-r of C using FUNC-OR-VAL.
+**** ct-edit-rgb-r ~(COLOR FUNC-OR-VAL)~
+Transform property rgb-r of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-rgb-r "#4fa5e8" 100) ;; => "#ffa4e8"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ffa4e8.svg]]
 #+END_quote
-**** ct-edit-rgb-r-dec ~(C &optional V)~
-Decrease rgb-r value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-rgb-r-dec ~(COLOR &optional AMOUNT)~
+Decrease rgb-r property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-rgb-r-dec "#bbbbbb" 10) ;; => "#a1bbbb"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/a1bbbb.svg]]
 #+END_quote
-**** ct-edit-rgb-r-inc ~(C &optional V)~
-Increase rgb-r value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-rgb-r-inc ~(COLOR &optional AMOUNT)~
+Increase rgb-r property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-rgb-r-inc "#bbbbbb") ;; => "#bcbbbb"
 #+END_src
@@ -493,32 +493,32 @@ Make a color using (L A B) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/50a4e6.svg]]
 #+END_quote
-**** ct-get-lab ~(C)~
-Get lab representation of color C.
+**** ct-get-lab ~(COLOR)~
+Get lab representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-lab "#4fa5e8") ;; => (65 -5 -41)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65 -5 -41)
 #+END_quote
-**** ct-get-lab-l ~(C)~
-Get lab-l representation of color C.
+**** ct-get-lab-l ~(COLOR)~
+Get lab-l representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-lab-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
-**** ct-get-lab-b ~(C)~
-Get lab-b representation of color C.
+**** ct-get-lab-b ~(COLOR)~
+Get lab-b representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-lab-b "#4fa5e8") ;; => -41
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -41
 #+END_quote
-**** ct-get-lab-a ~(C)~
-Get lab-a representation of color C.
+**** ct-get-lab-a ~(COLOR)~
+Get lab-a representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-lab-a "#4fa5e8") ;; => -5
 #+END_src
@@ -533,69 +533,69 @@ Edit COLOR in the cieLAB colorspace by calling EDIT-FN with it's LAB properties.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00ccff.svg]]
 #+END_quote
-**** ct-edit-lab-a ~(C FUNC-OR-VAL)~
-Transform property lab-a of C using FUNC-OR-VAL.
+**** ct-edit-lab-a ~(COLOR FUNC-OR-VAL)~
+Transform property lab-a of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lab-a "#4fa5e8" (lambda (a) (- a 20))) ;; => "#00aee7"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00aee7.svg]]
 #+END_quote
-**** ct-edit-lab-a-dec ~(C &optional V)~
-Decrease lab-a value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lab-a-dec ~(COLOR &optional AMOUNT)~
+Decrease lab-a property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-lab-a-dec "#4fa5e8" 20) ;; => "#00aee7"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00aee7.svg]]
 #+END_quote
-**** ct-edit-lab-a-inc ~(C &optional V)~
-Increase lab-a value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lab-a-inc ~(COLOR &optional AMOUNT)~
+Increase lab-a property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-lab-a-inc "#4fa5e8" 20) ;; => "#8c99e8"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8c99e8.svg]]
 #+END_quote
-**** ct-edit-lab-b ~(C FUNC-OR-VAL)~
-Transform property lab-b of C using FUNC-OR-VAL.
+**** ct-edit-lab-b ~(COLOR FUNC-OR-VAL)~
+Transform property lab-b of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lab-b "#4fa5e8" 100) ;; => "#b79e00"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/b79e00.svg]]
 #+END_quote
-**** ct-edit-lab-b-dec ~(C &optional V)~
-Decrease lab-b value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lab-b-dec ~(COLOR &optional AMOUNT)~
+Decrease lab-b property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-lab-b-dec "#4fa5e8" 20) ;; => "#00a7ff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00a7ff.svg]]
 #+END_quote
-**** ct-edit-lab-b-inc ~(C &optional V)~
-Increase lab-b value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lab-b-inc ~(COLOR &optional AMOUNT)~
+Increase lab-b property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-lab-b-inc "#4fa5e8" 20) ;; => "#7aa3c4"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/7aa3c4.svg]]
 #+END_quote
-**** ct-edit-lab-l ~(C FUNC-OR-VAL)~
-Transform property lab-l of C using FUNC-OR-VAL.
+**** ct-edit-lab-l ~(COLOR FUNC-OR-VAL)~
+Transform property lab-l of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lab-l "#4fa5e8" 0) ;; => "#000a3d"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/000a3d.svg]]
 #+END_quote
-**** ct-edit-lab-l-dec ~(C &optional V)~
-Decrease lab-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lab-l-dec ~(COLOR &optional AMOUNT)~
+Decrease lab-l property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-lab-l-dec "#4fa5e8") ;; => "#4ea4e7"
 #+END_src
-**** ct-edit-lab-l-inc ~(C &optional V)~
-Increase lab-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lab-l-inc ~(COLOR &optional AMOUNT)~
+Increase lab-l property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-lab-l-inc "#4fa5e8") ;; => "#50a5e8"
 #+END_src
@@ -609,32 +609,32 @@ Make a color using (H S L) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]]
 #+END_quote
-**** ct-get-hsl ~(C)~
-Get hsl representation of color C.
+**** ct-get-hsl ~(COLOR)~
+Get hsl representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsl "#4fa5e8") ;; => (206 77 61)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206 77 61)
 #+END_quote
-**** ct-get-hsl-s ~(C)~
-Get hsl-s representation of color C.
+**** ct-get-hsl-s ~(COLOR)~
+Get hsl-s representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsl-s "#4fa5e8") ;; => 77
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 77
 #+END_quote
-**** ct-get-hsl-l ~(C)~
-Get hsl-l representation of color C.
+**** ct-get-hsl-l ~(COLOR)~
+Get hsl-l representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsl-l "#4fa5e8") ;; => 61
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 61
 #+END_quote
-**** ct-get-hsl-h ~(C)~
-Get hsl-h representation of color C.
+**** ct-get-hsl-h ~(COLOR)~
+Get hsl-h representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsl-h "#4fa5e8") ;; => 206
 #+END_src
@@ -650,57 +650,57 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8f38ff.svg]]
 #+END_quote
-**** ct-edit-hsl-h ~(C FUNC-OR-VAL)~
-Transform property hsl-h of C using FUNC-OR-VAL.
+**** ct-edit-hsl-h ~(COLOR FUNC-OR-VAL)~
+Transform property hsl-h of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsl-h "#4fa5e8" (lambda (H) (+ H 60))) ;; => "#914fe8"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/914fe8.svg]]
 #+END_quote
-**** ct-edit-hsl-h-dec ~(C &optional V)~
-Decrease hsl-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsl-h-dec ~(COLOR &optional AMOUNT)~
+Decrease hsl-h property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsl-h-dec "#4fa5e8") ;; => "#4fa6e8"
 #+END_src
-**** ct-edit-hsl-h-inc ~(C &optional V)~
-Increase hsl-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsl-h-inc ~(COLOR &optional AMOUNT)~
+Increase hsl-h property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsl-h-inc "#4fa5e8") ;; => "#4fa4e8"
 #+END_src
-**** ct-edit-hsl-l ~(C FUNC-OR-VAL)~
-Transform property hsl-l of C using FUNC-OR-VAL.
+**** ct-edit-hsl-l ~(COLOR FUNC-OR-VAL)~
+Transform property hsl-l of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsl-l "#4fa5e8" 0) ;; => "#000000"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/000000.svg]]
 #+END_quote
-**** ct-edit-hsl-l-dec ~(C &optional V)~
-Decrease hsl-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsl-l-dec ~(COLOR &optional AMOUNT)~
+Decrease hsl-l property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsl-l-dec "#4fa5e8") ;; => "#4ea4e7"
 #+END_src
-**** ct-edit-hsl-l-inc ~(C &optional V)~
-Increase hsl-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsl-l-inc ~(COLOR &optional AMOUNT)~
+Increase hsl-l property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsl-l-inc "#4fa5e8") ;; => "#50a5e8"
 #+END_src
-**** ct-edit-hsl-s ~(C FUNC-OR-VAL)~
-Transform property hsl-s of C using FUNC-OR-VAL.
+**** ct-edit-hsl-s ~(COLOR FUNC-OR-VAL)~
+Transform property hsl-s of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsl-s "#4fa5e8" 100) ;; => "#38a7ff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/38a7ff.svg]]
 #+END_quote
-**** ct-edit-hsl-s-dec ~(C &optional V)~
-Decrease hsl-s value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsl-s-dec ~(COLOR &optional AMOUNT)~
+Decrease hsl-s property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsl-s-dec "#4fa5e8") ;; => "#4fa4e7"
 #+END_src
-**** ct-edit-hsl-s-inc ~(C &optional V)~
-Increase hsl-s value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsl-s-inc ~(COLOR &optional AMOUNT)~
+Increase hsl-s property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsl-s-inc "#4fa5e8") ;; => "#4ea5e8"
 #+END_src
@@ -714,32 +714,32 @@ Make a color using (H S L) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/4ea4e7.svg]]
 #+END_quote
-**** ct-get-hsluv ~(C)~
-Get hsluv representation of color C.
+**** ct-get-hsluv ~(COLOR)~
+Get hsluv representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsluv "#4fa5e8") ;; => (243 81 65)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (243 81 65)
 #+END_quote
-**** ct-get-hsluv-s ~(C)~
-Get hsluv-s representation of color C.
+**** ct-get-hsluv-s ~(COLOR)~
+Get hsluv-s representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsluv-s "#4fa5e8") ;; => 81
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 81
 #+END_quote
-**** ct-get-hsluv-l ~(C)~
-Get hsluv-l representation of color C.
+**** ct-get-hsluv-l ~(COLOR)~
+Get hsluv-l representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsluv-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
-**** ct-get-hsluv-h ~(C)~
-Get hsluv-h representation of color C.
+**** ct-get-hsluv-h ~(COLOR)~
+Get hsluv-h representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsluv-h "#4fa5e8") ;; => 243
 #+END_src
@@ -755,57 +755,57 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/f160ff.svg]]
 #+END_quote
-**** ct-edit-hsluv-h ~(C FUNC-OR-VAL)~
-Transform property hsluv-h of C using FUNC-OR-VAL.
+**** ct-edit-hsluv-h ~(COLOR FUNC-OR-VAL)~
+Transform property hsluv-h of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsluv-h "#4fa5e8" (lambda (H) (+ H 60))) ;; => "#e173ec"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/e173ec.svg]]
 #+END_quote
-**** ct-edit-hsluv-h-dec ~(C &optional V)~
-Decrease hsluv-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsluv-h-dec ~(COLOR &optional AMOUNT)~
+Decrease hsluv-h property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsluv-h-dec "#4fa5e8") ;; => "#4ea5e7"
 #+END_src
-**** ct-edit-hsluv-h-inc ~(C &optional V)~
-Increase hsluv-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsluv-h-inc ~(COLOR &optional AMOUNT)~
+Increase hsluv-h property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsluv-h-inc "#4fa5e8") ;; => "#4fa4e8"
 #+END_src
-**** ct-edit-hsluv-l ~(C FUNC-OR-VAL)~
-Transform property hsluv-l of C using FUNC-OR-VAL.
+**** ct-edit-hsluv-l ~(COLOR FUNC-OR-VAL)~
+Transform property hsluv-l of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsluv-l "#4fa5e8" 0) ;; => "#000000"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/000000.svg]]
 #+END_quote
-**** ct-edit-hsluv-l-dec ~(C &optional V)~
-Decrease hsluv-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsluv-l-dec ~(COLOR &optional AMOUNT)~
+Decrease hsluv-l property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsluv-l-dec "#4fa5e8") ;; => "#4ea4e7"
 #+END_src
-**** ct-edit-hsluv-l-inc ~(C &optional V)~
-Increase hsluv-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsluv-l-inc ~(COLOR &optional AMOUNT)~
+Increase hsluv-l property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsluv-l-inc "#4fa5e8") ;; => "#4fa5e9"
 #+END_src
-**** ct-edit-hsluv-s ~(C FUNC-OR-VAL)~
-Transform property hsluv-s of C using FUNC-OR-VAL.
+**** ct-edit-hsluv-s ~(COLOR FUNC-OR-VAL)~
+Transform property hsluv-s of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsluv-s "#4fa5e8" 100) ;; => "#00a6f8"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00a6f8.svg]]
 #+END_quote
-**** ct-edit-hsluv-s-dec ~(C &optional V)~
-Decrease hsluv-s value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsluv-s-dec ~(COLOR &optional AMOUNT)~
+Decrease hsluv-s property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsluv-s-dec "#4fa5e8") ;; => "#4fa4e7"
 #+END_src
-**** ct-edit-hsluv-s-inc ~(C &optional V)~
-Increase hsluv-s value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsluv-s-inc ~(COLOR &optional AMOUNT)~
+Increase hsluv-s property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsluv-s-inc "#4fa5e8") ;; => "#4ea5e8"
 #+END_src
@@ -819,32 +819,32 @@ Make a color using (L C H) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/4da4e7.svg]]
 #+END_quote
-**** ct-get-lch ~(C)~
-Get lch representation of color C.
+**** ct-get-lch ~(COLOR)~
+Get lch representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-lch "#4fa5e8") ;; => (65 42 -97)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65 42 -97)
 #+END_quote
-**** ct-get-lch-l ~(C)~
-Get lch-l representation of color C.
+**** ct-get-lch-l ~(COLOR)~
+Get lch-l representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-lch-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
-**** ct-get-lch-h ~(C)~
-Get lch-h representation of color C.
+**** ct-get-lch-h ~(COLOR)~
+Get lch-h representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-lch-h "#4fa5e8") ;; => -97
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -97
 #+END_quote
-**** ct-get-lch-c ~(C)~
-Get lch-c representation of color C.
+**** ct-get-lch-c ~(COLOR)~
+Get lch-c representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-lch-c "#4fa5e8") ;; => 42
 #+END_src
@@ -860,57 +860,57 @@ EDIT-FN is called with values in ranges: {0-100, 0-100, 0-360}.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff00b8.svg]]
 #+END_quote
-**** ct-edit-lch-c ~(C FUNC-OR-VAL)~
-Transform property lch-c of C using FUNC-OR-VAL.
+**** ct-edit-lch-c ~(COLOR FUNC-OR-VAL)~
+Transform property lch-c of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lch-c "#4fa5e8" 100) ;; => "#00b0ff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00b0ff.svg]]
 #+END_quote
-**** ct-edit-lch-c-dec ~(C &optional V)~
-Decrease lch-c value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lch-c-dec ~(COLOR &optional AMOUNT)~
+Decrease lch-c property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-lch-c-dec "#4fa5e8") ;; => "#4fa4e7"
 #+END_src
-**** ct-edit-lch-c-inc ~(C &optional V)~
-Increase lch-c value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lch-c-inc ~(COLOR &optional AMOUNT)~
+Increase lch-c property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-lch-c-inc "#4fa5e8") ;; => "#4ea5e8"
 #+END_src
-**** ct-edit-lch-h ~(C FUNC-OR-VAL)~
-Transform property lch-h of C using FUNC-OR-VAL.
+**** ct-edit-lch-h ~(COLOR FUNC-OR-VAL)~
+Transform property lch-h of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lch-h "#4fa5e8" (lambda (H) (+ H 90))) ;; => "#df81a9"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/df81a9.svg]]
 #+END_quote
-**** ct-edit-lch-h-dec ~(C &optional V)~
-Decrease lch-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lch-h-dec ~(COLOR &optional AMOUNT)~
+Decrease lch-h property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-lch-h-dec "#4fa5e8") ;; => "#4ea5e7"
 #+END_src
-**** ct-edit-lch-h-inc ~(C &optional V)~
-Increase lch-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lch-h-inc ~(COLOR &optional AMOUNT)~
+Increase lch-h property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-lch-h-inc "#4fa5e8") ;; => "#4fa4e8"
 #+END_src
-**** ct-edit-lch-l ~(C FUNC-OR-VAL)~
-Transform property lch-l of C using FUNC-OR-VAL.
+**** ct-edit-lch-l ~(COLOR FUNC-OR-VAL)~
+Transform property lch-l of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lch-l "#4fa5e8" 100) ;; => "#baffff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/baffff.svg]]
 #+END_quote
-**** ct-edit-lch-l-dec ~(C &optional V)~
-Decrease lch-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lch-l-dec ~(COLOR &optional AMOUNT)~
+Decrease lch-l property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-lch-l-dec "#4fa5e8") ;; => "#4ea4e7"
 #+END_src
-**** ct-edit-lch-l-inc ~(C &optional V)~
-Increase lch-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-lch-l-inc ~(COLOR &optional AMOUNT)~
+Increase lch-l property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-lch-l-inc "#4fa5e8") ;; => "#50a5e8"
 #+END_src
@@ -924,32 +924,32 @@ Make a color using (H S V) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]]
 #+END_quote
-**** ct-get-hsv ~(C)~
-Get hsv representation of color C.
+**** ct-get-hsv ~(COLOR)~
+Get hsv representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsv "#4fa5e8") ;; => (206 66 91)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206 66 91)
 #+END_quote
-**** ct-get-hsv-v ~(C)~
-Get hsv-v representation of color C.
+**** ct-get-hsv-v ~(COLOR)~
+Get hsv-v representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsv-v "#4fa5e8") ;; => 91
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 91
 #+END_quote
-**** ct-get-hsv-s ~(C)~
-Get hsv-s representation of color C.
+**** ct-get-hsv-s ~(COLOR)~
+Get hsv-s representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsv-s "#4fa5e8") ;; => 66
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 66
 #+END_quote
-**** ct-get-hsv-h ~(C)~
-Get hsv-h representation of color C.
+**** ct-get-hsv-h ~(COLOR)~
+Get hsv-h representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hsv-h "#4fa5e8") ;; => 206
 #+END_src
@@ -965,57 +965,57 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/cce8ff.svg]]
 #+END_quote
-**** ct-edit-hsv-h ~(C FUNC-OR-VAL)~
-Transform property hsv-h of C using FUNC-OR-VAL.
+**** ct-edit-hsv-h ~(COLOR FUNC-OR-VAL)~
+Transform property hsv-h of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsv-h "#4fa5e8" (-partial #'+ 30)) ;; => "#4e58e8"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4e58e8.svg]]
 #+END_quote
-**** ct-edit-hsv-h-dec ~(C &optional V)~
-Decrease hsv-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsv-h-dec ~(COLOR &optional AMOUNT)~
+Decrease hsv-h property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsv-h-dec "#4fa5e8") ;; => "#4ea5e8"
 #+END_src
-**** ct-edit-hsv-h-inc ~(C &optional V)~
-Increase hsv-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsv-h-inc ~(COLOR &optional AMOUNT)~
+Increase hsv-h property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsv-h-inc "#4fa5e8") ;; => "#4ea4e8"
 #+END_src
-**** ct-edit-hsv-s ~(C FUNC-OR-VAL)~
-Transform property hsv-s of C using FUNC-OR-VAL.
+**** ct-edit-hsv-s ~(COLOR FUNC-OR-VAL)~
+Transform property hsv-s of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsv-s "#4fa5e8" 20) ;; => "#b9d3e8"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/b9d3e8.svg]]
 #+END_quote
-**** ct-edit-hsv-s-dec ~(C &optional V)~
-Decrease hsv-s value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsv-s-dec ~(COLOR &optional AMOUNT)~
+Decrease hsv-s property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsv-s-dec "#4fa5e8") ;; => "#50a5e8"
 #+END_src
-**** ct-edit-hsv-s-inc ~(C &optional V)~
-Increase hsv-s value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsv-s-inc ~(COLOR &optional AMOUNT)~
+Increase hsv-s property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsv-s-inc "#4fa5e8") ;; => "#4ea4e8"
 #+END_src
-**** ct-edit-hsv-v ~(C FUNC-OR-VAL)~
-Transform property hsv-v of C using FUNC-OR-VAL.
+**** ct-edit-hsv-v ~(COLOR FUNC-OR-VAL)~
+Transform property hsv-v of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsv-v "#4fa5e8" 100) ;; => "#56b5ff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/56b5ff.svg]]
 #+END_quote
-**** ct-edit-hsv-v-dec ~(C &optional V)~
-Decrease hsv-v value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsv-v-dec ~(COLOR &optional AMOUNT)~
+Decrease hsv-v property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hsv-v-dec "#4fa5e8") ;; => "#4ea4e7"
 #+END_src
-**** ct-edit-hsv-v-inc ~(C &optional V)~
-Increase hsv-v value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hsv-v-inc ~(COLOR &optional AMOUNT)~
+Increase hsv-v property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hsv-v-inc "#4fa5e8") ;; => "#4fa5e9"
 #+END_src
@@ -1029,32 +1029,32 @@ Make a color using (H P L) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/72a1d1.svg]]
 #+END_quote
-**** ct-get-hpluv ~(C)~
-Get hpluv representation of color C.
+**** ct-get-hpluv ~(COLOR)~
+Get hpluv representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-hpluv "#4fa5e8") ;; => (243 143 65)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (243 143 65)
 #+END_quote
-**** ct-get-hpluv-p ~(C)~
-Get hpluv-p representation of color C.
+**** ct-get-hpluv-p ~(COLOR)~
+Get hpluv-p representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hpluv-p "#4fa5e8") ;; => 143
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 143
 #+END_quote
-**** ct-get-hpluv-l ~(C)~
-Get hpluv-l representation of color C.
+**** ct-get-hpluv-l ~(COLOR)~
+Get hpluv-l representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hpluv-l "#4fa5e8") ;; => 65
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
-**** ct-get-hpluv-h ~(C)~
-Get hpluv-h representation of color C.
+**** ct-get-hpluv-h ~(COLOR)~
+Get hpluv-h representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-hpluv-h "#4fa5e8") ;; => 243
 #+END_src
@@ -1070,57 +1070,57 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]]
 #+END_quote
-**** ct-edit-hpluv-h ~(C FUNC-OR-VAL)~
-Transform property hpluv-h of C using FUNC-OR-VAL.
+**** ct-edit-hpluv-h ~(COLOR FUNC-OR-VAL)~
+Transform property hpluv-h of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hpluv-h "#4fa5e8" 0) ;; => "#d78798"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/d78798.svg]]
 #+END_quote
-**** ct-edit-hpluv-h-dec ~(C &optional V)~
-Decrease hpluv-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hpluv-h-dec ~(COLOR &optional AMOUNT)~
+Decrease hpluv-h property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hpluv-h-dec "#4fa5e8") ;; => "#71a2d2"
 #+END_src
-**** ct-edit-hpluv-h-inc ~(C &optional V)~
-Increase hpluv-h value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hpluv-h-inc ~(COLOR &optional AMOUNT)~
+Increase hpluv-h property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hpluv-h-inc "#4fa5e8") ;; => "#72a2d2"
 #+END_src
-**** ct-edit-hpluv-l ~(C FUNC-OR-VAL)~
-Transform property hpluv-l of C using FUNC-OR-VAL.
+**** ct-edit-hpluv-l ~(COLOR FUNC-OR-VAL)~
+Transform property hpluv-l of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hpluv-l "#4fa5e8" 100) ;; => "#feffff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/feffff.svg]]
 #+END_quote
-**** ct-edit-hpluv-l-dec ~(C &optional V)~
-Decrease hpluv-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hpluv-l-dec ~(COLOR &optional AMOUNT)~
+Decrease hpluv-l property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hpluv-l-dec "#4fa5e8") ;; => "#71a2d2"
 #+END_src
-**** ct-edit-hpluv-l-inc ~(C &optional V)~
-Increase hpluv-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hpluv-l-inc ~(COLOR &optional AMOUNT)~
+Increase hpluv-l property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hpluv-l-inc "#4fa5e8") ;; => "#72a3d3"
 #+END_src
-**** ct-edit-hpluv-p ~(C FUNC-OR-VAL)~
-Transform property hpluv-p of C using FUNC-OR-VAL.
+**** ct-edit-hpluv-p ~(COLOR FUNC-OR-VAL)~
+Transform property hpluv-p of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hpluv-p "#4fa5e8" 100) ;; => "#72a2d2"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]]
 #+END_quote
-**** ct-edit-hpluv-p-dec ~(C &optional V)~
-Decrease hpluv-p value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hpluv-p-dec ~(COLOR &optional AMOUNT)~
+Decrease hpluv-p property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-hpluv-p-dec "#4fa5e8") ;; => "#72a2d2"
 #+END_src
-**** ct-edit-hpluv-p-inc ~(C &optional V)~
-Increase hpluv-p value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-hpluv-p-inc ~(COLOR &optional AMOUNT)~
+Increase hpluv-p property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-hpluv-p-inc "#4fa5e8") ;; => "#72a2d2"
 #+END_src
@@ -1134,32 +1134,32 @@ Make a color using (L A B) properties
 #+BEGIN_quote
  → [[http://muffin.app.neeasade.net/colorsquare/54a4ea.svg]]
 #+END_quote
-**** ct-get-oklab ~(C)~
-Get oklab representation of color C.
+**** ct-get-oklab ~(COLOR)~
+Get oklab representation of COLOR.
 #+BEGIN_src elisp
 (ct-get-oklab "#4fa5e8") ;; => (70 -5 -12)
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (70 -5 -12)
 #+END_quote
-**** ct-get-oklab-l ~(C)~
-Get oklab-l representation of color C.
+**** ct-get-oklab-l ~(COLOR)~
+Get oklab-l representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-oklab-l "#4fa5e8") ;; => 70
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 70
 #+END_quote
-**** ct-get-oklab-a ~(C)~
-Get oklab-a representation of color C.
+**** ct-get-oklab-a ~(COLOR)~
+Get oklab-a representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-oklab-a "#4fa5e8") ;; => -5
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5
 #+END_quote
-**** ct-get-oklab-b ~(C)~
-Get oklab-b representation of color C.
+**** ct-get-oklab-b ~(COLOR)~
+Get oklab-b representation of color COLOR.
 #+BEGIN_src elisp
 (ct-get-oklab-b "#4fa5e8") ;; => -12
 #+END_src
@@ -1174,57 +1174,57 @@ Edit COLOR in by calling edit-fn with it's okLAB properties.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff00c9.svg]]
 #+END_quote
-**** ct-edit-oklab-l ~(C FUNC-OR-VAL)~
-Transform property oklab-l of C using FUNC-OR-VAL.
+**** ct-edit-oklab-l ~(COLOR FUNC-OR-VAL)~
+Transform property oklab-l of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-oklab-l "#4fa5e8" 100) ;; => "#b1ffff"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/b1ffff.svg]]
 #+END_quote
-**** ct-edit-oklab-l-dec ~(C &optional V)~
-Decrease oklab-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-oklab-l-dec ~(COLOR &optional AMOUNT)~
+Decrease oklab-l property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-oklab-l-dec "#4fa5e8") ;; => "#4ea4e7"
 #+END_src
-**** ct-edit-oklab-l-inc ~(C &optional V)~
-Increase oklab-l value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-oklab-l-inc ~(COLOR &optional AMOUNT)~
+Increase oklab-l property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-oklab-l-inc "#4fa5e8") ;; => "#4fa5e9"
 #+END_src
-**** ct-edit-oklab-a ~(C FUNC-OR-VAL)~
-Transform property oklab-a of C using FUNC-OR-VAL.
+**** ct-edit-oklab-a ~(COLOR FUNC-OR-VAL)~
+Transform property oklab-a of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-oklab-a "#4fa5e8" 0) ;; => "#8199e6"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8199e6.svg]]
 #+END_quote
-**** ct-edit-oklab-a-dec ~(C &optional V)~
-Decrease oklab-a value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-oklab-a-dec ~(COLOR &optional AMOUNT)~
+Decrease oklab-a property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-oklab-a-dec "#4fa5e8") ;; => "#4da5e8"
 #+END_src
-**** ct-edit-oklab-a-inc ~(C &optional V)~
-Increase oklab-a value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-oklab-a-inc ~(COLOR &optional AMOUNT)~
+Increase oklab-a property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-oklab-a-inc "#4fa5e8") ;; => "#50a4e7"
 #+END_src
-**** ct-edit-oklab-b ~(C FUNC-OR-VAL)~
-Transform property oklab-b of C using FUNC-OR-VAL.
+**** ct-edit-oklab-b ~(COLOR FUNC-OR-VAL)~
+Transform property oklab-b of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-oklab-b "#4fa5e8" 100) ;; => "#ff0000"
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff0000.svg]]
 #+END_quote
-**** ct-edit-oklab-b-dec ~(C &optional V)~
-Decrease oklab-b value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-oklab-b-dec ~(COLOR &optional AMOUNT)~
+Decrease oklab-b property of COLOR by AMOUNT (defaults to minimum decrease amount).
 #+BEGIN_src elisp
 (ct-edit-oklab-b-dec "#4fa5e8") ;; => "#4ea4e8"
 #+END_src
-**** ct-edit-oklab-b-inc ~(C &optional V)~
-Increase oklab-b value of C by V (defaults to the minimum amount needed to change C).
+**** ct-edit-oklab-b-inc ~(COLOR &optional AMOUNT)~
+Increase oklab-b property of COLOR by AMOUNT (defaults to minimum increase amount).
 #+BEGIN_src elisp
 (ct-edit-oklab-b-inc "#4fa5e8") ;; => "#4fa5e7"
 #+END_src
