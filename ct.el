@@ -289,10 +289,10 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
                          (funcall (if (string= colorspace "oklab") '-take-last '-take) 3))))
 
     (funcall collect
-      `(defun ,get (c)
-         ,(format "Get %s representation of color C." colorspace)
+      `(defun ,get (color)
+         ,(format "Get %s representation of COLOR." colorspace)
          (let ((return))
-           (,transform c
+           (,transform color
              (lambda (&rest props)
                (setq return props)
                props))
@@ -314,10 +314,11 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
                                 (substring colorspace from (1+ from))))
                   (prop-name (format "%s-%s" colorspace prop-single))
                   (transform-prop-fn (format "ct-edit-%s" prop-name)))
+
             (funcall collect
-              `(defun ,(intern transform-prop-fn) (c func-or-val)
-                 ,(format "Transform property %s of C using FUNC-OR-VAL." prop-name)
-                 (,transform c
+              `(defun ,(intern transform-prop-fn) (color func-or-val)
+                 ,(format "Transform property %s of COLOR using FUNC-OR-VAL." prop-name)
+                 (,transform color
                    (lambda (&rest color-props)
                      (-replace-at ,index
                        (if (functionp func-or-val)
@@ -326,28 +327,26 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
                        color-props)))))
 
             (funcall collect
-              `(defun ,(intern (format "ct-get-%s" prop-name)) (c)
-                 ,(format "Get %s representation of color C." prop-name)
-                 (nth ,index (,get c))))
+              `(defun ,(intern (format "ct-get-%s" prop-name)) (color)
+                 ,(format "Get %s representation of color COLOR." prop-name)
+                 (nth ,index (,get color))))
 
             (funcall collect
-              `(defun ,(intern (format "%s-inc" transform-prop-fn)) (c &optional v)
-                 ,(format "Increase %s value of C by V (defaults to the minimum amount needed to change C)." prop-name)
-                 (if v (,(intern transform-prop-fn) c (-partial #'+ v))
-                   (ct--amp-value c
-                     (lambda (color amount)
-                       (,(intern transform-prop-fn) color (-partial #'+ amount)))
+              `(defun ,(intern (format "%s-inc" transform-prop-fn)) (color &optional amount)
+                 ,(format "Increase %s property of COLOR by AMOUNT (defaults to minimum increase amount)." prop-name)
+                 (if amount
+                   (,(intern transform-prop-fn) color (-partial #'+ amount))
+                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) c (-partial #'+ v)))
                      0.1 (-partial #'+ 0.1)
                      ;; nb: 30% limit is arbitrary
                      (lambda (arg) (ct--within arg 30 0.1))))))
 
             (funcall collect
-              `(defun ,(intern (format "%s-dec" transform-prop-fn)) (c &optional v)
-                 ,(format "Decrease %s value of C by V (defaults to the minimum amount needed to change C)." prop-name)
-                 (if v (,(intern transform-prop-fn) c (-rpartial #'- v))
-                   (ct--amp-value c
-                     (lambda (color amount)
-                       (,(intern transform-prop-fn) color (-partial #'+ amount)))
+              `(defun ,(intern (format "%s-dec" transform-prop-fn)) (color &optional amount)
+                 ,(format "Decrease %s property of COLOR by AMOUNT (defaults to minimum decrease amount)." prop-name)
+                 (if amount
+                   (,(intern transform-prop-fn) color (-rpartial #'- amount))
+                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) c (-partial #'+ v)))
                      -0.1 (-rpartial #'- 0.1)
                      ;; nb: 30% limit is arbitrary
                      (lambda (arg) (ct--within arg 30 0.1))))))
@@ -366,11 +365,11 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 
             (when (string= prop-single "h")
               (funcall collect
-                `(defun ,(intern (format "ct-rotation-%s" colorspace)) (c interval)
-                   ,(format "Perform a hue rotation in %s space starting with color C by INTERVAL degrees." colorspace)
-                   (-map (-partial #',(intern (format "%s-inc" transform-prop-fn)) c)
-                     (-iota (abs (/ 360 interval))
-                       0 interval))))))))) result))
+                `(defun ,(intern (format "ct-rotation-%s" colorspace)) (color degrees)
+                   ,(format "Perform a hue rotation at every n DEGREES in %s space starting with COLOR." colorspace)
+                   (-map (-partial #',(intern (format "%s-inc" transform-prop-fn)) color)
+                     (-iota (abs (/ 360 degrees))
+                       0 degrees))))))))) result))
 
 (ct--make-transform-property-functions "rgb")
 (ct--make-transform-property-functions "hsl")
