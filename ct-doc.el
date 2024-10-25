@@ -228,18 +228,25 @@
                 (s-join "\n"
                   (-map
                     (lambda (example)
-                      (-let* ((result (eval example))
+                      (-let* (
+                               (example (-tree-map (lambda (node) (if (numberp node) (round node) node)) example))
+
+                               (result (eval example))
+                               (result (-tree-map (lambda (node) (if (numberp node) (round node) node)) result))
+
                                (match-colors (ct--get-colors example))
                                (result-colors (ct--get-colors result))
 
-                               (helpful--signature 'ct-rotation-lch)
+                               (read (helpful--signature 'ct-edit-hsl))
 
                                ((name . args) (read (helpful--signature (first example))))
+
+                               (args (--map (-> it prin1-to-string downcase intern) args))
+
                                (docstring (helpful--docstring (first example) t))
                                (show-quote-p (not (and (or (s-ends-with-p "-inc" (prin1-to-string (first example)))
                                                          (s-ends-with-p "-dec" (prin1-to-string (first example)) ))
-                                                    (= (length example) 2)
-                                                    ))))
+                                                    (= (length example) 2)))))
                         (format "**** %s ~%s~\n%s\n%s"
                           name args docstring
                           (format
@@ -258,15 +265,12 @@
 
                             (prin1-to-string example)
                             (prin1-to-string result)
+                            ;; (format "(%s %s)")
                             (s-join "," match-colors)
                             (if result-colors
                               (s-join "," result-colors)
-                              result)
-                            )))
-                      )
-                    examples)
-                  )
-                )))
+                              result)))))
+                    examples)))))
       (s-join "\n")))
 
   (defun ct--get-preview (n)
@@ -280,7 +284,8 @@
       (-list form)))
 
   (defun ct--sym-to-toc (sym)
-    (-let (((name . args) (read (helpful--signature sym))))
+    (-let* (((name . args) (read (helpful--signature sym)))
+             (args (--map (-> it prin1-to-string downcase intern) args)))
       (format "- [[#%s][%s]] ~%s~"
         (->> (list
                (prin1-to-string name)

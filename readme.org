@@ -12,7 +12,7 @@
 
 ct.el (color tools) is a color library for Emacs meant for making changes to individual colors in various color spaces. Builds on top of [[https://github.com/emacs-mirror/emacs/blob/master/lisp/color.el][color.el]] and [[https://github.com/hsluv/hsluv-emacs][hsluv-emacs]], providing a consistent interface to many color spaces, in addition to some utility functions. Visualized in [[https://notes.neeasade.net/color-spaces.html][this blog post]], used to create [[https://github.com/neeasade/myron-themes][myron-themes]]. Shouted out by [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][prot]] (of modus themes fame).
 
-Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • (cie)[[#lab][lab]] • (cie)[[#lch][lch]] • (ok)lab
+Supported color spaces: [[#rgb][rgb]] • [[#hsl][hsl]] • [[#hsv][hsv]] • [[#hsluv][hsluv]] • [[#hpluv][hpluv]] • [[#lab][(cie)lab]] • [[#lch][(cie)lch]] • [[#okLAB][(ok)lab]]
 ** Installation
 
 ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https://github.com/raxod502/straight.el][straight.el]]:
@@ -27,7 +27,6 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
     - Exception: Hue (0-360 degrees)
     - Exception: L(*AB*) (-100-100)
 - Values are clamped to valid ranges coming out of the ~ct-edit-*~ functions
-    - Hue is clamped via modulo 360
 
 ** Functions
 
