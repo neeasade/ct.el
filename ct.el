@@ -382,7 +382,6 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 (ct--make-transform-property-functions "hpluv")
 (ct--make-transform-property-functions "hsluv")
 
-
 (when (functionp 'color-oklab-to-xyz)
   (ct--make-transform-property-functions "oklab")
   (defmacro ct-aedit-oklab (color body) "An anaphoric version of `ct-edit-oklab' with COLOR properties bound to (l a b) in BODY." `(ct-edit-oklab ,color (lambda (l a b) ,body))))
