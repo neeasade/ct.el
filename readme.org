@@ -27,7 +27,6 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
     - Exception: Hue (0-360 degrees)
     - Exception: L(*AB*) (-100-100)
 - Values are clamped to valid ranges coming out of the ~ct-edit-*~ functions
-    - Hue is clamped via modulo 360
 
 ** Functions
 
@@ -306,10 +305,10 @@ Mix COLORS in COLORSPACE. See also: 'ct--colorspace-map'.
 **** ct-mix-opacity ~(top bottom opacity)~
 Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0.
 #+BEGIN_src elisp
-(ct-mix-opacity "#4fa5e8" "#bbbbbb" 80) ;; => "#0000ff"
+(ct-mix-opacity "#4fa5e8" "#bbbbbb" 1) ;; => "#4fa4e8"
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/0000ff.svg]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]]
 #+END_quote
 **** ct-pastel ~(color &optional smod vmod)~
 Make COLOR more 'pastel' using the hsluv space -- optionally change the rate of change with SMOD and VMOD.
@@ -372,7 +371,7 @@ Perform a hue rotation at every n DEGREES in lch space starting with COLOR.
 ** RGB
 https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8
 **** ct-make-rgb ~(red green blue)~
-Make a rgb color using properties: (82 69 68 44 32 71 82 69 69 78 44 32 66 76 85 69) 
+Make a rgb color using properties: RED, GREEN, BLUE.
 #+BEGIN_src elisp
 (ct-make-rgb 31 65 91) ;; => "#4fa5e8"
 #+END_src
@@ -388,7 +387,7 @@ Get rgb representation (Red, Green, Blue) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (31 65 91)
 #+END_quote
 **** ct-get-rgb-r ~(color)~
-Get rgb-r representation of color COLOR.
+Get rgb Red value of COLOR.
 #+BEGIN_src elisp
 (ct-get-rgb-r "#4fa5e8") ;; => 31
 #+END_src
@@ -396,7 +395,7 @@ Get rgb-r representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 31
 #+END_quote
 **** ct-get-rgb-g ~(color)~
-Get rgb-g representation of color COLOR.
+Get rgb Green value of COLOR.
 #+BEGIN_src elisp
 (ct-get-rgb-g "#4fa5e8") ;; => 65
 #+END_src
@@ -404,7 +403,7 @@ Get rgb-g representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-rgb-b ~(color)~
-Get rgb-b representation of color COLOR.
+Get rgb Blue value of COLOR.
 #+BEGIN_src elisp
 (ct-get-rgb-b "#4fa5e8") ;; => 91
 #+END_src
@@ -420,7 +419,7 @@ Edit COLOR in the RGB colorspace by calling EDIT-FN with it's RGB properties.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4f0000.svg]]
 #+END_quote
 **** ct-edit-rgb-b ~(color func-or-val)~
-Transform property rgb-b of COLOR using FUNC-OR-VAL.
+Transform rgb Blue of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-rgb-b "#4fa5e8" (lambda (b) (+ b 50))) ;; => "#4fa4ff"
 #+END_src
@@ -441,7 +440,7 @@ Increase rgb-b property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-rgb-b-inc "#bbbbbb") ;; => "#bbbbbc"
 #+END_src
 **** ct-edit-rgb-g ~(color func-or-val)~
-Transform property rgb-g of COLOR using FUNC-OR-VAL.
+Transform rgb Green of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-rgb-g "#4fa5e8" 100) ;; => "#4fffe8"
 #+END_src
@@ -462,7 +461,7 @@ Increase rgb-g property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-rgb-g-inc "#bbbbbb") ;; => "#bbbcbb"
 #+END_src
 **** ct-edit-rgb-r ~(color func-or-val)~
-Transform property rgb-r of COLOR using FUNC-OR-VAL.
+Transform rgb Red of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-rgb-r "#4fa5e8" 100) ;; => "#ffa4e8"
 #+END_src
@@ -485,7 +484,7 @@ Increase rgb-r property of COLOR by AMOUNT (defaults to minimum increase amount)
 ** (cie)LAB
 https://notes.neeasade.net/color-spaces.html#h-9d5a1a9a-75d3-48f5-bf00-85332d9b023e
 **** ct-make-lab ~(lightness a b)~
-Make a lab color using properties: (76 73 71 72 84 78 69 83 83 44 32 65 44 32 66) 
+Make a lab color using properties: LIGHTNESS, A, B.
 #+BEGIN_src elisp
 (ct-make-lab 65 -5 -41) ;; => "#50a4e6"
 #+END_src
@@ -501,7 +500,7 @@ Get lab representation (Lightness, A, B) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65 -5 -41)
 #+END_quote
 **** ct-get-lab-l ~(color)~
-Get lab-l representation of color COLOR.
+Get lab Lightness value of COLOR.
 #+BEGIN_src elisp
 (ct-get-lab-l "#4fa5e8") ;; => 65
 #+END_src
@@ -509,7 +508,7 @@ Get lab-l representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-lab-b ~(color)~
-Get lab-b representation of color COLOR.
+Get lab B value of COLOR.
 #+BEGIN_src elisp
 (ct-get-lab-b "#4fa5e8") ;; => -41
 #+END_src
@@ -517,7 +516,7 @@ Get lab-b representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -41
 #+END_quote
 **** ct-get-lab-a ~(color)~
-Get lab-a representation of color COLOR.
+Get lab A value of COLOR.
 #+BEGIN_src elisp
 (ct-get-lab-a "#4fa5e8") ;; => -5
 #+END_src
@@ -533,7 +532,7 @@ Edit COLOR in the cieLAB colorspace by calling EDIT-FN with it's LAB properties.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/00ccff.svg]]
 #+END_quote
 **** ct-edit-lab-a ~(color func-or-val)~
-Transform property lab-a of COLOR using FUNC-OR-VAL.
+Transform lab A of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lab-a "#4fa5e8" (lambda (a) (- a 20))) ;; => "#00aee7"
 #+END_src
@@ -557,7 +556,7 @@ Increase lab-a property of COLOR by AMOUNT (defaults to minimum increase amount)
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8c99e8.svg]]
 #+END_quote
 **** ct-edit-lab-b ~(color func-or-val)~
-Transform property lab-b of COLOR using FUNC-OR-VAL.
+Transform lab B of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lab-b "#4fa5e8" 100) ;; => "#b79e00"
 #+END_src
@@ -581,7 +580,7 @@ Increase lab-b property of COLOR by AMOUNT (defaults to minimum increase amount)
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/7aa3c4.svg]]
 #+END_quote
 **** ct-edit-lab-l ~(color func-or-val)~
-Transform property lab-l of COLOR using FUNC-OR-VAL.
+Transform lab Lightness of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lab-l "#4fa5e8" 0) ;; => "#000a3d"
 #+END_src
@@ -601,7 +600,7 @@ Increase lab-l property of COLOR by AMOUNT (defaults to minimum increase amount)
 ** HSL
 https://notes.neeasade.net/color-spaces.html#h-43869bc7-a7d1-410f-9341-521974751dac
 **** ct-make-hsl ~(hue saturation lightness)~
-Make a hsl color using properties: (72 85 69 44 32 83 65 84 85 82 65 84 73 79 78 44 32 76 73 71 72 84 78 69 83 83) 
+Make a hsl color using properties: HUE, SATURATION, LIGHTNESS.
 #+BEGIN_src elisp
 (ct-make-hsl 206 77 61) ;; => "#4ea5e8"
 #+END_src
@@ -617,7 +616,7 @@ Get hsl representation (Hue, Saturation, Lightness) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206 77 61)
 #+END_quote
 **** ct-get-hsl-s ~(color)~
-Get hsl-s representation of color COLOR.
+Get hsl Saturation value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsl-s "#4fa5e8") ;; => 77
 #+END_src
@@ -625,7 +624,7 @@ Get hsl-s representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 77
 #+END_quote
 **** ct-get-hsl-l ~(color)~
-Get hsl-l representation of color COLOR.
+Get hsl Lightness value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsl-l "#4fa5e8") ;; => 61
 #+END_src
@@ -633,7 +632,7 @@ Get hsl-l representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 61
 #+END_quote
 **** ct-get-hsl-h ~(color)~
-Get hsl-h representation of color COLOR.
+Get hsl Hue value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsl-h "#4fa5e8") ;; => 206
 #+END_src
@@ -650,7 +649,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/8f38ff.svg]]
 #+END_quote
 **** ct-edit-hsl-h ~(color func-or-val)~
-Transform property hsl-h of COLOR using FUNC-OR-VAL.
+Transform hsl Hue of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsl-h "#4fa5e8" (lambda (H) (+ H 60))) ;; => "#914fe8"
 #+END_src
@@ -668,7 +667,7 @@ Increase hsl-h property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-hsl-h-inc "#4fa5e8") ;; => "#4fa4e8"
 #+END_src
 **** ct-edit-hsl-l ~(color func-or-val)~
-Transform property hsl-l of COLOR using FUNC-OR-VAL.
+Transform hsl Lightness of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsl-l "#4fa5e8" 0) ;; => "#000000"
 #+END_src
@@ -686,7 +685,7 @@ Increase hsl-l property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-hsl-l-inc "#4fa5e8") ;; => "#50a5e8"
 #+END_src
 **** ct-edit-hsl-s ~(color func-or-val)~
-Transform property hsl-s of COLOR using FUNC-OR-VAL.
+Transform hsl Saturation of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsl-s "#4fa5e8" 100) ;; => "#38a7ff"
 #+END_src
@@ -706,7 +705,7 @@ Increase hsl-s property of COLOR by AMOUNT (defaults to minimum increase amount)
 ** HSLuv
 https://notes.neeasade.net/color-spaces.html#h-c147b84d-d95b-4d2d-8426-2f96529a8428
 **** ct-make-hsluv ~(hue saturation lightness)~
-Make a hsluv color using properties: (72 85 69 44 32 83 65 84 85 82 65 84 73 79 78 44 32 76 73 71 72 84 78 69 83 83) 
+Make a hsluv color using properties: HUE, SATURATION, LIGHTNESS.
 #+BEGIN_src elisp
 (ct-make-hsluv 243 81 65) ;; => "#4ea4e7"
 #+END_src
@@ -722,7 +721,7 @@ Get hsluv representation (Hue, Saturation, Lightness) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (243 81 65)
 #+END_quote
 **** ct-get-hsluv-s ~(color)~
-Get hsluv-s representation of color COLOR.
+Get hsluv Saturation value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsluv-s "#4fa5e8") ;; => 81
 #+END_src
@@ -730,7 +729,7 @@ Get hsluv-s representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 81
 #+END_quote
 **** ct-get-hsluv-l ~(color)~
-Get hsluv-l representation of color COLOR.
+Get hsluv Lightness value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsluv-l "#4fa5e8") ;; => 65
 #+END_src
@@ -738,7 +737,7 @@ Get hsluv-l representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-hsluv-h ~(color)~
-Get hsluv-h representation of color COLOR.
+Get hsluv Hue value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsluv-h "#4fa5e8") ;; => 243
 #+END_src
@@ -755,7 +754,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/f160ff.svg]]
 #+END_quote
 **** ct-edit-hsluv-h ~(color func-or-val)~
-Transform property hsluv-h of COLOR using FUNC-OR-VAL.
+Transform hsluv Hue of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsluv-h "#4fa5e8" (lambda (H) (+ H 60))) ;; => "#e173ec"
 #+END_src
@@ -773,7 +772,7 @@ Increase hsluv-h property of COLOR by AMOUNT (defaults to minimum increase amoun
 (ct-edit-hsluv-h-inc "#4fa5e8") ;; => "#4fa4e8"
 #+END_src
 **** ct-edit-hsluv-l ~(color func-or-val)~
-Transform property hsluv-l of COLOR using FUNC-OR-VAL.
+Transform hsluv Lightness of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsluv-l "#4fa5e8" 0) ;; => "#000000"
 #+END_src
@@ -791,7 +790,7 @@ Increase hsluv-l property of COLOR by AMOUNT (defaults to minimum increase amoun
 (ct-edit-hsluv-l-inc "#4fa5e8") ;; => "#4fa5e9"
 #+END_src
 **** ct-edit-hsluv-s ~(color func-or-val)~
-Transform property hsluv-s of COLOR using FUNC-OR-VAL.
+Transform hsluv Saturation of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsluv-s "#4fa5e8" 100) ;; => "#00a6f8"
 #+END_src
@@ -811,7 +810,7 @@ Increase hsluv-s property of COLOR by AMOUNT (defaults to minimum increase amoun
 ** (cie)LCH
 https://notes.neeasade.net/color-spaces.html#h-c4f93e1f-4fa6-4ebc-99c1-18b6de0ef413
 **** ct-make-lch ~(lightness chroma hue)~
-Make a lch color using properties: (76 73 71 72 84 78 69 83 83 44 32 67 72 82 79 77 65 44 32 72 85 69) 
+Make a lch color using properties: LIGHTNESS, CHROMA, HUE.
 #+BEGIN_src elisp
 (ct-make-lch 65 42 -97) ;; => "#4da4e7"
 #+END_src
@@ -827,7 +826,7 @@ Get lch representation (Lightness, Chroma, Hue) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (65 42 -97)
 #+END_quote
 **** ct-get-lch-l ~(color)~
-Get lch-l representation of color COLOR.
+Get lch Lightness value of COLOR.
 #+BEGIN_src elisp
 (ct-get-lch-l "#4fa5e8") ;; => 65
 #+END_src
@@ -835,7 +834,7 @@ Get lch-l representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-lch-h ~(color)~
-Get lch-h representation of color COLOR.
+Get lch Hue value of COLOR.
 #+BEGIN_src elisp
 (ct-get-lch-h "#4fa5e8") ;; => -97
 #+END_src
@@ -843,7 +842,7 @@ Get lch-h representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -97
 #+END_quote
 **** ct-get-lch-c ~(color)~
-Get lch-c representation of color COLOR.
+Get lch Chroma value of COLOR.
 #+BEGIN_src elisp
 (ct-get-lch-c "#4fa5e8") ;; => 42
 #+END_src
@@ -860,7 +859,7 @@ EDIT-FN is called with values in ranges: {0-100, 0-100, 0-360}.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff00b8.svg]]
 #+END_quote
 **** ct-edit-lch-c ~(color func-or-val)~
-Transform property lch-c of COLOR using FUNC-OR-VAL.
+Transform lch Chroma of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lch-c "#4fa5e8" 100) ;; => "#00b0ff"
 #+END_src
@@ -878,7 +877,7 @@ Increase lch-c property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-lch-c-inc "#4fa5e8") ;; => "#4ea5e8"
 #+END_src
 **** ct-edit-lch-h ~(color func-or-val)~
-Transform property lch-h of COLOR using FUNC-OR-VAL.
+Transform lch Hue of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lch-h "#4fa5e8" (lambda (H) (+ H 90))) ;; => "#df81a9"
 #+END_src
@@ -896,7 +895,7 @@ Increase lch-h property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-lch-h-inc "#4fa5e8") ;; => "#4fa4e8"
 #+END_src
 **** ct-edit-lch-l ~(color func-or-val)~
-Transform property lch-l of COLOR using FUNC-OR-VAL.
+Transform lch Lightness of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-lch-l "#4fa5e8" 100) ;; => "#baffff"
 #+END_src
@@ -916,7 +915,7 @@ Increase lch-l property of COLOR by AMOUNT (defaults to minimum increase amount)
 ** HSV
 https://en.wikipedia.org/wiki/HSL_and_HSV
 **** ct-make-hsv ~(hue saturation value)~
-Make a hsv color using properties: (72 85 69 44 32 83 65 84 85 82 65 84 73 79 78 44 32 86 65 76 85 69) 
+Make a hsv color using properties: HUE, SATURATION, VALUE.
 #+BEGIN_src elisp
 (ct-make-hsv 206 66 91) ;; => "#4ea5e8"
 #+END_src
@@ -932,7 +931,7 @@ Get hsv representation (Hue, Saturation, Value) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (206 66 91)
 #+END_quote
 **** ct-get-hsv-v ~(color)~
-Get hsv-v representation of color COLOR.
+Get hsv Value value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsv-v "#4fa5e8") ;; => 91
 #+END_src
@@ -940,7 +939,7 @@ Get hsv-v representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 91
 #+END_quote
 **** ct-get-hsv-s ~(color)~
-Get hsv-s representation of color COLOR.
+Get hsv Saturation value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsv-s "#4fa5e8") ;; => 66
 #+END_src
@@ -948,7 +947,7 @@ Get hsv-s representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 66
 #+END_quote
 **** ct-get-hsv-h ~(color)~
-Get hsv-h representation of color COLOR.
+Get hsv Hue value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hsv-h "#4fa5e8") ;; => 206
 #+END_src
@@ -965,7 +964,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/cce8ff.svg]]
 #+END_quote
 **** ct-edit-hsv-h ~(color func-or-val)~
-Transform property hsv-h of COLOR using FUNC-OR-VAL.
+Transform hsv Hue of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsv-h "#4fa5e8" (-partial #'+ 30)) ;; => "#4e58e8"
 #+END_src
@@ -983,7 +982,7 @@ Increase hsv-h property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-hsv-h-inc "#4fa5e8") ;; => "#4ea4e8"
 #+END_src
 **** ct-edit-hsv-s ~(color func-or-val)~
-Transform property hsv-s of COLOR using FUNC-OR-VAL.
+Transform hsv Saturation of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsv-s "#4fa5e8" 20) ;; => "#b9d3e8"
 #+END_src
@@ -1001,7 +1000,7 @@ Increase hsv-s property of COLOR by AMOUNT (defaults to minimum increase amount)
 (ct-edit-hsv-s-inc "#4fa5e8") ;; => "#4ea4e8"
 #+END_src
 **** ct-edit-hsv-v ~(color func-or-val)~
-Transform property hsv-v of COLOR using FUNC-OR-VAL.
+Transform hsv Value of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hsv-v "#4fa5e8" 100) ;; => "#56b5ff"
 #+END_src
@@ -1021,7 +1020,7 @@ Increase hsv-v property of COLOR by AMOUNT (defaults to minimum increase amount)
 ** HPLUV
 https://ajalt.github.io/colormath/api/colormath/com.github.ajalt.colormath.model/-h-p-luv/index.html
 **** ct-make-hpluv ~(hue percentage-saturation lightness)~
-Make a hpluv color using properties: (72 85 69 44 32 80 69 82 67 69 78 84 65 71 69 45 83 65 84 85 82 65 84 73 79 78 44 32 76 73 71 72 84 78 69 83 83) 
+Make a hpluv color using properties: HUE, PERCENTAGE-SATURATION, LIGHTNESS.
 #+BEGIN_src elisp
 (ct-make-hpluv 243 143 65) ;; => "#72a1d1"
 #+END_src
@@ -1037,7 +1036,7 @@ Get hpluv representation (Hue, Percentage-Saturation, Lightness) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (243 143 65)
 #+END_quote
 **** ct-get-hpluv-p ~(color)~
-Get hpluv-p representation of color COLOR.
+Get hpluv Percentage-Saturation value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hpluv-p "#4fa5e8") ;; => 143
 #+END_src
@@ -1045,7 +1044,7 @@ Get hpluv-p representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 143
 #+END_quote
 **** ct-get-hpluv-l ~(color)~
-Get hpluv-l representation of color COLOR.
+Get hpluv Lightness value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hpluv-l "#4fa5e8") ;; => 65
 #+END_src
@@ -1053,7 +1052,7 @@ Get hpluv-l representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 65
 #+END_quote
 **** ct-get-hpluv-h ~(color)~
-Get hpluv-h representation of color COLOR.
+Get hpluv Hue value of COLOR.
 #+BEGIN_src elisp
 (ct-get-hpluv-h "#4fa5e8") ;; => 243
 #+END_src
@@ -1070,7 +1069,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]]
 #+END_quote
 **** ct-edit-hpluv-h ~(color func-or-val)~
-Transform property hpluv-h of COLOR using FUNC-OR-VAL.
+Transform hpluv Hue of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hpluv-h "#4fa5e8" 0) ;; => "#d78798"
 #+END_src
@@ -1088,7 +1087,7 @@ Increase hpluv-h property of COLOR by AMOUNT (defaults to minimum increase amoun
 (ct-edit-hpluv-h-inc "#4fa5e8") ;; => "#72a2d2"
 #+END_src
 **** ct-edit-hpluv-l ~(color func-or-val)~
-Transform property hpluv-l of COLOR using FUNC-OR-VAL.
+Transform hpluv Lightness of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hpluv-l "#4fa5e8" 100) ;; => "#feffff"
 #+END_src
@@ -1106,7 +1105,7 @@ Increase hpluv-l property of COLOR by AMOUNT (defaults to minimum increase amoun
 (ct-edit-hpluv-l-inc "#4fa5e8") ;; => "#72a3d3"
 #+END_src
 **** ct-edit-hpluv-p ~(color func-or-val)~
-Transform property hpluv-p of COLOR using FUNC-OR-VAL.
+Transform hpluv Percentage-Saturation of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-hpluv-p "#4fa5e8" 100) ;; => "#72a2d2"
 #+END_src
@@ -1126,7 +1125,7 @@ Increase hpluv-p property of COLOR by AMOUNT (defaults to minimum increase amoun
 ** okLAB
 https://bottosson.github.io/posts/oklab/
 **** ct-make-oklab ~(lightness a b)~
-Make a oklab color using properties: (76 73 71 72 84 78 69 83 83 44 32 65 44 32 66) 
+Make a oklab color using properties: LIGHTNESS, A, B.
 #+BEGIN_src elisp
 (ct-make-oklab 70 -5 -12) ;; => "#54a4ea"
 #+END_src
@@ -1142,7 +1141,7 @@ Get oklab representation (Lightness, A, B) of COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → (70 -5 -12)
 #+END_quote
 **** ct-get-oklab-l ~(color)~
-Get oklab-l representation of color COLOR.
+Get oklab Lightness value of COLOR.
 #+BEGIN_src elisp
 (ct-get-oklab-l "#4fa5e8") ;; => 70
 #+END_src
@@ -1150,7 +1149,7 @@ Get oklab-l representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → 70
 #+END_quote
 **** ct-get-oklab-a ~(color)~
-Get oklab-a representation of color COLOR.
+Get oklab A value of COLOR.
 #+BEGIN_src elisp
 (ct-get-oklab-a "#4fa5e8") ;; => -5
 #+END_src
@@ -1158,7 +1157,7 @@ Get oklab-a representation of color COLOR.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → -5
 #+END_quote
 **** ct-get-oklab-b ~(color)~
-Get oklab-b representation of color COLOR.
+Get oklab B value of COLOR.
 #+BEGIN_src elisp
 (ct-get-oklab-b "#4fa5e8") ;; => -12
 #+END_src
@@ -1174,7 +1173,7 @@ Edit COLOR in by calling edit-fn with it's okLAB properties.
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/ff00c9.svg]]
 #+END_quote
 **** ct-edit-oklab-l ~(color func-or-val)~
-Transform property oklab-l of COLOR using FUNC-OR-VAL.
+Transform oklab Lightness of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-oklab-l "#4fa5e8" 100) ;; => "#b1ffff"
 #+END_src
@@ -1192,7 +1191,7 @@ Increase oklab-l property of COLOR by AMOUNT (defaults to minimum increase amoun
 (ct-edit-oklab-l-inc "#4fa5e8") ;; => "#4fa5e9"
 #+END_src
 **** ct-edit-oklab-a ~(color func-or-val)~
-Transform property oklab-a of COLOR using FUNC-OR-VAL.
+Transform oklab A of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-oklab-a "#4fa5e8" 0) ;; => "#8199e6"
 #+END_src
@@ -1210,7 +1209,7 @@ Increase oklab-a property of COLOR by AMOUNT (defaults to minimum increase amoun
 (ct-edit-oklab-a-inc "#4fa5e8") ;; => "#50a4e7"
 #+END_src
 **** ct-edit-oklab-b ~(color func-or-val)~
-Transform property oklab-b of COLOR using FUNC-OR-VAL.
+Transform oklab B of COLOR using FUNC-OR-VAL.
 #+BEGIN_src elisp
 (ct-edit-oklab-b "#4fa5e8" 100) ;; => "#ff0000"
 #+END_src
