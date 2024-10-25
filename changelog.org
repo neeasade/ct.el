@@ -13,13 +13,14 @@ Not using any form of semantic versioning, just bumping the number.
 
 ** placeholder
 
-** 0.3 <2024-10-15>
+** 0.3 <2024-10-25>🎃
 *** Changed
 - Changed the parameter conventions for clarity
     - ~c~ -> ~color~
     - ~transform~ -> ~edit-fn~
 - ~ct-tint-contrast~ renamed to ~ct-contrast-min~
 - Move ~ct-make-*~ functions into the generation macro
+- Docs: spell out color propery names in various places
 - Improve readme generation
 
 *** Added
