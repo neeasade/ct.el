@@ -305,7 +305,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 
     (funcall collect
       `(defun ,make ,(--map (-> it downcase intern) properties)
-         ,(format "Make a %s color using properties: %s " colorspace (-map 'upcase properties-desc))
+         ,(format "Make a %s color using properties: %s." colorspace (upcase properties-desc))
          (,transform "#cccccc"
            (lambda (&rest props)
              (list ,@(--map (-> it downcase intern) properties))))))
@@ -313,13 +313,14 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
     (->> '(0 1 2)
       (-map
         (lambda (index)
-          (let* ((prop-single (substring (nth index properties) 0 1))
-                  (prop-name (format "%s-%s" colorspace prop-single))
-                  (transform-prop-fn (format "ct-edit-%s" prop-name)))
+          (let* ((property (nth index properties))                     ; Lightness
+		              (prop-single (downcase (substring property 0 1)))    ; l
+		              (prop-name (format "%s-%s" colorspace prop-single))  ; lab-l
+		              (transform-prop-fn (format "ct-edit-%s" prop-name))) ; ct-edit-lab-l
 
             (funcall collect
               `(defun ,(intern transform-prop-fn) (color func-or-val)
-                 ,(format "Transform property %s of COLOR using FUNC-OR-VAL." prop-name)
+                 ,(format "Transform %s %s of COLOR using FUNC-OR-VAL." colorspace property)
                  (,transform color
                    (lambda (&rest color-props)
                      (-replace-at ,index
@@ -330,7 +331,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 
             (funcall collect
               `(defun ,(intern (format "ct-get-%s" prop-name)) (color)
-                 ,(format "Get %s representation of color COLOR." prop-name)
+                 ,(format "Get %s %s value of COLOR." colorspace property)
                  (nth ,index (,get color))))
 
             (funcall collect
@@ -381,8 +382,19 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 (ct--make-transform-property-functions "hpluv")
 (ct--make-transform-property-functions "hsluv")
 
+
 (when (functionp 'color-oklab-to-xyz)
-  (ct--make-transform-property-functions "oklab"))
+  (ct--make-transform-property-functions "oklab")
+  (defmacro ct-aedit-oklab (color body) "An anaphoric version of `ct-edit-oklab' with COLOR properties bound to (l a b) in BODY." `(ct-edit-oklab ,color (lambda (l a b) ,body))))
+
+;; couldn't figure out how to nest this defmacro call
+(defmacro ct-aedit-rgb (color body) "An anaphoric version of `ct-edit-rgb' with COLOR properties bound to (r g b) in BODY." `(ct-edit-rgb ,color (lambda (r g b) ,body)))
+(defmacro ct-aedit-hsl (color body) "An anaphoric version of `ct-edit-hsl' with COLOR properties bound to (h s l) in BODY." `(ct-edit-hsl ,color (lambda (h s l) ,body)))
+(defmacro ct-aedit-hsv (color body) "An anaphoric version of `ct-edit-hsv' with COLOR properties bound to (h s v) in BODY." `(ct-edit-hsv ,color (lambda (h s v) ,body)))
+(defmacro ct-aedit-lch (color body) "An anaphoric version of `ct-edit-lch' with COLOR properties bound to (l c h) in BODY." `(ct-edit-lch ,color (lambda (l c h) ,body)))
+(defmacro ct-aedit-lab (color body) "An anaphoric version of `ct-edit-lab' with COLOR properties bound to (l a b) in BODY." `(ct-edit-lab ,color (lambda (l a b) ,body)))
+(defmacro ct-aedit-hpluv (color body) "An anaphoric version of `ct-edit-hpluv' with COLOR properties bound to (h p l) in BODY." `(ct-edit-hpluv ,color (lambda (h p l) ,body)))
+(defmacro ct-aedit-hsluv (color body) "An anaphoric version of `ct-edit-hsluv' with COLOR properties bound to (h s l) in BODY." `(ct-edit-hsluv ,color (lambda (h s l) ,body)))
 
 ;;;
 ;;; other color functions
