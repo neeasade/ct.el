@@ -13,6 +13,9 @@ Not using any form of semantic versioning, just bumping the number.
 
 ** placeholder
 
+*** Added
+- Add ~ct-steal~
+
 ** 0.3 <2024-10-25>🎃
 *** Changed
 - Changed the parameter conventions for clarity

@@ -644,6 +644,14 @@ results."
   (ct-edit-lab-l-inc color
     (* percent (if (ct-light-p color) -1 1))))
 
+(defmacro ct-steal (color property color2)
+  "Steal PROPERTY of COLOR2 and set it on COLOR.
+
+PROPERTY is a symbol of a colorspace property, such as 'hsluv-l"
+  (let ((name (substring  (prin1-to-string property) 1)))
+    `(,(intern (format "ct-edit-%s" name)) ,color
+       (,(intern (format "ct-get-%s" name)) ,color2))))
+
 (define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
 (define-obsolete-function-alias 'ct-is-light-p 'ct-light-p "2022-06-03")
 (define-obsolete-function-alias 'ct-tint-ratio 'ct-contrast-min "2023-05-18")
