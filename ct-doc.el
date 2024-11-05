@@ -56,7 +56,7 @@
            (ct-lab-change-whitepoint ,color color-d50-xyz color-d55-xyz)
 
            (ct-mix ,(list 'list color plain-color color-complement))
-           (ct-mix-opacity ,color ,plain-color 80)
+           (ct-mix-opacity ,color ,plain-color 0.8)
            (ct-pastel ,color)
            (ct-contrast-min ,color ,plain-color 3)
 
