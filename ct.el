@@ -368,11 +368,10 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 
             (when (string= prop-single "h")
               (funcall collect
-                `(defun ,(intern (format "ct-rotation-%s" colorspace)) (color degrees)
-                   ,(format "Perform a hue rotation at every n DEGREES in %s space starting with COLOR." colorspace)
+                `(defun ,(intern (format "ct-rotation-%s" colorspace)) (count color)
+                   ,(format "Perform a hue rotation in %s space starting with COLOR, generating COUNT colors." colorspace)
                    (-map (-partial #',(intern (format "%s-inc" transform-prop-fn)) color)
-                     (-iota (abs (/ 360 degrees))
-                       0 degrees))))))))) result))
+                     (-iota (abs count) 0 (/ 360 count)))))))))) result))
 
 (ct--make-transform-property-functions "rgb")
 (ct--make-transform-property-functions "hsl")
