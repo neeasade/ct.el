@@ -35,9 +35,9 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 *** Color Properties
 - [[#ct-contrast-ratio-color1-color2][ct-contrast-ratio]] ~(color1 color2)~
 - [[#ct-distance-color1-color2][ct-distance]] ~(color1 color2)~
+- [[#ct-light-p-color-optional-threshold][ct-light-p]] ~(color &optional threshold)~
 - [[#ct-format-argb-color-optional-opacity-end][ct-format-argb]] ~(color &optional opacity end)~
 - [[#ct-format-rbga-color-optional-opacity][ct-format-rbga]] ~(color &optional opacity)~
-- [[#ct-light-p-color-optional-threshold][ct-light-p]] ~(color &optional threshold)~
 *** Color Modification
 - [[#ct-complement-color][ct-complement]] ~(color)~
 - [[#ct-gradient-step-start-end-optional-with-ends-space][ct-gradient]] ~(step start end &optional with-ends space)~
@@ -50,11 +50,13 @@ ct.el is on [[https://melpa.org/#/ct][melpa]]. You may also install with [[https
 - [[#ct-mix-opacity-top-bottom-opacity][ct-mix-opacity]] ~(top bottom opacity)~
 - [[#ct-pastel-color-optional-smod-vmod][ct-pastel]] ~(color &optional smod vmod)~
 - [[#ct-contrast-min-foreground-background-contrast-ratio-optional-color-property][ct-contrast-min]] ~(foreground background contrast-ratio &optional color-property)~
-- [[#ct-rotation-hpluv-color-degrees][ct-rotation-hpluv]] ~(color degrees)~
-- [[#ct-rotation-hsl-color-degrees][ct-rotation-hsl]] ~(color degrees)~
-- [[#ct-rotation-hsluv-color-degrees][ct-rotation-hsluv]] ~(color degrees)~
-- [[#ct-rotation-hsv-color-degrees][ct-rotation-hsv]] ~(color degrees)~
-- [[#ct-rotation-lch-color-degrees][ct-rotation-lch]] ~(color degrees)~
+- [[#ct-contrast-max-foreground-background-contrast-ratio-optional-color-property][ct-contrast-max]] ~(foreground background contrast-ratio &optional color-property)~
+- [[#ct-steal-color-property-color2][ct-steal]] ~(color property color2)~
+- [[#ct-rotation-hsl-count-color][ct-rotation-hsl]] ~(count color)~
+- [[#ct-rotation-hsluv-count-color][ct-rotation-hsluv]] ~(count color)~
+- [[#ct-rotation-hpluv-count-color][ct-rotation-hpluv]] ~(count color)~
+- [[#ct-rotation-hsv-count-color][ct-rotation-hsv]] ~(count color)~
+- [[#ct-rotation-lch-count-color][ct-rotation-lch]] ~(count color)~
 *** RGB
 - [[#ct-make-rgb-red-green-blue][ct-make-rgb]] ~(red green blue)~
 - [[#ct-get-rgb-color][ct-get-rgb]] ~(color)~
@@ -201,6 +203,14 @@ Get cie-DE2000 distance between COLOR1 and COLOR2, range 0-100.
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]] → 53
 #+END_quote
+**** ct-light-p ~(color &optional threshold)~
+Determine if a COLOR passes a cieLAB lightness THRESHOLD.
+#+BEGIN_src elisp
+(ct-light-p "#4fa5e8") ;; => t
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → t
+#+END_quote
 **** ct-format-argb ~(color &optional opacity end)~
 Argb formatting:
 Pass in COLOR and OPACITY 0-100, get a string representation of COLOR as
@@ -223,14 +233,6 @@ values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0).
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → rgba(79, 165, 232, 0.8)
-#+END_quote
-**** ct-light-p ~(color &optional threshold)~
-Determine if a COLOR passes a cieLAB lightness THRESHOLD.
-#+BEGIN_src elisp
-(ct-light-p "#4fa5e8") ;; => t
-#+END_src
-#+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → t
 #+END_quote
 ** Color Modification
 Functions for modifying colors in some way potentially unrelated to a specific colorspace
@@ -330,45 +332,65 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]] → [[http://muffin.app.neeasade.net/colorsquare/1369ac.svg]]
 #+END_quote
-**** ct-rotation-hpluv ~(color degrees)~
-Perform a hue rotation at every n DEGREES in hpluv space starting with COLOR.
+**** ct-contrast-max ~(foreground background contrast-ratio &optional color-property)~
+Edit FOREGROUND to have a maximum CONTRAST-RATIO on BACKGROUND.
+
+Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)
 #+BEGIN_src elisp
-(ct-rotation-hpluv "#4fa5e8" 60) ;; => ("#72a2d2" "#c48acb" "#d78895" "#b89a59" "#74ac68" "#03b1a7")
+(ct-contrast-max "#000000" "#dddddd" 4) ;; => "#6a6a6a"
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]],[[http://muffin.app.neeasade.net/colorsquare/c48acb.svg]],[[http://muffin.app.neeasade.net/colorsquare/d78895.svg]],[[http://muffin.app.neeasade.net/colorsquare/b89a59.svg]],[[http://muffin.app.neeasade.net/colorsquare/74ac68.svg]],[[http://muffin.app.neeasade.net/colorsquare/03b1a7.svg]]
+[[http://muffin.app.neeasade.net/colorsquare/000000.svg]],[[http://muffin.app.neeasade.net/colorsquare/dddddd.svg]] → [[http://muffin.app.neeasade.net/colorsquare/6a6a6a.svg]]
 #+END_quote
-**** ct-rotation-hsl ~(color degrees)~
-Perform a hue rotation at every n DEGREES in hsl space starting with COLOR.
+**** ct-steal ~(color property color2)~
+Steal PROPERTY of COLOR2 and set it on COLOR.
+
+PROPERTY is a symbol of a colorspace property, such as 'hsluv-l
 #+BEGIN_src elisp
-(ct-rotation-hsl "#4fa5e8" 60) ;; => ("#4fa4e8" "#914fe8" "#e84fa4" "#e8914f" "#a5e84f" "#4fe892")
+(ct-steal "#bbbbbb" 'hsv-h "#4fa5e8") ;; => "#bbbbbb"
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/bbbbbb.svg]]
+#+END_quote
+**** ct-rotation-hsl ~(count color)~
+Perform a hue rotation in hsl space starting with COLOR, generating COUNT colors.
+#+BEGIN_src elisp
+(ct-rotation-hsl 6 "#4fa5e8") ;; => ("#4fa4e8" "#914fe8" "#e84fa4" "#e8914f" "#a5e84f" "#4fe892")
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/914fe8.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84fa4.svg]],[[http://muffin.app.neeasade.net/colorsquare/e8914f.svg]],[[http://muffin.app.neeasade.net/colorsquare/a5e84f.svg]],[[http://muffin.app.neeasade.net/colorsquare/4fe892.svg]]
 #+END_quote
-**** ct-rotation-hsluv ~(color degrees)~
-Perform a hue rotation at every n DEGREES in hsluv space starting with COLOR.
+**** ct-rotation-hsluv ~(count color)~
+Perform a hue rotation in hsluv space starting with COLOR, generating COUNT colors.
 #+BEGIN_src elisp
-(ct-rotation-hsluv "#4fa5e8" 60) ;; => ("#4ea5e7" "#e173ec" "#f0798f" "#bc9a43" "#5cb143" "#48ada5")
+(ct-rotation-hsluv 6 "#4fa5e8") ;; => ("#4ea5e7" "#e173ec" "#f0798f" "#bc9a43" "#5cb143" "#48ada5")
 #+END_src
 #+BEGIN_quote
 [[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4ea5e7.svg]],[[http://muffin.app.neeasade.net/colorsquare/e173ec.svg]],[[http://muffin.app.neeasade.net/colorsquare/f0798f.svg]],[[http://muffin.app.neeasade.net/colorsquare/bc9a43.svg]],[[http://muffin.app.neeasade.net/colorsquare/5cb143.svg]],[[http://muffin.app.neeasade.net/colorsquare/48ada5.svg]]
 #+END_quote
-**** ct-rotation-hsv ~(color degrees)~
-Perform a hue rotation at every n DEGREES in hsv space starting with COLOR.
+**** ct-rotation-hpluv ~(count color)~
+Perform a hue rotation in hpluv space starting with COLOR, generating COUNT colors.
 #+BEGIN_src elisp
-(ct-rotation-hsv "#4fa5e8" 60) ;; => ("#4ea5e8" "#914ee8" "#e84ea5" "#e8924e" "#a5e84e" "#4ee892")
+(ct-rotation-hpluv 4 "#4fa5e8") ;; => ("#72a2d2" "#d585b4" "#b89a59" "#43b087")
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/914ee8.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84ea5.svg]],[[http://muffin.app.neeasade.net/colorsquare/e8924e.svg]],[[http://muffin.app.neeasade.net/colorsquare/a5e84e.svg]],[[http://muffin.app.neeasade.net/colorsquare/4ee892.svg]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/72a2d2.svg]],[[http://muffin.app.neeasade.net/colorsquare/d585b4.svg]],[[http://muffin.app.neeasade.net/colorsquare/b89a59.svg]],[[http://muffin.app.neeasade.net/colorsquare/43b087.svg]]
 #+END_quote
-**** ct-rotation-lch ~(color degrees)~
-Perform a hue rotation at every n DEGREES in lch space starting with COLOR.
+**** ct-rotation-hsv ~(count color)~
+Perform a hue rotation in hsv space starting with COLOR, generating COUNT colors.
 #+BEGIN_src elisp
-(ct-rotation-lch "#4fa5e8" 60) ;; => ("#4fa4e8" "#c48acc" "#e58183" "#bd9953" "#6dad6f" "#00b1ba")
+(ct-rotation-hsv 10 "#4fa5e8") ;; => ("#4ea5e8" "#544ee8" "#b04ee8" "#e84ec3" "#e84e67" "#e8924e" "#e2e84e" "#86e84e" "#4ee873" "#4ee8cf")
 #+END_src
 #+BEGIN_quote
-[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/c48acc.svg]],[[http://muffin.app.neeasade.net/colorsquare/e58183.svg]],[[http://muffin.app.neeasade.net/colorsquare/bd9953.svg]],[[http://muffin.app.neeasade.net/colorsquare/6dad6f.svg]],[[http://muffin.app.neeasade.net/colorsquare/00b1ba.svg]]
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4ea5e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/544ee8.svg]],[[http://muffin.app.neeasade.net/colorsquare/b04ee8.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84ec3.svg]],[[http://muffin.app.neeasade.net/colorsquare/e84e67.svg]],[[http://muffin.app.neeasade.net/colorsquare/e8924e.svg]],[[http://muffin.app.neeasade.net/colorsquare/e2e84e.svg]],[[http://muffin.app.neeasade.net/colorsquare/86e84e.svg]],[[http://muffin.app.neeasade.net/colorsquare/4ee873.svg]],[[http://muffin.app.neeasade.net/colorsquare/4ee8cf.svg]]
+#+END_quote
+**** ct-rotation-lch ~(count color)~
+Perform a hue rotation in lch space starting with COLOR, generating COUNT colors.
+#+BEGIN_src elisp
+(ct-rotation-lch 8 "#4fa5e8") ;; => ("#4fa4e8" "#ae91d9" "#df81a9" "#e18672" "#bd9953" "#84a961" "#31b193" "#00b0ca")
+#+END_src
+#+BEGIN_quote
+[[http://muffin.app.neeasade.net/colorsquare/4fa5e8.svg]] → [[http://muffin.app.neeasade.net/colorsquare/4fa4e8.svg]],[[http://muffin.app.neeasade.net/colorsquare/ae91d9.svg]],[[http://muffin.app.neeasade.net/colorsquare/df81a9.svg]],[[http://muffin.app.neeasade.net/colorsquare/e18672.svg]],[[http://muffin.app.neeasade.net/colorsquare/bd9953.svg]],[[http://muffin.app.neeasade.net/colorsquare/84a961.svg]],[[http://muffin.app.neeasade.net/colorsquare/31b193.svg]],[[http://muffin.app.neeasade.net/colorsquare/00b0ca.svg]]
 #+END_quote
 ** RGB
 https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8
