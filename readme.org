@@ -8,6 +8,8 @@
 # NOTE: this file is generated, see the docs branch to make edits
 # NOTE: this file is generated, see the docs branch to make edits
 
+[[https://raw.githubusercontent.com/neeasade/ct.el/refs/heads/docs/example.png]]
+
 #+html:<div align="center">
 🔵 🟣 🟢 🟤 🟡 🔴 🟠
 #+html:</div>
