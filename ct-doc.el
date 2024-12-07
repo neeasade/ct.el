@@ -37,13 +37,13 @@
           (plain-color "#bbbbbb"))
     (setq ct--docs
       `(
-         ("Color Properties"
-           "Functions for seeing properties of colors not necessarily related to a particular color space.")
+         ("Color Properties" "Functions for seeing properties of colors not necessarily related to a particular color space.")
          ((ct-contrast-ratio ,plain-color ,color)
            (ct-distance ,color ,color-complement)
+           (ct-light-p ,color)
            (ct-format-argb ,color 80 t)
-           (ct-format-rbga ,color 80)
-           (ct-light-p ,color))
+           (ct-format-rbga ,color 80))
+
          ("Color Modification" "Functions for modifying colors in some way potentially unrelated to a specific colorspace")
          ((ct-complement ,color)
            (ct-gradient 5 ,color ,color-complement t)
@@ -59,13 +59,14 @@
            (ct-mix-opacity ,color ,plain-color 0.8)
            (ct-pastel ,color)
            (ct-contrast-min ,color ,plain-color 3)
+           (ct-contrast-max "#000000" "#dddddd" 4)
+           (ct-steal ,plain-color 'hsv-h ,color)
 
-           (ct-rotation-hpluv ,color 60)
-           (ct-rotation-hsl ,color 60)
-           (ct-rotation-hsluv ,color 60)
-           (ct-rotation-hsv ,color 60)
-           (ct-rotation-lch ,color 60)
-           )
+           (ct-rotation-hsl   6 ,color)
+           (ct-rotation-hsluv 6 ,color)
+           (ct-rotation-hpluv 4 ,color)
+           (ct-rotation-hsv   10 ,color)
+           (ct-rotation-lch   8 ,color))
 
          ("RGB" "https://notes.neeasade.net/color-spaces.html#h-99356355-d54c-41d8-bc1a-6e14e29f42c8")
          ((ct-make-rgb ,@(ct-get-rgb color))
