@@ -290,7 +290,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
                          ((string= colorspace "oklab") '("Lightness" "A" "B"))
                          ((string= colorspace "lch")   '("Lightness" "Chroma" "Hue"))
                          ((string= colorspace "rgb")   '("Red" "Green" "Blue"))
-                         ((t (throw 'no-colorspace t)))))
+                         (t (throw 'no-colorspace t))))
            (properties-desc (mapconcat 'identity properties ", ")))
 
     (funcall collect
@@ -570,7 +570,7 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
 (defun ct-contrast-max (foreground background contrast-ratio &optional color-property)
   "Edit FOREGROUND to have a maximum CONTRAST-RATIO on BACKGROUND.
 
-Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
+Optionally specify the COLOR-PROPERTY used to tweak foreground (default `lab-l')"
   (-let* ((color-property (or color-property 'lab-l))
            (darken-fn (intern (format "ct-edit-%s-dec" color-property)))
            (lighten-fn (intern (format "ct-edit-%s-inc" color-property))))
@@ -581,13 +581,15 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
 (defun ct-contrast-clamp (foreground background contrast-ratio &optional color-property)
   "Conform FOREGROUND to be CONTRAST-RATIO against BACKGROUND.
 
-Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
+Optionally specify the COLOR-PROPERTY used to tweak foreground (default `lab-l')"
   (if (< contrast-ratio (ct-contrast-ratio foreground background))
     (ct-contrast-max foreground background contrast-ratio color-property)
     (ct-contrast-min foreground background contrast-ratio color-property)))
 
 (defun ct-mix-opacity (top bottom opacity)
-  "Get resulting color of TOP color with OPACITY overlayed against BOTTOM. Opacity is expected to be 0.0-1.0."
+  "Get resulting color of TOP color with OPACITY overlayed against BOTTOM.
+
+OPACITY is expected to be 0.0-1.0."
   ;; ref https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
   (seq-let (r1 g1 b1 r2 g2 b2)
     (append (ct-get-rgb top) (ct-get-rgb bottom))
@@ -600,7 +602,7 @@ Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
   "Create a gradient from color START to color END in STEP parts.
 Optionally include START and END in results using
 WITH-ENDS. Optionally choose a colorspace with SPACE (see
-'ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
+`ct--colorspace-map'). Hue-inclusive colorspaces may see mixed
 results."
   ;; todo: consider hue
   (-let* (((&plist :make make-color :get get-color) (ct--colorspace-map space))
@@ -624,7 +626,7 @@ results."
                    result))))))
 
 (defun ct-mix (colors &optional colorspace)
-  "Mix COLORS in COLORSPACE. See also: 'ct--colorspace-map'."
+  "Mix COLORS in COLORSPACE. See also: `ct--colorspace-map'."
   (-reduce (lambda (color new)
              (-second-item (ct-gradient 3 color new t colorspace)))
     colors))
@@ -646,7 +648,7 @@ results."
 (defmacro ct-steal (color property color2)
   "Steal PROPERTY of COLOR2 and set it on COLOR.
 
-PROPERTY is a symbol of a colorspace property, such as 'hsluv-l"
+PROPERTY is a symbol of a colorspace property, such as \='hsluv-l"
   (let ((name (substring  (prin1-to-string property) 1)))
     `(,(intern (format "ct-edit-%s" name)) ,color
        (,(intern (format "ct-get-%s" name)) ,color2))))
