@@ -660,6 +660,10 @@ results."
   (ct-edit-lab-l-inc color
     (* percent (if (ct-light-p color) -1 1))))
 
+(defmacro ct-change (color distance edit-fn)
+  "Change COLOR using EDIT-FN until DISTANCE is reached."
+  `(ct-aiterate ,color ,edit-fn (> (ct-distance C C0) ,distance)))
+
 (defmacro ct-steal (color property color2)
   "Steal PROPERTY of COLOR2 and set it on COLOR.
 
