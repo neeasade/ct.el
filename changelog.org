@@ -14,7 +14,13 @@ Not using any form of semantic versioning, just bumping the number.
 ** placeholder
 
 *** Added
-- Add ~ct-steal~
+- ~ct-steal~
+- ~ct-change~
+- ~ct-distance-oklab~
+
+*** Changed
+- Cleaned up byte compilation
+- ~ct-rotation~ argument order swapped places
 
 ** 0.3 <2024-10-25>🎃
 *** Changed
