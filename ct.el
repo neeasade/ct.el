@@ -513,6 +513,14 @@ Optionally change the rate of change with SMOD and VMOD."
   ;; https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
   (apply #'color-cie-de2000 (-map 'ct-name-to-lab (list color1 color2))))
 
+(defun ct-distance-oklab (color1 color2)
+  "Get okLAB distance between COLOR1 and COLOR2, range 0-100."
+  (-let (((x1 y1 z1) (ct-get-oklab c1))
+          ((x2 y2 z2) (ct-get-oklab c2)))
+    (sqrt (+ (* (- x2 x1) (- x2 x1))
+            (* (- y2 y1) (- y2 y1))
+            (* (- z2 z1) (- z2 z1))))))
+
 (defun ct-light-p (color &optional threshold)
   "Determine if a COLOR passes a cieLAB lightness THRESHOLD."
   ;; nb: 65 here is arbitrary
