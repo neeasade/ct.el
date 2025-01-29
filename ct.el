@@ -307,7 +307,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
       `(defun ,make ,(--map (-> it downcase intern) properties)
          ,(format "Make a %s color using properties: %s." colorspace (upcase properties-desc))
          (,transform "#cccccc"
-           (lambda (&rest props)
+           (lambda (&rest _)
              (list ,@(--map (-> it downcase intern) properties))))))
 
     (->> '(0 1 2)
@@ -336,20 +336,22 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 
             (funcall collect
               `(defun ,(intern (format "%s-inc" transform-prop-fn)) (color &optional amount)
-                 ,(format "Increase %s property of COLOR by AMOUNT (defaults to minimum increase amount)." prop-name)
+                 ,(format "Increase %s property of COLOR by AMOUNT
+If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
                  (if amount
                    (,(intern transform-prop-fn) color (-partial #'+ amount))
-                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) color (-partial #'+ v)))
+                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) c (-partial #'+ v)))
                      0.1 (-partial #'+ 0.1)
                      ;; nb: 30% limit is arbitrary
                      (lambda (arg) (ct--within arg 30 0.1))))))
 
             (funcall collect
               `(defun ,(intern (format "%s-dec" transform-prop-fn)) (color &optional amount)
-                 ,(format "Decrease %s property of COLOR by AMOUNT (defaults to minimum decrease amount)." prop-name)
+                 ,(format "Decrease %s property of COLOR by AMOUNT.
+If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
                  (if amount
                    (,(intern transform-prop-fn) color (-rpartial #'- amount))
-                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) color (-partial #'+ v)))
+                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) c (-partial #'+ v)))
                      -0.1 (-rpartial #'- 0.1)
                      ;; nb: 30% limit is arbitrary
                      (lambda (arg) (ct--within arg 30 0.1))))))
@@ -401,7 +403,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 (defun ct-format-rbga (color &optional opacity)
   "RGBA formatting:
 Pass in COLOR and OPACITY 0-100, get a string
-representation of COLOR as follows: 'rgba(R, G, B, OPACITY)', where
+representation of COLOR as follows: \"rgba(R, G, B, OPACITY)\", where
 values RGB are 0-255, and OPACITY is 0-1.0 (default 1.0)."
   (->> (ct-get-rgb color)
     (-map (-partial '* (/ 255.0 100)))
@@ -461,7 +463,9 @@ Component value in 0-100 range."
       (-map 'ct--delinearize comps))))
 
 (defun ct-pastel (color &optional Smod Vmod)
-  "Make COLOR more 'pastel' using the hsluv space -- optionally change the rate of change with SMOD and VMOD."
+  "\"pastelize\" COLOR using the hsluv colorspace.
+
+Optionally change the rate of change with SMOD and VMOD."
   ;; ref https://en.wikipedia.org/wiki/Pastel_(color)
   (ct-edit-hsl color
     (lambda (H S L)
@@ -543,9 +547,12 @@ Will return early if calling EDIT-FN results in no change."
 Will return early if calling EDIT-FN results in no change.
 
 This is an anaphoric version of `ct-iterate' wrt. CONDITION - the current color
-value is bound to C, and the START color is bound to C0."
+value is bound to C, and the initial value of COLOR is bound to C0."
   `(ct-iterate ,color ,edit-fn
-     (lambda (C) (let ((C0 ,color)) ,condition))))
+     (lambda (C)
+       (let ((C0 ,color))
+         (ignore C C0)
+         ,condition))))
 
 (defmacro ct-aiterations (color edit-fn condition)
   "Transform COLOR using EDIT-FN until CONDITION is met, returning each step.
@@ -554,12 +561,12 @@ Will return early if calling EDIT-FN results in no change.
 This is an anaphoric version of `ct-iterations' wrt. CONDITION - the current
 color value is bound to C, and the START color is bound to C0."
   `(ct-iterations ,color ,edit-fn
-     (lambda (C) (let ((C0 ,start)) ,condition))))
+     (lambda (C) (let ((C0 ,color)) ,condition))))
 
 (defun ct-contrast-min (foreground background contrast-ratio &optional color-property)
   "Edit FOREGROUND to have a minimum CONTRAST-RATIO on BACKGROUND.
 
-Optionally specify the COLOR-PROPERTY used to tweak foreground (default 'lab-l)"
+Optionally specify the COLOR-PROPERTY used to tweak foreground (default `lab-l')"
   (-let* ((color-property (or color-property 'lab-l))
            (darken-fn (intern (format "ct-edit-%s-dec" color-property)))
            (lighten-fn (intern (format "ct-edit-%s-inc" color-property))))
@@ -659,3 +666,8 @@ PROPERTY is a symbol of a colorspace property, such as \='hsluv-l"
 
 (provide 'ct)
 ;;; ct.el ends here
+
+;; Local Variables:
+;; byte-compile-warnings: nil
+;; fill-column: 100
+;; End:
