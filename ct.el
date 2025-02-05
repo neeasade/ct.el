@@ -569,7 +569,9 @@ Will return early if calling EDIT-FN results in no change.
 This is an anaphoric version of `ct-iterations' wrt. CONDITION - the current
 color value is bound to C, and the START color is bound to C0."
   `(ct-iterations ,color ,edit-fn
-     (lambda (C) (let ((C0 ,color)) ,condition))))
+     (lambda (C) (let ((C0 ,color))
+                   (ignore C C0)
+                   ,condition))))
 
 (defun ct-contrast-min (foreground background contrast-ratio &optional color-property)
   "Edit FOREGROUND to have a minimum CONTRAST-RATIO on BACKGROUND.
