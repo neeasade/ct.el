@@ -312,7 +312,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
              (list ,@(--map (-> it downcase intern) properties))))))
 
     (funcall collect
-      `(defmacro ,(intern (format "ct-ct-aedit-%s" colorspace)) (color body)
+      `(defmacro ,(intern (format "ct-aedit-%s" colorspace)) (color body)
          ,(format "An anaphoric version of `%s' with COLOR properties bound to %s in BODY." transform properties-short)
          `(,',transform ,color (lambda ,',properties-short
                                  (ignore ,@',properties-short)
