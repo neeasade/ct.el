@@ -291,7 +291,8 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
                          ((string= colorspace "lch")   '("Lightness" "Chroma" "Hue"))
                          ((string= colorspace "rgb")   '("Red" "Green" "Blue"))
                          (t (throw 'no-colorspace t))))
-           (properties-desc (mapconcat 'identity properties ", ")))
+           (properties-desc (mapconcat 'identity properties ", "))
+           (properties-short (--map (intern (downcase (substring it 0 1))) properties)))
 
     (funcall collect
       `(defun ,get (color)
@@ -309,6 +310,13 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
          (,transform "#cccccc"
            (lambda (&rest _)
              (list ,@(--map (-> it downcase intern) properties))))))
+
+    (funcall collect
+      `(defmacro ,(intern (format "ct-ct-aedit-%s" colorspace)) (color body)
+         ,(format "An anaphoric version of `%s' with COLOR properties bound to %s in BODY." transform properties-short)
+         `(,',transform ,color (lambda ,',properties-short
+                                 (ignore ,@',properties-short)
+                                 ,body))))
 
     (->> '(0 1 2)
       (-map
@@ -384,17 +392,7 @@ If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
 (ct--make-transform-property-functions "hsluv")
 
 (when (functionp 'color-oklab-to-xyz)
-  (ct--make-transform-property-functions "oklab")
-  (defmacro ct-aedit-oklab (color body) "An anaphoric version of `ct-edit-oklab' with COLOR properties bound to (l a b) in BODY." `(ct-edit-oklab ,color (lambda (l a b) ,body))))
-
-;; couldn't figure out how to nest this defmacro call
-(defmacro ct-aedit-rgb (color body) "An anaphoric version of `ct-edit-rgb' with COLOR properties bound to (r g b) in BODY." `(ct-edit-rgb ,color (lambda (r g b) ,body)))
-(defmacro ct-aedit-hsl (color body) "An anaphoric version of `ct-edit-hsl' with COLOR properties bound to (h s l) in BODY." `(ct-edit-hsl ,color (lambda (h s l) ,body)))
-(defmacro ct-aedit-hsv (color body) "An anaphoric version of `ct-edit-hsv' with COLOR properties bound to (h s v) in BODY." `(ct-edit-hsv ,color (lambda (h s v) ,body)))
-(defmacro ct-aedit-lch (color body) "An anaphoric version of `ct-edit-lch' with COLOR properties bound to (l c h) in BODY." `(ct-edit-lch ,color (lambda (l c h) ,body)))
-(defmacro ct-aedit-lab (color body) "An anaphoric version of `ct-edit-lab' with COLOR properties bound to (l a b) in BODY." `(ct-edit-lab ,color (lambda (l a b) ,body)))
-(defmacro ct-aedit-hpluv (color body) "An anaphoric version of `ct-edit-hpluv' with COLOR properties bound to (h p l) in BODY." `(ct-edit-hpluv ,color (lambda (h p l) ,body)))
-(defmacro ct-aedit-hsluv (color body) "An anaphoric version of `ct-edit-hsluv' with COLOR properties bound to (h s l) in BODY." `(ct-edit-hsluv ,color (lambda (h s l) ,body)))
+  (ct--make-transform-property-functions "oklab"))
 
 ;;;
 ;;; other color functions
