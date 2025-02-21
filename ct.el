@@ -44,12 +44,6 @@
   :type 'boolean
   :group 'ct)
 
-(defcustom ct-interactive-step-interval 3
-  "Interval to use for the ct-point-* interactive functions.
-If set to nil the smallest amount needed to affect a change is used."
-  :type '(restricted-sexp :match-alternatives (integerp 'nil))
-  :group 'ct)
-
 ;;;
 ;;; helpers to build color space functions
 ;;;
@@ -89,28 +83,6 @@ Values should be between 0 and 1."
       (apply #'color-oklab-to-srgb it)
       (-map #'color-clamp it)
       (apply #'ct--rgb-to-name it))))
-
-;; utility function from: https://github.com/emacsfodder/kurecolor/blob/d17a77d9210b3e7b8141d03c04d1898bcab2b876/kurecolor.el#L201-L220
-(defun ct--replace-current (fn &rest args)
-  "Get the current unspaced string at point.
-Replace with the return value of the function FN with ARGS"
-  (let (pos1 pos2 replacement excerpt change)
-    (if (and transient-mark-mode mark-active)
-      (setq pos1 (region-beginning) pos2 (region-end))
-      (progn
-        (when (looking-at "#") (forward-char 1))
-        (setq pos1 (car (bounds-of-thing-at-point 'symbol))
-          pos2 (cdr (bounds-of-thing-at-point 'symbol)))
-        (when (> pos1 0)
-          (setq pos1 (- pos1 1)))))
-    (setq excerpt (buffer-substring-no-properties pos1 pos2))
-    (if args
-      (progn (setq change (car args))
-        (setq replacement (funcall fn excerpt change)))
-      ;; no args
-      (setq replacement (funcall fn excerpt)))
-    (delete-region pos1 pos2)
-    (insert replacement)))
 
 (defun ct--within (value tolerance anchor)
   "Return if a VALUE is within TOLERANCE of ANCHOR."
@@ -363,18 +335,6 @@ If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
                      -0.1 (-rpartial #'- 0.1)
                      ;; nb: 30% limit is arbitrary
                      (lambda (arg) (ct--within arg 30 0.1))))))
-
-            (funcall collect
-              `(defun ,(intern (format "ct-point-%s-inc" prop-name)) ()
-                 ,(format "Change color at point by invoking (%s-inc ct-interactive-step-interval)" transform-prop-fn)
-                 (interactive)
-                 (ct--replace-current ',(intern (format "%s-inc" transform-prop-fn)) ct-interactive-step-interval)))
-
-            (funcall collect
-              `(defun ,(intern (format "ct-point-%s-dec" prop-name)) ()
-                 ,(format "Change color at point by invoking (%s-dec ct-interactive-step-interval)" transform-prop-fn)
-                 (interactive)
-                 (ct--replace-current ',(intern (format "%s-dec" transform-prop-fn)) ct-interactive-step-interval)))
 
             (when (string= prop-single "h")
               (funcall collect
