@@ -5,7 +5,7 @@
 ;;
 ;; Version: 0.3
 ;; Author: neeasade
-;; Keywords: convenience color theming rgb hsv hsl hct lab oklab background
+;; Keywords: convenience color theming background rgb hsv hsl hct lab oklab oklch hct
 ;; URL: https://github.com/neeasade/ct.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.18.0") (hsluv "1.0.0"))
 
@@ -71,6 +71,20 @@ Values should be between 0 and 1."
 
 ;; https://git.savannah.gnu.org/cgit/emacs.git/commit/lisp/color.el?id=c5e5940ba40b801270bbe02b92576eac36f73222
 (when (functionp 'color-oklab-to-xyz)
+  (defun ct--oklab-to-oklch (L A B)
+    "Convert okLAB values L A B to okLCH.
+L is expected in 0-100, and A and B use the scaled ct.el representation."
+    (let ((C (sqrt (+ (* A A) (* B B)))))
+      (if (< C 0.01)
+        (list L 0.0 0.0)
+        (list L C (mod (radians-to-degrees (atan B A)) 360.0)))))
+
+  (defun ct--oklch-to-oklab (L C H)
+    "Convert okLCH values L C H to okLAB.
+L is expected in 0-100, C is nonnegative, and H is in degrees."
+    (let ((Hr (degrees-to-radians H)))
+      (list L (* C (cos Hr)) (* C (sin Hr)))))
+
   ;; note: tested this by comparing ct-make-oklab against the values of
   ;; https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklab
   (defun ct-edit-oklab (color edit-fn)
@@ -83,7 +97,19 @@ Values should be between 0 and 1."
       (--map (/ it 100.0) it)
       (apply #'color-oklab-to-srgb it)
       (-map #'color-clamp it)
-      (apply #'ct--rgb-to-name it))))
+      (apply #'ct--rgb-to-name it)))
+
+  (defun ct-edit-oklch (color edit-fn)
+    "Edit COLOR in the okLCH colorspace by calling EDIT-FN with its okLCH properties.
+EDIT-FN is called with values in ranges: {0-100, 0-inf, 0-360}."
+    (ct-edit-oklab color
+      (lambda (&rest oklab)
+        (->> oklab
+          (apply #'ct--oklab-to-oklch)
+          (apply edit-fn)
+          (apply (lambda (L C H)
+                   (list (ct-clamp L) (max 0.0 C) (mod H 360.0))))
+          (apply #'ct--oklch-to-oklab))))))
 
 (defun ct--within (value tolerance anchor)
   "Return if a VALUE is within TOLERANCE of ANCHOR."
@@ -247,7 +273,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 (eval-and-compile
   (defun ct--colorspace-map (&optional label)
     "Map LABEL to utility functions for a color space.
-LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct.  It defaults to \"rgb\"."
+LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct oklch.  It defaults to \"rgb\"."
     (let ((label (or label "rgb")))
       (->> '(:transform "ct-edit-%s"
               :make "ct-make-%s"
@@ -269,6 +295,7 @@ LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct.  It defaults to \"rgb\"."
                          ((string= colorspace "hct") '("Hue" "Chroma" "Tone"))
                          ((string= colorspace "lab")   '("Lightness" "A" "B"))
                          ((string= colorspace "oklab") '("Lightness" "A" "B"))
+                         ((string= colorspace "oklch") '("Lightness" "Chroma" "Hue"))
                          ((string= colorspace "lch")   '("Lightness" "Chroma" "Hue"))
                          ((string= colorspace "rgb")   '("Red" "Green" "Blue"))
                          (t (throw 'no-colorspace t))))
@@ -362,7 +389,8 @@ If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
 (ct--make-transform-property-functions "hsluv")
 
 (when (functionp 'color-oklab-to-xyz)
-  (ct--make-transform-property-functions "oklab"))
+  (ct--make-transform-property-functions "oklab")
+  (ct--make-transform-property-functions "oklch"))
 
 ;;;
 ;;; other color functions
