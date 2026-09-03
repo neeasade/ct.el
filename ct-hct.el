@@ -363,4 +363,4 @@
         (ct--hct-linrgb-to-name (ct--hct-bisect-to-limit y hue-radians))))))
 
 (provide 'ct-hct)
-;;; ct.-hct.el ends here
+;;; ct-hct.el ends here
