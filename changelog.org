@@ -17,6 +17,7 @@ Not using any form of semantic versioning, just bumping the number.
 - ~ct-steal~
 - ~ct-change~
 - ~ct-distance-oklab~
+- HCT colorspace support
 
 *** Changed
 - Cleaned up byte compilation

@@ -5,7 +5,7 @@
 ;;
 ;; Version: 0.3
 ;; Author: neeasade
-;; Keywords: convenience color theming rgb hsv hsl lab oklab background
+;; Keywords: convenience color theming rgb hsv hsl hct lab oklab background
 ;; URL: https://github.com/neeasade/ct.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.18.0") (hsluv "1.0.0"))
 
@@ -26,6 +26,7 @@
 (require 'dash)
 (require 'hsluv)
 (require 'seq)
+(require 'ct-hct)
 
 ;; customization:
 
@@ -213,6 +214,12 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
     (apply #'ct-hsv-to-rgb)
     (apply #'ct--rgb-to-name)))
 
+(defun ct-edit-hct (color edit-fn)
+  "Edit COLOR in the HCT colorspace by calling EDIT-FN with its HCT properties.
+EDIT-FN is called with hue in 0-360 degrees, nonnegative chroma, and tone in 0-100."
+  (-let (((hue chroma tone) (apply edit-fn (ct--hct-from-name color))))
+    (ct--hct-solve-to-name hue (max 0.0 chroma) tone)))
+
 (defun ct-edit-hpluv (color edit-fn)
   "Edit COLOR in the HPLuv colorspace by calling EDIT-FN with it's HPL properties.
 EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
@@ -239,7 +246,8 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
 
 (eval-and-compile
   (defun ct--colorspace-map (&optional label)
-    "Map a quoted colorspace LABEL to a plist with utility functions associated with a space. LABEL is one of: rgb hsl hsluv hpluv lch lab hsv. Defaults to \"rgb\"."
+    "Map LABEL to utility functions for a color space.
+LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct.  It defaults to \"rgb\"."
     (let ((label (or label "rgb")))
       (->> '(:transform "ct-edit-%s"
               :make "ct-make-%s"
@@ -258,6 +266,7 @@ EDIT-FN is called with values in ranges: {0-360, 0-100, 0-100}."
                          ((string= colorspace "hsl") '("Hue" "Saturation" "Lightness"))
                          ((string= colorspace "hsluv") '("Hue" "Saturation" "Lightness"))
                          ((string= colorspace "hsv") '("Hue" "Saturation" "Value"))
+                         ((string= colorspace "hct") '("Hue" "Chroma" "Tone"))
                          ((string= colorspace "lab")   '("Lightness" "A" "B"))
                          ((string= colorspace "oklab") '("Lightness" "A" "B"))
                          ((string= colorspace "lch")   '("Lightness" "Chroma" "Hue"))
@@ -346,6 +355,7 @@ If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
 (ct--make-transform-property-functions "rgb")
 (ct--make-transform-property-functions "hsl")
 (ct--make-transform-property-functions "hsv")
+(ct--make-transform-property-functions "hct")
 (ct--make-transform-property-functions "lch")
 (ct--make-transform-property-functions "lab")
 (ct--make-transform-property-functions "hpluv")
@@ -622,7 +632,7 @@ results."
 
 (defmacro ct-change (color distance edit-fn)
   "Change COLOR using EDIT-FN until DISTANCE is reached."
-  `(ct-aiterate ,color ,edit-fn (> (ct-distance C C0) ,distance)))
+  `(ct-aiterate ,color ,edit-fn (>= (ct-distance C C0) ,distance)))
 
 (defmacro ct-steal (color property color2)
   "Steal PROPERTY of COLOR2 and set it on COLOR.
