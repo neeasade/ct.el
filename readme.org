@@ -1453,10 +1453,10 @@ https://m3.material.io/blog/science-of-color-design
 **** ct-make-hct ~(hue chroma tone)~
 Make a hct color using properties: HUE, CHROMA, TONE.
 #+BEGIN_src elisp
-(ct-make-hct 70 13 245) ;; => "#ffffff"
+(ct-make-hct 247 50 65) ;; => "#4ca4e8"
 #+END_src
 #+BEGIN_quote
- → [[http://muffin.app.neeasade.net/colorsquare/ffffff.svg]]
+ → [[http://muffin.app.neeasade.net/colorsquare/4ca4e8.svg]]
 #+END_quote
 **** ct-get-hct ~(color)~
 Get hct representation (Hue, Chroma, Tone) of COLOR.
