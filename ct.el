@@ -5,7 +5,7 @@
 ;;
 ;; Version: 0.3
 ;; Author: neeasade
-;; Keywords: convenience color theming background rgb hsv hsl hct lab oklab oklch hct
+;; Keywords: convenience color theming background rgb hsv hsl hct lab oklab oklch
 ;; URL: https://github.com/neeasade/ct.el
 ;; Package-Requires: ((emacs "26.1") (dash "2.18.0") (hsluv "1.0.0"))
 
