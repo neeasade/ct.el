@@ -222,7 +222,7 @@
            (ct-edit-oklch-c-inc ,color))
 
          ("hct" "https://m3.material.io/blog/science-of-color-design")
-         ((ct-make-hct ,@(ct-get-oklch color))
+         ((ct-make-hct ,@(ct-get-hct color))
            (ct-get-hct ,color)
            (ct-get-hct-h ,color)
            (ct-get-hct-c ,color)
