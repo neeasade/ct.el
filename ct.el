@@ -282,25 +282,14 @@ LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct oklch.  It defaults to \"rg
         (-mapcat (-lambda ((key name))
                    (list key (intern (format name label)))))))))
 
-(defmacro ct--make-transform-property-functions (colorspace)
+(defmacro ct--make-transform-property-functions (colorspace &rest properties)
   "Build the functions for tweaking individual properties of colors in COLORSPACE."
   (-let* (((&plist :transform transform :get get :make make) (ct--colorspace-map colorspace))
            (result '(progn))
            (collect (lambda (sexp) (setq result (-snoc result sexp))))
-           (properties (cond
-                         ((string= colorspace "hpluv") '("Hue" "Percentage-Saturation" "Lightness"))
-                         ((string= colorspace "hsl") '("Hue" "Saturation" "Lightness"))
-                         ((string= colorspace "hsluv") '("Hue" "Saturation" "Lightness"))
-                         ((string= colorspace "hsv") '("Hue" "Saturation" "Value"))
-                         ((string= colorspace "hct") '("Hue" "Chroma" "Tone"))
-                         ((string= colorspace "lab")   '("Lightness" "A" "B"))
-                         ((string= colorspace "oklab") '("Lightness" "A" "B"))
-                         ((string= colorspace "oklch") '("Lightness" "Chroma" "Hue"))
-                         ((string= colorspace "lch")   '("Lightness" "Chroma" "Hue"))
-                         ((string= colorspace "rgb")   '("Red" "Green" "Blue"))
-                         (t (throw 'no-colorspace t))))
            (properties-desc (mapconcat 'identity properties ", "))
-           (properties-short (--map (intern (downcase (substring it 0 1))) properties)))
+           (properties-short (--map (intern (downcase (substring it 0 1))) properties))
+           (properties-short (--map (if (eq 't it) 'tt it) properties-short))) ; hct (can't bind to t)
 
     (funcall collect
       `(defun ,get (color)
@@ -329,13 +318,19 @@ LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct oklch.  It defaults to \"rg
     (->> '(0 1 2)
       (-map
         (lambda (index)
-          (let* ((property (nth index properties))                     ; Lightness
-		              (prop-single (downcase (substring property 0 1)))    ; l
-		              (prop-name (format "%s-%s" colorspace prop-single))  ; lab-l
-		              (transform-prop-fn (format "ct-edit-%s" prop-name))) ; ct-edit-lab-l
+          (let* ((property (nth index properties))                              ; Lightness
+                  (prop-single (nth index properties-short))                    ; l
+                  (prop-name (format "%s-%.1s" colorspace prop-single))         ; lab-l
+                  (transform-prop-fn (intern (format "ct-edit-%s" prop-name)))) ; ct-edit-lab-l
+            (funcall collect
+              `(defmacro ,(intern (format "ct-aedit-%s" prop-name)) (color body)
+                 ,(format "An anaphoric version of `%s'." transform-prop-fn)
+                 `(,',transform-prop-fn ,color (lambda ,',(list prop-single)
+                                                 (ignore ,@',(list prop-single))
+                                                 ,body))))
 
             (funcall collect
-              `(defun ,(intern transform-prop-fn) (color func-or-val)
+              `(defun ,transform-prop-fn (color func-or-val)
                  ,(format "Transform %s %s of COLOR using FUNC-OR-VAL." colorspace property)
                  (,transform color
                    (lambda (&rest color-props)
@@ -355,8 +350,8 @@ LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct oklch.  It defaults to \"rg
                  ,(format "Increase %s property of COLOR by AMOUNT
 If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
                  (if amount
-                   (,(intern transform-prop-fn) color (-partial #'+ amount))
-                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) c (-partial #'+ v)))
+                   (,transform-prop-fn color (-partial #'+ amount))
+                   (ct--amp-value color (lambda (c v) (,transform-prop-fn c (-partial #'+ v)))
                      0.1 (-partial #'+ 0.1)
                      ;; nb: 30% limit is arbitrary
                      (lambda (arg) (ct--within arg 30 0.1))))))
@@ -366,31 +361,36 @@ If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
                  ,(format "Decrease %s property of COLOR by AMOUNT.
 If AMOUNT is nil, defaults to minimum value needed to change color." prop-name)
                  (if amount
-                   (,(intern transform-prop-fn) color (-rpartial #'- amount))
-                   (ct--amp-value color (lambda (c v) (,(intern transform-prop-fn) c (-partial #'+ v)))
+                   (,transform-prop-fn color (-rpartial #'- amount))
+                   (ct--amp-value color (lambda (c v) (,transform-prop-fn c (-partial #'+ v)))
                      -0.1 (-rpartial #'- 0.1)
                      ;; nb: 30% limit is arbitrary
                      (lambda (arg) (ct--within arg 30 0.1))))))
 
-            (when (string= prop-single "h")
+            (when (eq prop-single 'h)
+              (funcall collect
+                `(defun ,(intern (format "ct-complement-%s" colorspace)) (color)
+                   ,(format "Get the complement of a color in the %s space" colorspace)
+                   (,(intern (format "%s-inc" transform-prop-fn)) color 180)))
+
               (funcall collect
                 `(defun ,(intern (format "ct-rotation-%s" colorspace)) (count color)
                    ,(format "Perform a hue rotation in %s space starting with COLOR, generating COUNT colors." colorspace)
                    (-map (-partial #',(intern (format "%s-inc" transform-prop-fn)) color)
                      (-iota (abs count) 0 (/ 360 count)))))))))) result))
 
-(ct--make-transform-property-functions "rgb")
-(ct--make-transform-property-functions "hsl")
-(ct--make-transform-property-functions "hsv")
-(ct--make-transform-property-functions "hct")
-(ct--make-transform-property-functions "lch")
-(ct--make-transform-property-functions "lab")
-(ct--make-transform-property-functions "hpluv")
-(ct--make-transform-property-functions "hsluv")
+(ct--make-transform-property-functions "hct" "Hue" "Chroma" "Tone")
+(ct--make-transform-property-functions "hpluv" "Hue" "Percentage-Saturation" "Lightness")
+(ct--make-transform-property-functions "hsl" "Hue" "Saturation" "Lightness")
+(ct--make-transform-property-functions "hsluv" "Hue" "Saturation" "Lightness")
+(ct--make-transform-property-functions "hsv" "Hue" "Saturation" "Value")
+(ct--make-transform-property-functions "lab" "Lightness" "A" "B")
+(ct--make-transform-property-functions "lch" "Lightness" "Chroma" "Hue")
+(ct--make-transform-property-functions "rgb" "Red" "Green" "Blue")
 
 (when (functionp 'color-oklab-to-xyz)
-  (ct--make-transform-property-functions "oklab")
-  (ct--make-transform-property-functions "oklch"))
+  (ct--make-transform-property-functions "oklab" "Lightness" "A" "B")
+  (ct--make-transform-property-functions "oklch" "Lightness" "Chroma" "Hue"))
 
 ;;;
 ;;; other color functions
@@ -644,10 +644,6 @@ results."
              (-second-item (ct-gradient 3 color new t colorspace)))
     colors))
 
-(defun ct-complement (color)
-  "Return a color complement of COLOR in the HSLUV space."
-  (ct-edit-hsluv-h-inc color 180))
-
 (defun ct-greaten (color &optional percent)
   "Make a light COLOR lighter, a dark COLOR darker (by PERCENT)."
   (ct-edit-lab-l-inc color
@@ -673,6 +669,7 @@ PROPERTY is a symbol of a colorspace property, such as \='hsluv-l"
 (define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
 (define-obsolete-function-alias 'ct-is-light-p 'ct-light-p "2022-06-03")
 (define-obsolete-function-alias 'ct-tint-ratio 'ct-contrast-min "2023-05-18")
+(define-obsolete-function-alias 'ct-complement 'ct-complement-hsluv "2026-09-03")
 
 (provide 'ct)
 ;;; ct.el ends here
