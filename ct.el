@@ -26,7 +26,6 @@
 (require 'dash)
 (require 'hsluv)
 (require 'seq)
-(require 'ct-hct)
 
 ;; customization:
 
@@ -61,6 +60,8 @@ MIN and MAX default to 0 and 100."
             (< 0.001 (abs (- result value))))
       (message "ct: ct-clamped %s -> %s" value result))
     result))
+
+(require 'ct-hct)
 
 (defun ct--rgb-to-name (red green blue)
   "Transform RED GREEN BLUE integer properties into a hex string.
