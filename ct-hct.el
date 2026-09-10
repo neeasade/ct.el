@@ -11,6 +11,8 @@
 ;; https://github.com/material-foundation/material-color-utilities
 ;; Copyright 2021 Google LLC, licensed under the Apache License 2.0.
 
+(require 'dash)
+
 (defconst ct--hct-scaled-discount-from-linrgb
   '((0.001200833568784504 0.002389694492170889 0.0002795742885861124)
      (0.0005891086651375999 0.0029785502573438758 0.0003270666104008398)
