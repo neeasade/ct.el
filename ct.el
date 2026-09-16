@@ -668,6 +668,13 @@ PROPERTY is a symbol of a colorspace property, such as \='hsluv-l"
     `(,(intern (format "ct-edit-%s" name)) ,color
        (,(intern (format "ct-get-%s" name)) ,color2))))
 
+(defun ct-warmth (color &optional oklab?)
+  "Return a number representing a colors warmth (color theory), range -100 to 100."
+  (-let* (((l a b) (if oklab?
+                     (ct-get-oklab color)
+                     (ct-get-lab color))))
+    (/ (+ a b) 2)))
+
 (define-obsolete-function-alias 'ct-name-distance 'ct-distance "2022-06-03")
 (define-obsolete-function-alias 'ct-is-light-p 'ct-light-p "2022-06-03")
 (define-obsolete-function-alias 'ct-tint-ratio 'ct-contrast-min "2023-05-18")
