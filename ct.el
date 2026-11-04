@@ -315,7 +315,9 @@ LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct oklch.  It defaults to \"rg
          ,(format "An anaphoric version of `%s' with COLOR properties bound to %s in BODY." transform properties-short)
          `(,',transform ,color (lambda ,',properties-short
                                  (ignore ,@',properties-short)
-                                 ,body))))
+                                 ,(if (string= ,colorspace "hct")
+                                    (--tree-map-nodes (eq it 't) 'tt body)
+                                    body)))))
 
     (->> '(0 1 2)
       (-map
@@ -324,12 +326,15 @@ LABEL is one of: rgb hsl hsluv hpluv lch lab hsv hct oklch.  It defaults to \"rg
                   (prop-single (nth index properties-short))                    ; l
                   (prop-name (format "%s-%.1s" colorspace prop-single))         ; lab-l
                   (transform-prop-fn (intern (format "ct-edit-%s" prop-name)))) ; ct-edit-lab-l
+
             (funcall collect
               `(defmacro ,(intern (format "ct-aedit-%s" prop-name)) (color body)
                  ,(format "An anaphoric version of `%s'." transform-prop-fn)
                  `(,',transform-prop-fn ,color (lambda ,',(list prop-single)
                                                  (ignore ,@',(list prop-single))
-                                                 ,body))))
+                                                 ,(if (string= ,colorspace "hct")
+                                                    (--tree-map-nodes (eq it 't) 'tt body)
+                                                    body)))))
 
             (funcall collect
               `(defun ,transform-prop-fn (color func-or-val)
